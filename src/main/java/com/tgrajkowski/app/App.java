@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@ComponentScan({"com.tgrajkowski.controller", "com.tgrajkowski.model.model.dao"})
+@ComponentScan({"com.tgrajkowski.controller", "com.tgrajkowski.model.model.dao","com.tgrajkowski.service"})
 @EntityScan(basePackages = "com.tgrajkowski.model")
 @EnableJpaRepositories("com.tgrajkowski.model.model.dao")
 public class App {

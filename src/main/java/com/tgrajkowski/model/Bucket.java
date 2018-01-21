@@ -12,6 +12,8 @@ public class Bucket {
     @NotNull
     private Long id;
 
+    private String user;
+
 
     @OneToMany
     List<Product> productList = new ArrayList<>();
@@ -30,5 +32,29 @@ public class Bucket {
 
     public void add(Product product) {
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public List<Product> getProductList() {
+        return productList;
+    }
+
+    public void setProductList(List<Product> productList) {
+        this.productList = productList;
     }
 }

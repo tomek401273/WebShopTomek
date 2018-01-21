@@ -10,9 +10,9 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Entity
 public class Product {
+
     @Id
-    @GeneratedValue
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column
     private Integer price;
@@ -22,4 +22,25 @@ public class Product {
     private String description;
     @Column
     private String ImageLink;
+
+    public Product() {
+    }
+
+    public Product(Integer price, String title, String description, String imageLink) {
+        this.price = price;
+        this.title = title;
+        this.description = description;
+        ImageLink = imageLink;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", price=" + price +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", ImageLink='" + ImageLink + '\'' +
+                '}';
+    }
 }
