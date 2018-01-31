@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/buck")
+@RequestMapping("/bucket")
 @CrossOrigin("*")
 public class BucketController {
     @Autowired
     BucketDao bucketDao;
 
-    @RequestMapping("/")
+    @RequestMapping("/all")
     public @ResponseBody
     List<Bucket> getProduct() {
         return bucketDao.findAll();

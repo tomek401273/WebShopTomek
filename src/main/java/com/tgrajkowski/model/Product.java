@@ -1,7 +1,9 @@
 package com.tgrajkowski.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
+@ToString
 public class Product {
 
     @Id
@@ -23,8 +27,7 @@ public class Product {
     @Column
     private String ImageLink;
 
-    public Product() {
-    }
+
 
     public Product(Integer price, String title, String description, String imageLink) {
         this.price = price;
@@ -33,14 +36,4 @@ public class Product {
         ImageLink = imageLink;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", price=" + price +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", ImageLink='" + ImageLink + '\'' +
-                '}';
-    }
 }

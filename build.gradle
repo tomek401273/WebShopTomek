@@ -42,6 +42,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '1.5.8.RELEASE'
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.8.0'
     // https://mvnrepository.com/artifact/org.projectlombok/lombok
     compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
 }
@@ -67,5 +69,5 @@ task buildClientWatch(type: NpmTask, dependsOn: 'npmInstall') {
     args = ['run', 'buildWatch']
 }
 
-bootRun.dependsOn(buildClientDev)
-jar.dependsOn(buildClient)
+//bootRun.dependsOn(buildClientDev)
+//jar.dependsOn(buildClient)

@@ -46,5 +46,10 @@ public class ProductController {
         productDao.delete(product);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/updateProduct")
+    public void updateProduct(@RequestBody Product product) {
+        productDao.save(product);
+    }
+
 }
 
