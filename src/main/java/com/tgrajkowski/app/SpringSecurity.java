@@ -18,17 +18,24 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableWebSecurity
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
+
+
+
+
+
     UserDetailsService userDetailsService;
+
+    public SpringSecurity(UserDetailsService userDetailsService) {
+
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll().anyRequest().authenticated();
-        http.addFilter(new AuthenticationFilter());
-        http.addFilter(new AuthorizationFilter(authenticationManager));
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.csrf().disable().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll().anyRequest().authenticated()
+                .and().addFilter(new AuthenticationFilter(authenticationManager()))
+                .addFilter(new AuthorizationFilter(authenticationManager()))
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override

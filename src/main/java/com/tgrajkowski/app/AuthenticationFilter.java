@@ -1,6 +1,5 @@
 package com.tgrajkowski.app;
 
-import com.tgrajkowski.model.User;
 import com.tgrajkowski.model.UserDto;
 import com.tgrajkowski.model.UserMapper;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +10,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.core.userdetails.User;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,10 +23,14 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final long EXPIRATION_TIME = 30*60*1000;
     static final String SECRET = "Secret";
     static final String HEADER_STRING ="Authorization" ;
-
-    @Autowired
     AuthenticationManager authenticationManager;
     UserMapper userMapper = new UserMapper();
+
+    public AuthenticationFilter(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
+
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -45,7 +49,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
         String token = Jwts.builder()
-                .setSubject(((User)auth.getPrincipal()).getLogin())
+                .setSubject(((User)auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();

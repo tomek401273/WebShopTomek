@@ -1,4 +1,4 @@
-package com.tgrajkowski.app;
+package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.UserMapper;
 import com.tgrajkowski.model.model.dao.UserDao;

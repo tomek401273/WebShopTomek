@@ -1,5 +1,6 @@
 package com.tgrajkowski.model;
 
+import com.sun.javafx.geom.transform.Identity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,8 +15,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private String name;
