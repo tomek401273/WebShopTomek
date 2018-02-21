@@ -54,7 +54,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
 
-        response.addHeader("CREDENTIALS", auth.getAuthorities().stream()
+        response.addHeader("Credentials", auth.getAuthorities().stream()
                 .map(x -> x.getAuthority())
                 .collect(Collectors.joining(", ")));
         response.addHeader(HEADER_STRING, token);

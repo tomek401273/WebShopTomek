@@ -36,14 +36,16 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().
                 cors().and()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll().
-                antMatchers(HttpMethod.OPTIONS)
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/product/all").permitAll()
+                .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 .anyRequest().authenticated()
                 .and().addFilter(new AuthenticationFilter(authenticationManager()))
                 .addFilter(new AuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
+
 
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
