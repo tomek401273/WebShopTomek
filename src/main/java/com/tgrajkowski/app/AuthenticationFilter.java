@@ -18,18 +18,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private static final long EXPIRATION_TIME = 30*60*1000;
+    private static final long EXPIRATION_TIME = 30 * 60 * 1000;
     static final String SECRET = "Secret";
-    static final String HEADER_STRING ="Authorization" ;
+    static final String HEADER_STRING = "Authorization";
     AuthenticationManager authenticationManager;
     UserMapper userMapper = new UserMapper();
 
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-
 
 
     @Override
@@ -49,12 +49,16 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 
         String token = Jwts.builder()
-                .setSubject(((User)auth.getPrincipal()).getUsername())
+                .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET.getBytes())
                 .compact();
 
+        response.addHeader("CREDENTIALS", auth.getAuthorities().stream()
+                .map(x -> x.getAuthority())
+                .collect(Collectors.joining(", ")));
         response.addHeader(HEADER_STRING, token);
+
     }
 
 }
