@@ -48,6 +48,7 @@ public class ProductController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateProduct")
     public void updateProduct(@RequestBody Product product) {
+        System.out.println("updadteProduct: "+product.toString());
         productDao.save(product);
     }
 
