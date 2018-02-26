@@ -24,4 +24,15 @@ public class UserDto {
         this.password = password;
         this.login = login;
     }
+
+    @Override
+    public String toString() {
+        return "UserDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", password='" + password + '\'' +
+                ", login='" + login + '\'' +
+                '}';
+    }
 }

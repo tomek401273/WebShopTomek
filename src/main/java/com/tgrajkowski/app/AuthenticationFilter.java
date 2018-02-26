@@ -2,6 +2,7 @@ package com.tgrajkowski.app;
 
 import com.tgrajkowski.model.UserDto;
 import com.tgrajkowski.model.UserMapper;
+import com.tgrajkowski.model.model.dao.UserDao;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +10,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -22,10 +29,14 @@ import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final long EXPIRATION_TIME = 30 * 60 * 1000;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private UserDao userDao;
     static final String SECRET = "Secret";
     static final String HEADER_STRING = "Authorization";
     AuthenticationManager authenticationManager;
+    UserDto userDto;
     UserMapper userMapper = new UserMapper();
+
 
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -36,7 +47,11 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             UserDto userDto = userMapper.mapToUserDto(request.getInputStream());
+
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDto.getLogin(), userDto.getPassword());
+
+
+
             return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         } catch (IOException e) {
             throw new RuntimeException(e);
