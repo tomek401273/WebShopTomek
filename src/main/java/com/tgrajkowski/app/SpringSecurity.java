@@ -1,17 +1,12 @@
 package com.tgrajkowski.app;
 
-import com.tgrajkowski.model.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,9 +27,9 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().
-                cors().and()
-                .authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+        http.csrf().disable().cors()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.PUT, "/product/available").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/product/*").permitAll()
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
@@ -52,6 +47,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
 
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -64,7 +60,7 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-        configuration.setExposedHeaders(Arrays.asList("authorization","CREDENTIALS"));
+        configuration.setExposedHeaders(Arrays.asList("authorization", "CREDENTIALS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

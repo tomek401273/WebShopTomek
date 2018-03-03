@@ -1,6 +1,6 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.model.UserMapper;
+import com.tgrajkowski.model.user.UserMapper;
 import com.tgrajkowski.model.model.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

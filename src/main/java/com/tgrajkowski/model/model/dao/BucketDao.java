@@ -1,8 +1,8 @@
 package com.tgrajkowski.model.model.dao;
 
-import com.tgrajkowski.model.Bucket;
-import com.tgrajkowski.model.Product;
-import org.springframework.data.jpa.repository.Query;
+import com.tgrajkowski.model.product.Bucket;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +13,6 @@ import java.util.List;
 @Repository
 public interface BucketDao extends CrudRepository<Bucket, Long> {
     List<Bucket> findAll();
+    Bucket findById(Long id);
+    Bucket findByUser_Id(Long id);
 }

@@ -1,6 +1,6 @@
 package com.tgrajkowski.model.model.dao;
 
-import com.tgrajkowski.model.Product;
+import com.tgrajkowski.model.product.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +17,6 @@ public interface ProductDao extends CrudRepository<Product, Long> {
     void deleteById(Long id);
 
     void delete(Product product);
+
+    Product findById(Long id);
 }

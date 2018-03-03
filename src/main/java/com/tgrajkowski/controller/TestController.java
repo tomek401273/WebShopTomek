@@ -1,6 +1,6 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.Product;
+import com.tgrajkowski.model.product.Product;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

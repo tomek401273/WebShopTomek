@@ -1,10 +1,8 @@
 package com.tgrajkowski.model;
 
+import com.tgrajkowski.model.product.Bucket;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class BucketTest {
    private Bucket bucket;

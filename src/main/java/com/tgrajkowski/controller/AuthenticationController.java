@@ -1,15 +1,13 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.Role;
-import com.tgrajkowski.model.User;
-import com.tgrajkowski.model.UserDto;
-import com.tgrajkowski.model.UserMapper;
+import com.tgrajkowski.model.user.Role;
+import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.UserDto;
+import com.tgrajkowski.model.user.UserMapper;
 import com.tgrajkowski.model.model.dao.RoleDao;
 import com.tgrajkowski.model.model.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
