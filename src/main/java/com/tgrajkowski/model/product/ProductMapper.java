@@ -7,19 +7,22 @@ import java.util.List;
 
 public class ProductMapper {
 
-//    public List<Product> mapToPoroductList (List<ProductDto> productDtoList) {
-//       for (int i=0; i<productDtoList.size(); i++) {
-//
-//       }
-//    }
-
     public Product mapToProduct(ProductDto productDto) {
-
         Product product = new Product(
                 productDto.getPrice(),
                 productDto.getTitle(),
                 productDto.getDescription(),
                 productDto.getImageLink());
+        return product;
+    }
+
+    public Product mapToProductWithId(ProductDto productDto) {
+        Product product = new Product(
+                productDto.getPrice(),
+                productDto.getTitle(),
+                productDto.getDescription(),
+                productDto.getImageLink());
+        product.setId(productDto.getId());
         return product;
     }
 

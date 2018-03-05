@@ -10,7 +10,9 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 public class UserBucketDto {
-    private Long id;
+    private Long productId;
     private String login;
-    private List<Long> listId;
+    private List<Long> productIdArray;
 }
+
+

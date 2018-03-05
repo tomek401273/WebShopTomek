@@ -14,16 +14,12 @@ import javax.validation.constraints.NotNull;
 //
 //        resultClass = ProductAmount.class
 //)
-@NamedNativeQuery(
-        name = "ProductAmount.findAllCount",
-        query = "SELECT COUNT(bucket_id) FROM product_amount where bucket_id =3 group by product_id",
-
-        resultClass = ProductAmount.class
-)
-
-
-
-
+//@NamedNativeQuery(
+//        name = "ProductAmount.deleteD",
+//        query = "SELECT * FROM webshopdb.product_amount",
+//
+//        resultClass = ProductAmount.class
+//)
 
 @Getter
 @Setter
