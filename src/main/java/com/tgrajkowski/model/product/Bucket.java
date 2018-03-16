@@ -32,4 +32,13 @@ public class Bucket {
             fetch = FetchType.LAZY
     )
     private List<ProductAmount> productAmount = new ArrayList<>();
+
+    @OneToMany(
+            targetEntity = Product_Bucket.class,
+            mappedBy = "bucket",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<Product_Bucket> productBuckets = new ArrayList<>();
+
 }
