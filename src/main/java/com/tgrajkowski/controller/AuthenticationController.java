@@ -9,10 +9,7 @@ import com.tgrajkowski.model.model.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +51,15 @@ public class AuthenticationController {
         userDao.save(user);
         userDto.setId(user.getId());
         return userDto;
+    }
+
+    @RequestMapping(value = "/checkLoginAvailable", method = RequestMethod.POST)
+    public boolean checkLoginAvailable(@RequestBody String login) {
+        System.out.println(login);
+        if (userDao.findByLogin(login) == null) {
+            return true;
+        }
+        return false;
     }
 
 }

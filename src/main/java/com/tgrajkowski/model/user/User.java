@@ -17,14 +17,19 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
     private String name;
+
     @Column
     private String surname;
+
     @Column
     private String password;
+
     @Column(unique = true)
     private String login;
+
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
     @JoinTable(name = "User_Roles", joinColumns = {@JoinColumn (name = "user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
     private List<Role> roleList = new ArrayList<>();
