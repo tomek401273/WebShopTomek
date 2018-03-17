@@ -31,7 +31,10 @@ public class Product {
     private String ImageLink;
 
     @Column
-    private int amount;
+    private int totalAmount;
+
+    @Column
+    private int availableAmount;
 
     @OneToMany(
             targetEntity = ProductBucket.class,
@@ -41,11 +44,12 @@ public class Product {
     )
     private List<ProductBucket> productBuckets = new ArrayList<>();
 
-    public Product(Integer price, String title, String description, String imageLink, int amount) {
+    public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
         this.price = price;
         this.title = title;
         this.description = description;
         ImageLink = imageLink;
-        this.amount = amount;
+        this.totalAmount = totalAmount;
+        this.availableAmount = availableAmount;
     }
 }

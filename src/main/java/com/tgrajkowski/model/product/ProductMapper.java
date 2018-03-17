@@ -12,7 +12,7 @@ public class ProductMapper {
                 productDto.getPrice(),
                 productDto.getTitle(),
                 productDto.getDescription(),
-                productDto.getImageLink(), productDto.getAmount());
+                productDto.getImageLink(), productDto.getAmount(), productDto.getAmount());
         return product;
     }
 
