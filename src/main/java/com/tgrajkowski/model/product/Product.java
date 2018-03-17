@@ -3,7 +3,6 @@ package com.tgrajkowski.model.product;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,12 +39,12 @@ public class Product {
     private List<ProductAmount> productAmounts = new ArrayList<>();
 
     @OneToMany(
-            targetEntity = Product_Bucket.class,
+            targetEntity = ProductBucket.class,
             mappedBy = "product",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
-    private List<Product_Bucket> productBuckets = new ArrayList<>();
+    private List<ProductBucket> productBuckets = new ArrayList<>();
 
     public Product(Integer price, String title, String description, String imageLink) {
         this.price = price;

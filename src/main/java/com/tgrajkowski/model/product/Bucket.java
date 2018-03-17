@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,11 +33,11 @@ public class Bucket {
     private List<ProductAmount> productAmount = new ArrayList<>();
 
     @OneToMany(
-            targetEntity = Product_Bucket.class,
+            targetEntity = ProductBucket.class,
             mappedBy = "bucket",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
-    private List<Product_Bucket> productBuckets = new ArrayList<>();
+    private List<ProductBucket> productBuckets = new ArrayList<>();
 
 }

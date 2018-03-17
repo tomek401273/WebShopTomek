@@ -6,12 +6,11 @@ import com.tgrajkowski.model.model.dao.Product_BucketDao;
 import com.tgrajkowski.model.product.Bucket;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.Product_Bucket;
+import com.tgrajkowski.model.product.ProductBucket;
 import com.tgrajkowski.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -70,8 +69,7 @@ public class ProductController {
     public void save() {
         Product product = productDao.findById((long) 109);
         Bucket bucket = bucketDao.findById((long) 2);
-        Product_Bucket product_bucket = new Product_Bucket(product, bucket);
-        product_bucket.setAmount(22);
+        ProductBucket product_bucket = new ProductBucket(product, bucket, 23);
 //        product_bucket.setBucket(bucket);
 //        product_bucket.setProduct(product);
 //        List<Product_Bucket> productBuckets = new ArrayList<>();
