@@ -30,13 +30,8 @@ public class Product {
     @Column
     private String ImageLink;
 
-    @OneToMany(
-            targetEntity = ProductAmount.class,
-            mappedBy = "product",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY
-    )
-    private List<ProductAmount> productAmounts = new ArrayList<>();
+    @Column
+    private int amount;
 
     @OneToMany(
             targetEntity = ProductBucket.class,
@@ -46,10 +41,11 @@ public class Product {
     )
     private List<ProductBucket> productBuckets = new ArrayList<>();
 
-    public Product(Integer price, String title, String description, String imageLink) {
+    public Product(Integer price, String title, String description, String imageLink, int amount) {
         this.price = price;
         this.title = title;
         this.description = description;
         ImageLink = imageLink;
+        this.amount = amount;
     }
 }

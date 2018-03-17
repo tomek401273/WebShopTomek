@@ -12,19 +12,19 @@ public class ProductMapper {
                 productDto.getPrice(),
                 productDto.getTitle(),
                 productDto.getDescription(),
-                productDto.getImageLink());
+                productDto.getImageLink(), productDto.getAmount());
         return product;
     }
 
-    public Product mapToProductWithId(ProductDto productDto) {
-        Product product = new Product(
-                productDto.getPrice(),
-                productDto.getTitle(),
-                productDto.getDescription(),
-                productDto.getImageLink());
-        product.setId(productDto.getId());
-        return product;
-    }
+//    public Product mapToProductWithId(ProductDto productDto) {
+//        Product product = new Product(
+//                productDto.getPrice(),
+//                productDto.getTitle(),
+//                productDto.getDescription(),
+//                productDto.getImageLink());
+//        product.setId(productDto.getId());
+//        return product;
+//    }
 
     public ProductDto mapToProductDto(Product product) {
         int amountCounter = 0;
@@ -38,26 +38,6 @@ public class ProductMapper {
                 product.getImageLink()
         );
 
-        List<ProductAmount> amountList = new ArrayList<>();
-        List<ProductAmount> amountReceived = product.getProductAmounts();
-        List<Long> idAmountList = new ArrayList<>();
-
-        for (ProductAmount amount : amountReceived) {
-            ProductAmount productAmount = new ProductAmount();
-            productAmount.setId(amount.getId());
-            amountList.add(productAmount);
-            amountCounter++;
-            if (amount.getBucket()!=null){
-                bookedProducts++;
-            }
-
-            Long id = amount.getId();
-            idAmountList.add(id);
-        }
-        productDto.setAmountList(amountList);
-        productDto.setAmount(amountCounter);
-        productDto.setBookedProduct(bookedProducts);
-        productDto.setIdAmountList(idAmountList);
         return productDto;
     }
 

@@ -25,14 +25,6 @@ public class Bucket {
     private User user;
 
     @OneToMany(
-            targetEntity = ProductAmount.class,
-            mappedBy = "bucket",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY
-    )
-    private List<ProductAmount> productAmount = new ArrayList<>();
-
-    @OneToMany(
             targetEntity = ProductBucket.class,
             mappedBy = "bucket",
             cascade = CascadeType.PERSIST,

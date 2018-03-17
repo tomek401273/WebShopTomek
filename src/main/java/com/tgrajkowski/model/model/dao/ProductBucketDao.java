@@ -9,6 +9,6 @@ import javax.transaction.Transactional;
 
 @Repository
 @Transactional
-public interface Product_BucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
+public interface ProductBucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
 
 }

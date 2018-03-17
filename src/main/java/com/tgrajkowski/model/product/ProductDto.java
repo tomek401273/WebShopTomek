@@ -19,9 +19,7 @@ public class ProductDto {
     private String ImageLink;
     private int amount;
     private int bookedProduct;
-    private List<ProductAmount> amountList = new ArrayList<>();
     private String bucket;
-    private List<Long> idAmountList = new ArrayList<>();
 
     public ProductDto(Long id, Integer price, String title, String description, String imageLink) {
         this.id = id;

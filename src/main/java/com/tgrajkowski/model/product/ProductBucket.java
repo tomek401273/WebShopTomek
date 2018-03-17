@@ -14,12 +14,6 @@ import java.util.Date;
 @ToString
 @IdClass(ProductBucketPK.class)
 public class ProductBucket implements Serializable {
-//    @Id
-//    private Long productIdA;
-//
-//    @Id
-//    private Long bucketIdA;
-
     @Id
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id")
@@ -34,7 +28,7 @@ public class ProductBucket implements Serializable {
     private int amount;
 
     @Column
-    private Date date;
+    private Date dateAdded;
 
     public ProductBucket() {
     }
@@ -43,7 +37,7 @@ public class ProductBucket implements Serializable {
         this.product = product;
         this.bucket = bucket;
         this.amount = amount;
-        this.date = new Date();
+        this.dateAdded = new Date();
     }
 
 }

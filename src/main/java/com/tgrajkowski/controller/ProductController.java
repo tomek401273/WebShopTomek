@@ -2,7 +2,7 @@ package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.model.dao.ProductDao;
-import com.tgrajkowski.model.model.dao.Product_BucketDao;
+import com.tgrajkowski.model.model.dao.ProductBucketDao;
 import com.tgrajkowski.model.product.Bucket;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
@@ -29,7 +29,7 @@ public class ProductController {
     ProductService productService;
 
     @Autowired
-    Product_BucketDao product_bucketDao;
+    ProductBucketDao product_bucketDao;
 
 
     @RequestMapping(method = RequestMethod.PUT, value = "/available")
@@ -40,7 +40,6 @@ public class ProductController {
     @RequestMapping("/all")
     public @ResponseBody
     List<ProductDto> getProduct() {
-        save();
         return productService.getProducts();
     }
 
