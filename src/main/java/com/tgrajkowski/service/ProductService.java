@@ -18,11 +18,7 @@ public class ProductService {
 
     public int checkAvailable(Long id) {
         Product product = productDao.findById(id);
-        ProductDto productDto = mapper.mapToProductDto(product);
-        int allProducts = productDto.getAmount();
-        int bookedProducts = productDto.getBookedProduct();
-        int availableProducts = allProducts - bookedProducts;
-        return availableProducts;
+        return product.getAvailableAmount();
     }
 
     public List<ProductDto> getProducts() {
@@ -31,17 +27,23 @@ public class ProductService {
     }
 
     public void removeProductFromDatabase(ProductDto productDto) {
-        Product product = productDao.findById(productDto.getId());
+        productDao.deleteById(productDto.getId());
     }
 
-    public void updateTask(ProductDto productDto) {
+    public void updateProduct(ProductDto productDto) {
         Product product = productDao.findById(productDto.getId());
+        product.setPrice(productDto.getPrice());
+        product.setImageLink(productDto.getImageLink());
+        product.setDescription(productDto.getDescription());
+        product.setAvailableAmount(productDto.getTotalAmount());
+        product.setTotalAmount(productDto.getTotalAmount());
+        product.setTitle(productDto.getTitle());
+
+        productDao.save(product);
     }
 
     public Product saveProduct(ProductDto productDto) {
         Product product = mapper.mapToProduct(productDto);
-        int amount = productDto.getAmount();
-
         return productDao.save(product);
     }
 

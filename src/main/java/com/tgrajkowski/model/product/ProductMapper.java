@@ -1,6 +1,5 @@
 package com.tgrajkowski.model.product;
 
-import com.tgrajkowski.model.bucket.ProductBucketDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,9 @@ public class ProductMapper {
                 productDto.getPrice(),
                 productDto.getTitle(),
                 productDto.getDescription(),
-                productDto.getImageLink(), productDto.getAmount(), productDto.getAmount());
+                productDto.getImageLink(),
+                productDto.getTotalAmount(),
+                productDto.getTotalAmount());
         return product;
     }
 
@@ -27,15 +28,14 @@ public class ProductMapper {
 //    }
 
     public ProductDto mapToProductDto(Product product) {
-        int amountCounter = 0;
-        int bookedProducts = 0;
-
         ProductDto productDto = new ProductDto(
                 product.getId(),
                 product.getPrice(),
                 product.getTitle(),
                 product.getDescription(),
-                product.getImageLink()
+                product.getImageLink(),
+                product.getTotalAmount(),
+                product.getAvailableAmount()
         );
 
         return productDto;
@@ -52,14 +52,15 @@ public class ProductMapper {
     }
 
     public ProductBucketDto maptoProcuctBucketDto(Product product){
-        ProductBucketDto bucketDto = new ProductBucketDto();
-        bucketDto.setId(product.getId());
-        bucketDto.setAmount(0);
-        bucketDto.setDescription(product.getDescription());
-        bucketDto.setImageLink(product.getImageLink());
-        bucketDto.setPrice(product.getPrice());
-        bucketDto.setTitle(product.getTitle());
-        return bucketDto;
+//        ProductBucketDto bucketDto = new ProductBucketDto();
+//        bucketDto.setId(product.getId());
+//        bucketDto.setAmount(0);
+//        bucketDto.setDescription(product.getDescription());
+//        bucketDto.setImageLink(product.getImageLink());
+//        bucketDto.setPrice(product.getPrice());
+//        bucketDto.setTitle(product.getTitle());
+//        return bucketDto;
+        return null;
     }
 
 }

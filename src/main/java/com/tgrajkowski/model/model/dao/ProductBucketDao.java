@@ -10,5 +10,6 @@ import javax.transaction.Transactional;
 @Repository
 @Transactional
 public interface ProductBucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
-
+    @Override
+    ProductBucket findOne(ProductBucketPK productBucketPK);
 }

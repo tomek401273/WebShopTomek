@@ -62,7 +62,7 @@ public class ProductController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateProduct")
     public void updateProduct(@RequestBody ProductDto productDto) {
-        productService.updateTask(productDto);
+        productService.updateProduct(productDto);
     }
 
     public void save() {

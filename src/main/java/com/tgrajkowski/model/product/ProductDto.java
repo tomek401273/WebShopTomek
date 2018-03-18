@@ -5,11 +5,11 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class ProductDto {
 
     private Long id;
@@ -17,15 +17,8 @@ public class ProductDto {
     private String title;
     private String description;
     private String ImageLink;
-    private int amount;
-    private int bookedProduct;
-    private String bucket;
+    private int totalAmount;
+    private int availableAmount;
 
-    public ProductDto(Long id, Integer price, String title, String description, String imageLink) {
-        this.id = id;
-        this.price = price;
-        this.title = title;
-        this.description = description;
-        ImageLink = imageLink;
-    }
+
 }

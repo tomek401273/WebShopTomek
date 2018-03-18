@@ -13,6 +13,11 @@ public class UserBucketDto {
     private Long productId;
     private String login;
     private List<Long> productIdArray;
+
+    public UserBucketDto(Long productId, String login) {
+        this.productId = productId;
+        this.login = login;
+    }
 }
 
 

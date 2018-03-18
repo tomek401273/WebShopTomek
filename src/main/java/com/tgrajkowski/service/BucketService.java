@@ -1,13 +1,11 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.model.bucket.ProductBucketDto;
 import com.tgrajkowski.model.bucket.UserBucketDto;
 import com.tgrajkowski.model.model.dao.BucketDao;
+import com.tgrajkowski.model.model.dao.ProductBucketDao;
 import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.UserDao;
-import com.tgrajkowski.model.product.Bucket;
-import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.product.ProductMapper;
+import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,15 +25,18 @@ public class BucketService {
     @Autowired
     private BucketDao bucketDao;
 
+    @Autowired
+    ProductBucketDao productBucketDao;
+
+
     ProductMapper mapper = new ProductMapper();
+    ProductBucketMapper productBucketMapper = new ProductBucketMapper();
 
     public void addProductToBucketList(UserBucketDto userBucketDto) {
-        List<Long> listId = userBucketDto.getProductIdArray();
-        for (Long id : listId) {
-            UserBucketDto userBucketDto1 = new UserBucketDto();
-            userBucketDto1.setProductId(id);
-            userBucketDto1.setLogin(userBucketDto.getLogin());
-            addProductToBucket(userBucketDto1);
+        List<Long> longProductIdList = userBucketDto.getProductIdArray();
+        for (Long productId: longProductIdList) {
+            UserBucketDto userBucketDtoTemp = new UserBucketDto(productId, userBucketDto.getLogin());
+            addProductToBucket(userBucketDtoTemp);
         }
     }
 
@@ -46,22 +47,34 @@ public class BucketService {
 
         long id = userBucketDto.getProductId();
         Product product = productDao.findById(id);
+        if (product.getAvailableAmount() > 0) {
+            ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
 
+            ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
+            int amountBucketedProduct = 0;
+
+            if (productBucket != null) {
+
+                amountBucketedProduct = productBucket.getAmount();
+            }
+
+            product.setAvailableAmount(product.getAvailableAmount() - 1);
+
+            ProductBucket productBucket2 = new ProductBucket(product, userBucket, amountBucketedProduct + 1);
+            productBucketDao.save(productBucket2);
+            return true;
+        }
         return false;
     }
 
-    public boolean removeSinggleItemFromBucket(UserBucketDto userBucketDto) {
-        String loging = userBucketDto.getLogin();
-        User user = userDao.findByLogin(loging);
-        Bucket userBucket = bucketDao.findByUser_Id(user.getId());
 
-        return false;
-    }
-
-    public Set<ProductBucketDto> showProductInBucket(String login) {
+    public List<ProductBucketDto> showProductInBucket(String login) {
         User user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-        return null;
+        List<ProductBucket> productBuckets = userBucket.getProductBuckets();
+
+        List<ProductBucketDto> productBucketDtoList = productBucketMapper.mapToProductBucketDtoList(productBuckets);
+        return productBucketDtoList;
     }
 
     public void removeProductFromBucket(String login) {
@@ -71,9 +84,43 @@ public class BucketService {
         bucketDao.save(userBucket);
     }
 
-    public boolean removeSingleProductFromBucket(UserBucketDto userBucketDto){
+    public void removeSinggleItemFromBucket(UserBucketDto userBucketDto) {
+        String loging = userBucketDto.getLogin();
+        User user = userDao.findByLogin(loging);
+        Bucket userBucket = bucketDao.findByUser_Id(user.getId());
+        Product product = productDao.findById(userBucketDto.getProductId());
+
+        ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
+        ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
+
+        if (productBucket.getAmount() > 1) {
+            productBucket.setAmount(productBucket.getAmount() - 1);
+            productBucketDao.save(productBucket);
+
+            product.setAvailableAmount(product.getAvailableAmount() + 1);
+            productDao.save(product);
+        } else {
+            removeSingleProductFromBucket(userBucketDto);
+        }
+    }
+
+
+    public void removeSingleProductFromBucket(UserBucketDto userBucketDto) {
         User user = userDao.findByLogin(userBucketDto.getLogin());
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-       return false;
+        Product product = productDao.findById(userBucketDto.getProductId());
+
+        ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
+        ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
+
+        userBucket.getProductBuckets().remove(productBucket);
+        bucketDao.save(userBucket);
+
+        product.getProductBuckets().remove(productBucket);
+        product.setAvailableAmount(product.getTotalAmount());
+        productDao.save(product);
+
+
+        productBucketDao.delete(productBucket);
     }
 }
