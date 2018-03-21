@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.product;
 
+import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.model.dao.ProductDao;
+import com.tgrajkowski.model.product.FilterPrice;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
 import com.tgrajkowski.model.product.ProductMapper;
@@ -50,5 +51,14 @@ public class ProductService {
     public ProductDto getOneProduct(Long id) {
         ProductDto productDto = mapper.mapToProductDto(productDao.findById(id));
         return productDto;
+    }
+
+    public List<ProductDto> searchProduct(String title) {
+
+        return mapper.mapToProductDtoList(productDao.findProductContainstTitleWithLetters(title));
+    }
+
+    public List<ProductDto> filterProductWithPriceBetween(FilterPrice filterPrice) {
+       return mapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(),filterPrice.getBelow()));
     }
 }

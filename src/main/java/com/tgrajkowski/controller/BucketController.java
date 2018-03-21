@@ -3,15 +3,14 @@ package com.tgrajkowski.controller;
 import com.tgrajkowski.model.bucket.UserBucketDto;
 import com.tgrajkowski.model.product.Bucket;
 import com.tgrajkowski.model.model.dao.BucketDao;
-import com.tgrajkowski.model.product.ProductBucketDto;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.service.BucketService;
+import com.tgrajkowski.service.BuyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/bucket")
@@ -21,6 +20,9 @@ public class BucketController {
     BucketDao bucketDao;
     @Autowired
     BucketService bucketService;
+
+    @Autowired
+    BuyService buyService;
 
     @RequestMapping("/all")
     public @ResponseBody

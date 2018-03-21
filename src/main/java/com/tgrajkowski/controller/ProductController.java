@@ -3,14 +3,12 @@ package com.tgrajkowski.controller;
 import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.ProductBucketDao;
-import com.tgrajkowski.model.product.Bucket;
-import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.ProductBucket;
+import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -51,7 +49,7 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/save", consumes = APPLICATION_JSON_VALUE)
-    public void createProduct(@RequestBody ProductDto productDto) {
+    public void createProduct(@RequestBody @Valid ProductDto productDto) {
         productService.saveProduct(productDto);
     }
 
@@ -61,23 +59,20 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateProduct")
-    public void updateProduct(@RequestBody ProductDto productDto) {
+    public void updateProduct(@RequestBody @Valid ProductDto productDto) {
         productService.updateProduct(productDto);
     }
 
-    public void save() {
-        Product product = productDao.findById((long) 109);
-        Bucket bucket = bucketDao.findById((long) 2);
-        ProductBucket product_bucket = new ProductBucket(product, bucket, 23);
-//        product_bucket.setBucket(bucket);
-//        product_bucket.setProduct(product);
-//        List<Product_Bucket> productBuckets = new ArrayList<>();
-//        productBuckets.add(product_bucket);
-//        product.getProductBuckets().add(product_bucket);
-//        bucket.getProductBuckets().add(product_bucket);
+    @RequestMapping(method = RequestMethod.POST, value = "/searchProduct")
+    public @ResponseBody
+    List<ProductDto> searchProduct(@RequestBody String title) {
+        return productService.searchProduct(title);
+    }
 
-        product_bucketDao.save(product_bucket);
-
+    @RequestMapping(method = RequestMethod.POST, value = "/filterPrice")
+    public @ResponseBody
+    List<ProductDto> filterPrice(@RequestBody FilterPrice filterPrice) {
+        return productService.filterProductWithPriceBetween(filterPrice);
     }
 }
 

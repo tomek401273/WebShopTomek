@@ -1,7 +1,7 @@
 package com.tgrajkowski.model.model.dao;
 
-import com.tgrajkowski.model.product.ProductBucket;
-import com.tgrajkowski.model.product.ProductBucketPK;
+import com.tgrajkowski.model.product.bucket.ProductBucket;
+import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -4,10 +4,10 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
+@Getter
 @ToString
-public class ProductBucketDto {
-    private ProductDto productDto;
-    private int amount;
+public class FilterPrice {
+    private int above;
+    private int below;
 }

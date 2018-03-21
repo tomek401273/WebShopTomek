@@ -1,17 +1,17 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.bucket.UserBucketDto;
-import com.tgrajkowski.model.model.dao.BucketDao;
-import com.tgrajkowski.model.model.dao.ProductBucketDao;
-import com.tgrajkowski.model.model.dao.ProductDao;
-import com.tgrajkowski.model.model.dao.UserDao;
+import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
+import com.tgrajkowski.model.product.bucket.ProductBucket;
+import com.tgrajkowski.model.product.bucket.ProductBucketDto;
+import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
+import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BucketService {
@@ -27,6 +27,14 @@ public class BucketService {
 
     @Autowired
     ProductBucketDao productBucketDao;
+
+    @Autowired
+    private ProductBoughtDao productBoughtDao;
+
+    @Autowired
+    private ProductsOrderDao productsOrderDao;
+
+
 
 
     ProductMapper mapper = new ProductMapper();
@@ -69,13 +77,19 @@ public class BucketService {
 
 
     public List<ProductBucketDto> showProductInBucket(String login) {
+        System.out.println("login: "+login);
         User user = userDao.findByLogin(login);
+        System.out.println("userId: "+user.getId());
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
 
         List<ProductBucketDto> productBucketDtoList = productBucketMapper.mapToProductBucketDtoList(productBuckets);
         return productBucketDtoList;
     }
+
+
+
+
 
     public void removeProductFromBucket(String login) {
         User user = userDao.findByLogin(login);
@@ -123,4 +137,9 @@ public class BucketService {
 
         productBucketDao.delete(productBucket);
     }
+
+
+
+
+
 }

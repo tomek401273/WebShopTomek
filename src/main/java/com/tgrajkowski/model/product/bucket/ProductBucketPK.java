@@ -1,4 +1,4 @@
-package com.tgrajkowski.model.product;
+package com.tgrajkowski.model.product.bucket;
 
 import java.io.Serializable;
 

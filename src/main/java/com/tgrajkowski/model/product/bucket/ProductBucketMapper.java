@@ -1,4 +1,6 @@
-package com.tgrajkowski.model.product;
+package com.tgrajkowski.model.product.bucket;
+
+import com.tgrajkowski.model.product.ProductMapper;
 
 import java.util.ArrayList;
 import java.util.List;

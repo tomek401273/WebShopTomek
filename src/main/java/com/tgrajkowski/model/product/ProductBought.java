@@ -1,19 +1,18 @@
 package com.tgrajkowski.model.product;
 
+import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 @ToString
-@IdClass(ProductBucketPK.class)
-public class ProductBucket implements Serializable {
+@IdClass(ProductBoughtPK.class)
+public class ProductBought implements Serializable {
     @Id
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id")
@@ -21,23 +20,22 @@ public class ProductBucket implements Serializable {
 
     @Id
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name ="bucket_id" )
-    private Bucket bucket;
+    @JoinColumn(name = "productsOrder_id")
+    private ProductsOrder productsOrder;
 
     @Column
     private int amount;
 
     @Column
-    private Date dateAdded;
+    private int totalPrice;
 
-    public ProductBucket() {
+    public ProductBought() {
     }
 
-    public ProductBucket(Product product, Bucket bucket, int amount) {
+    public ProductBought(Product product, ProductsOrder productsOrder, int amount) {
         this.product = product;
-        this.bucket = bucket;
+        this.productsOrder = productsOrder;
         this.amount = amount;
-        this.dateAdded = new Date();
+        this.totalPrice =amount*product.getPrice();
     }
-
 }

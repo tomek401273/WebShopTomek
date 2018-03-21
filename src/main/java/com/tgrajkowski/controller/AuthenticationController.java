@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class AuthenticationController {
 //        // it does not happen.
 //    }
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public UserDto singUp(@RequestBody UserDto userDto) {
+    public UserDto singUp(@RequestBody @Valid UserDto userDto) {
         String passwordEncoded = bCryptPasswordEncoder.encode(userDto.getPassword());
         userDto.setPassword(passwordEncoded);
         User user = userMapper.mapToUser(userDto);

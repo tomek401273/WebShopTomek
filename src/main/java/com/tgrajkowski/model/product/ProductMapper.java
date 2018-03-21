@@ -1,6 +1,8 @@
 package com.tgrajkowski.model.product;
 
 
+import com.tgrajkowski.model.product.bucket.ProductBucketDto;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class ProductMapper {
 
 //    public Product mapToProductWithId(ProductDto productDto) {
 //        Product product = new Product(
-//                productDto.getPrice(),
+//                productDto.getTotalPrice(),
 //                productDto.getTitle(),
 //                productDto.getDescription(),
 //                productDto.getImageLink());
@@ -57,7 +59,7 @@ public class ProductMapper {
 //        bucketDto.setAmount(0);
 //        bucketDto.setDescription(product.getDescription());
 //        bucketDto.setImageLink(product.getImageLink());
-//        bucketDto.setPrice(product.getPrice());
+//        bucketDto.setTotalPrice(product.getTotalPrice());
 //        bucketDto.setTitle(product.getTitle());
 //        return bucketDto;
         return null;
