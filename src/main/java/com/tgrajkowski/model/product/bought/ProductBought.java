@@ -1,6 +1,9 @@
-package com.tgrajkowski.model.product;
+package com.tgrajkowski.model.product.bought;
 
 import java.io.Serializable;
+
+import com.tgrajkowski.model.product.Product;
+import com.tgrajkowski.model.product.order.ProductsOrder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

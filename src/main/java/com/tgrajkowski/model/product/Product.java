@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.product;
 
+import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import lombok.*;
 

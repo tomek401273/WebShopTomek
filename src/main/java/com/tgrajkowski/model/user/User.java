@@ -1,6 +1,6 @@
 package com.tgrajkowski.model.user;
 
-import com.tgrajkowski.model.product.ProductsOrder;
+import com.tgrajkowski.model.product.order.ProductsOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

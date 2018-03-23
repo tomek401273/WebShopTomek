@@ -1,7 +1,7 @@
 package com.tgrajkowski.model.model.dao;
 
-import com.tgrajkowski.model.product.ProductBought;
-import com.tgrajkowski.model.product.ProductBoughtPK;
+import com.tgrajkowski.model.product.bought.ProductBought;
+import com.tgrajkowski.model.product.bought.ProductBoughtPK;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

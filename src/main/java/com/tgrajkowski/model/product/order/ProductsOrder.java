@@ -1,5 +1,7 @@
-package com.tgrajkowski.model.product;
+package com.tgrajkowski.model.product.order;
 
+import com.tgrajkowski.model.product.bought.ProductBought;
+import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.user.User;
 import lombok.*;
 
@@ -49,6 +51,12 @@ public class ProductsOrder {
             fetch = FetchType.LAZY
     )
     private List<ProductBought> productBoughts = new ArrayList<>();
+
+    @OneToOne(
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private ShippingAddress shippingAddress;
 
     public ProductsOrder(int totalValue, boolean isPaid, boolean isPrepared, boolean isSend) {
         this.totalValue = totalValue;
