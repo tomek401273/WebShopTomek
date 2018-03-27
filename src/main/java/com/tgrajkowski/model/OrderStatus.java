@@ -7,8 +7,11 @@ import lombok.*;
 @Getter
 @Setter
 @ToString
-public class PaymentDto {
+public class OrderStatus {
     private String login;
     private Long orderId;
-    private boolean isPaid;
+    private boolean paid;
+    private boolean prepared;
+    private boolean send;
+    private String linkDelivery;
 }

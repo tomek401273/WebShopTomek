@@ -30,7 +30,7 @@ public class BucketController {
         return bucketDao.findAll();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/add")
+    @RequestMapping(method = RequestMethod.POST, value = "/add")
     public boolean addProductToBucket(@RequestBody UserBucketDto userBucketDto) {
        return bucketService.addProductToBucket(userBucketDto);
     }
@@ -40,8 +40,8 @@ public class BucketController {
         bucketService.removeProductFromBucket(loging);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/getAllProductFromBucket")
-    public List<ProductBucketDto> getAllProductFromBucket(@RequestBody String login) {
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllProductFromBucket")
+    public List<ProductBucketDto> getAllProductFromBucket(@RequestParam String login) {
         return bucketService.showProductInBucket(login);
     }
 
@@ -54,22 +54,7 @@ public class BucketController {
         bucketService.removeSingleProductFromBucket(userBucketDto);
     }
     @RequestMapping(method = RequestMethod.PUT, value = "/removeSingeItemFromBucket")
-    public void removeSingleItemFromBucket(@RequestBody UserBucketDto userBucketDto) {
-         bucketService.removeSinggleItemFromBucket(userBucketDto);
+    public boolean removeSingleItemFromBucket(@RequestBody UserBucketDto userBucketDto) {
+      return bucketService.removeSinggleItemFromBucket(userBucketDto);
     }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/getList")
-    public UserBucketDto getLongsList() {
-        UserBucketDto userBucketDto = new UserBucketDto((long)1,"thomas");
-
-
-        List<Long> longList= new ArrayList<>();
-        longList.add((long)1);
-        longList.add((long)2);
-        longList.add((long)3);
-        userBucketDto.setProductIdArray(longList);
-
-        return userBucketDto;
-    }
-
 }

@@ -8,6 +8,7 @@ import com.tgrajkowski.model.product.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,6 +60,15 @@ public class ProductService {
     }
 
     public List<ProductDto> filterProductWithPriceBetween(FilterPrice filterPrice) {
-       return mapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(),filterPrice.getBelow()));
+        return mapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(), filterPrice.getBelow()));
+    }
+
+    public List<String> getAllProductsTitle() {
+        List<String> productsTitle = new ArrayList<>();
+        List<Product> products = productDao.findAll();
+        for (Product product : products) {
+            productsTitle.add(product.getTitle());
+        }
+        return productsTitle;
     }
 }

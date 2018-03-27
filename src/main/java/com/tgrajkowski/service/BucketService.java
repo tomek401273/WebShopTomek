@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BucketService {
     @Autowired
     private ProductDao productDao;
-
 
     @Autowired
     private UserDao userDao;
@@ -28,21 +28,11 @@ public class BucketService {
     @Autowired
     ProductBucketDao productBucketDao;
 
-    @Autowired
-    private ProductBoughtDao productBoughtDao;
-
-    @Autowired
-    private ProductsOrderDao productsOrderDao;
-
-
-
-
-    ProductMapper mapper = new ProductMapper();
     ProductBucketMapper productBucketMapper = new ProductBucketMapper();
 
     public void addProductToBucketList(UserBucketDto userBucketDto) {
         List<Long> longProductIdList = userBucketDto.getProductIdArray();
-        for (Long productId: longProductIdList) {
+        for (Long productId : longProductIdList) {
             UserBucketDto userBucketDtoTemp = new UserBucketDto(productId, userBucketDto.getLogin());
             addProductToBucket(userBucketDtoTemp);
         }
@@ -77,18 +67,15 @@ public class BucketService {
 
 
     public List<ProductBucketDto> showProductInBucket(String login) {
-        System.out.println("login: "+login);
+        System.out.println("login: " + login);
         User user = userDao.findByLogin(login);
-        System.out.println("userId: "+user.getId());
+        System.out.println("userId: " + user.getId());
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
 
         List<ProductBucketDto> productBucketDtoList = productBucketMapper.mapToProductBucketDtoList(productBuckets);
         return productBucketDtoList;
     }
-
-
-
 
 
     public void removeProductFromBucket(String login) {
@@ -98,7 +85,8 @@ public class BucketService {
         bucketDao.save(userBucket);
     }
 
-    public void removeSinggleItemFromBucket(UserBucketDto userBucketDto) {
+    public boolean removeSinggleItemFromBucket(UserBucketDto userBucketDto) {
+        int productBucketAmountActual;
         String loging = userBucketDto.getLogin();
         User user = userDao.findByLogin(loging);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
@@ -107,7 +95,8 @@ public class BucketService {
         ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
         ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
 
-        if (productBucket.getAmount() > 1) {
+        productBucketAmountActual = productBucket.getAmount();
+        if (productBucketAmountActual > 1) {
             productBucket.setAmount(productBucket.getAmount() - 1);
             productBucketDao.save(productBucket);
 
@@ -116,8 +105,24 @@ public class BucketService {
         } else {
             removeSingleProductFromBucket(userBucketDto);
         }
+        return checkRemovingProdces(productBucketPK, productBucketAmountActual);
+
+
     }
 
+    public boolean checkRemovingProdces(ProductBucketPK productBucketPK, int productBucketAmountActual) {
+        Optional<ProductBucket> optionalProductBucket = Optional.ofNullable(productBucketDao.findOne(productBucketPK));
+        optionalProductBucket.isPresent();
+        if (optionalProductBucket.isPresent()) {
+            if (optionalProductBucket.get().getAmount() < productBucketAmountActual) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
 
     public void removeSingleProductFromBucket(UserBucketDto userBucketDto) {
         User user = userDao.findByLogin(userBucketDto.getLogin());
@@ -137,9 +142,6 @@ public class BucketService {
 
         productBucketDao.delete(productBucket);
     }
-
-
-
 
 
 }

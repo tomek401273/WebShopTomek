@@ -1,14 +1,15 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.model.PaymentDto;
+import com.tgrajkowski.model.OrderStatus;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.Bucket;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.bought.ProductBought;
-import com.tgrajkowski.model.product.order.ProductsOrder;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
+import com.tgrajkowski.model.product.order.ProductsOrder;
 import com.tgrajkowski.model.product.order.ProductsOrderDto;
 import com.tgrajkowski.model.product.order.ProductsOrderMapper;
+import com.tgrajkowski.model.product.order.Status;
 import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
@@ -16,9 +17,10 @@ import com.tgrajkowski.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BuyService {
@@ -38,31 +40,24 @@ public class BuyService {
     private UserDao userDao;
 
     @Autowired
-    private BucketService bucketService;
+    private ProductBucketDao productBucketDao;
 
     @Autowired
-    private ProductBucketDao productBucketDao;
+    private StatusDao statusDao;
 
     private ProductsOrderMapper productsOrderMapper = new ProductsOrderMapper();
 
     private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
 
-    public void simpleTest() {
-        Product product = productDao.findById((long) 1);
-        User user = userDao.findByLogin("thomas");
-        ProductsOrder productsOrder = new ProductsOrder(1, true, true, false);
-        productsOrder.setUser(user);
-        productsOrderDao.save(productsOrder);
-
-        ProductBought productBought = new ProductBought(product, productsOrder, 12);
-//        productsOrder.getProductBoughts().add(productBought);
-        productBoughtDao.save(productBought);
-    }
 
 
-    public void buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
+    public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
         int orderValue = 0;
         int totalAmount = 0;
+        Long productOrderId;
+
+        Status status = statusDao.findByCode("booked");
+
         ShippingAddress shippingAddress = shippingAddressMapper.mappToShippedAdderss(shippingAddressDto);
         User user = userDao.findByLogin(shippingAddressDto.getLogin());
         Bucket bucket = bucketDao.findByUser_Id(user.getId());
@@ -70,7 +65,7 @@ public class BuyService {
 
         ProductsOrder productsOrder = new ProductsOrder(user);
         productsOrderDao.save(productsOrder);
-
+        productOrderId = productsOrder.getId();
 
         for (ProductBucket productBucket : products) {
             Product product = productBucket.getProduct();
@@ -84,8 +79,10 @@ public class BuyService {
         productsOrder.setTotalValue(orderValue);
         productsOrder.setTotalAmount(totalAmount);
         productsOrder.setShippingAddress(shippingAddress);
+        productsOrder.setStatus(status);
         productsOrderDao.save(productsOrder);
         cleaningBucket(products, bucket);
+        return productOrderId;
     }
 
     public void cleaningBucket(List<ProductBucket> productBuckets, Bucket bucket) {
@@ -102,8 +99,12 @@ public class BuyService {
 
     public List<ProductsOrderDto> getAllProductsOrdersUser(String login) {
         User user = userDao.findByLogin(login);
-        List<ProductsOrder> productsOrders = productsOrderDao.findByUser_Id(user.getId());
-
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        try{
+            productsOrders=productsOrderDao.findByUser_Id(user.getId());
+        } catch (NullPointerException e) {
+            System.out.println(e);
+        }
         return productsOrderMapper
                 .mapToProductsOrderDtoList
                         (productsOrders);
@@ -119,14 +120,102 @@ public class BuyService {
                         (productsOrderDao.findAll());
     }
 
-    public boolean paymentVerification(PaymentDto paymentDto) {
-        boolean isPaid;
-        ProductsOrder productsOrder = productsOrderDao.findOne(paymentDto.getOrderId());
-        productsOrder.setPaid(paymentDto.isPaid());
-        productsOrderDao.save(productsOrder);
-        ProductsOrder productsOrder2 = productsOrderDao.findOne(paymentDto.getOrderId());
-        isPaid= productsOrder2.isPaid();
-        System.out.println("order order is paid ???: "+isPaid);
-        return isPaid;
+    public boolean paymentVerification(OrderStatus paymentDto) {
+        Status status = statusDao.findByCode("paid");
+        if (paymentDto.isPaid()) {
+            ProductsOrder productsOrder = productsOrderDao.findOne(paymentDto.getOrderId());
+            productsOrder.setStatus(status);
+            productsOrderDao.save(productsOrder);
+        }
+        if (productsOrderDao.findOne(paymentDto.getOrderId()).getStatus().getCode().equals("paid")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean orderPrepared(OrderStatus orderStatus) {
+        Status status = statusDao.findByCode("prepared");
+        if (orderStatus.isPrepared()) {
+            ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
+            productsOrder.setStatus(status);
+            productsOrderDao.save(productsOrder);
+        }
+
+        if (productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared")) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean sendOrder(OrderStatus orderStatus) {
+        Status status = statusDao.findByCode("send");
+
+        if (orderStatus.isSend()) {
+            ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
+            productsOrder.setStatus(status);
+            productsOrder.setLinkDelivery(orderStatus.getLinkDelivery());
+            productsOrder.setSendDate(new Date());
+            productsOrderDao.save(productsOrder);
+        }
+
+        if (productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("send")) {
+            return true;
+        }
+        return false;
+    }
+
+    public Set<ProductsOrderDto> searchOrderContainsProduct(String title) {
+        List<Product> products = productDao.findProductContainstTitleWithLetters(title);
+        List<ProductBought> productBoughts = new ArrayList<>();
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        Set<ProductsOrderDto> productsOrderDtos = new HashSet<>();
+
+        for (Product product : products) {
+            List<ProductBought> productBought = productBoughtDao.findByProductId(product.getId());
+            productBoughts.addAll(productBought);
+        }
+        for (ProductBought productBought : productBoughts) {
+            productsOrders.add(productBought.getProductsOrder());
+        }
+
+        for (ProductsOrder productsOrder : productsOrders) {
+            productsOrderDtos.add(productsOrderMapper.mapToProductsOrderDto(productsOrder));
+        }
+
+        for (ProductsOrderDto productsOrderDto : productsOrderDtos) {
+            System.out.println(productsOrderDto.toString());
+        }
+        return productsOrderDtos;
+    }
+
+    public List<ProductsOrderDto> filterOrderState(String state) {
+        Status status = statusDao.findByCode(state);
+        return productsOrderMapper.mapToProductsOrderDtoList(productsOrderDao.findByStatusId(status.getId()));
+    }
+
+    public List<ProductsOrderDto> filterOrderDate(String dateAfter, String dateBefore) {
+        List<ProductsOrderDto> productsOrderDtos = new ArrayList<>();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date dateAfterFomated;
+        Date dateBeforeFormated;
+        try {
+            dateAfterFomated = dateFormat.parse(dateAfter);
+            dateBeforeFormated= dateFormat.parse(dateBefore);
+            productsOrderDtos = productsOrderMapper
+                    .mapToProductsOrderDtoList
+                            (productsOrderDao.findByBoughtDateAfterAndBoughtDateBefore(dateAfterFomated, dateBeforeFormated));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return productsOrderDtos;
+    }
+
+    public List<String> getAllUser() {
+        List<String> userLoginList = new ArrayList<>();
+        List<User> userList = userDao.findAll();
+        for (User user : userList) {
+            userLoginList.add(user.getLogin());
+        }
+        return userLoginList;
     }
 }

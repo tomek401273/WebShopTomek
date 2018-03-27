@@ -74,5 +74,11 @@ public class ProductController {
     List<ProductDto> filterPrice(@RequestBody FilterPrice filterPrice) {
         return productService.filterProductWithPriceBetween(filterPrice);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllProductsTitle")
+    public @ResponseBody
+    List<String> getAllProductsTitle() {
+        return productService.getAllProductsTitle();
+    }
 }
 

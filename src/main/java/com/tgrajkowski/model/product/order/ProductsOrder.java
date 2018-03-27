@@ -31,13 +31,10 @@ public class ProductsOrder {
     private Date boughtDate;
 
     @Column
-    private boolean isPaid;
+    private String linkDelivery;
 
     @Column
-    private boolean isPrepared;
-
-    @Column
-    private boolean isSend;
+    private Date sendDate;
 
 
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -58,13 +55,9 @@ public class ProductsOrder {
     )
     private ShippingAddress shippingAddress;
 
-    public ProductsOrder(int totalValue, boolean isPaid, boolean isPrepared, boolean isSend) {
-        this.totalValue = totalValue;
-        this.boughtDate = new Date();
-        this.isPaid = isPaid;
-        this.isPrepared = isPrepared;
-        this.isSend = isSend;
-    }
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "status_id")
+    private Status status;
 
     public ProductsOrder( User user) {
         this.boughtDate = new Date();
