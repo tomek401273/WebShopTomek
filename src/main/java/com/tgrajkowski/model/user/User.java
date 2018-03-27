@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.user;
 
+import com.tgrajkowski.model.product.order.ProductsOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,14 @@ public class User {
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
     @JoinTable(name = "User_Roles", joinColumns = {@JoinColumn (name = "user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
     private List<Role> roleList = new ArrayList<>();
+
+    @OneToMany(
+            targetEntity = ProductsOrder.class,
+            mappedBy = "user",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<ProductsOrder> orders = new ArrayList<>();
 
     public User(String name, String surname, String password, String login) {
         this.name = name;

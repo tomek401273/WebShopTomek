@@ -1,7 +1,9 @@
 package com.tgrajkowski.model.model.dao;
 
 import com.tgrajkowski.model.product.Product;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -12,11 +14,18 @@ import java.util.List;
 public interface ProductDao extends CrudRepository<Product, Long> {
     List<Product> findAll();
 
+    Product findById(Long id);
+
+    List<Product> findByTitle(String title);
+
     @Override
     Product save(Product product);
+
     void deleteById(Long id);
 
-//    void delete(Product product);
+    @Query(nativeQuery = true)
+    List<Product> findProductContainstTitleWithLetters(@Param("LETTERS") String letters);
 
-    Product findById(Long id);
+    @Query
+    List<Product> findProductWithPriceBetween(@Param("ABOVE") int above, @Param("BELOW") int below);
 }

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class AuthenticationController {
 //        // it does not happen.
 //    }
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
-    public UserDto singUp(@RequestBody UserDto userDto) {
+    public UserDto singUp(@RequestBody @Valid UserDto userDto) {
         String passwordEncoded = bCryptPasswordEncoder.encode(userDto.getPassword());
         userDto.setPassword(passwordEncoded);
         User user = userMapper.mapToUser(userDto);

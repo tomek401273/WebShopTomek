@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.product;
 
+import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.user.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +26,11 @@ public class Bucket {
     private User user;
 
     @OneToMany(
-            targetEntity = ProductAmount.class,
+            targetEntity = ProductBucket.class,
             mappedBy = "bucket",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
-    private List<ProductAmount> productAmount = new ArrayList<>();
+    private List<ProductBucket> productBuckets = new ArrayList<>();
+
 }
