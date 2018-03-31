@@ -92,9 +92,8 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/setReminder")
-    public @ResponseBody
-    boolean setReminder(@RequestBody ProductEmailReminderDto productEmailReminderDto) {
-        return productService.setReminder(productEmailReminderDto);
+    public void setReminder(@RequestBody ProductEmailReminderDto productEmailReminderDto) {
+        productService.setReminder(productEmailReminderDto);
     }
 }
 

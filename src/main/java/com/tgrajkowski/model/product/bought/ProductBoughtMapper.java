@@ -1,6 +1,5 @@
 package com.tgrajkowski.model.product.bought;
 
-import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductMapper;
 
 import java.util.ArrayList;

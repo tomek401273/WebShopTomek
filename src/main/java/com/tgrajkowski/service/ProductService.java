@@ -5,7 +5,6 @@ import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.product.reminder.Reminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
@@ -23,12 +22,6 @@ public class ProductService {
     private ProductBucketDao productBucketDao;
 
     @Autowired
-    private BucketService bucketService;
-
-    @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private BucketDao bucketDao;
 
     @Autowired
@@ -40,9 +33,8 @@ public class ProductService {
     @Autowired
     private ProductEmailReminderDao productEmailReminderDao;
 
-    ProductMapper mapper = new ProductMapper();
-
-    ProductBucketMapper productBucketMapper = new ProductBucketMapper();
+    @Autowired
+    ProductMapper productMapper;
 
     public int checkAvailable(Long id) {
         Product product = productDao.findById(id);
@@ -55,14 +47,14 @@ public class ProductService {
         ProductStatus productStatusInAccessible = productStatusDao.findProductStatusByCode("inaccessible");
         List<Product> productsInAccessible = productDao.findByStatusId(productStatusInAccessible.getId());
         products.addAll(productsInAccessible);
-        List<ProductDto> productDtos = mapper.mapToProductDtoList(products);
+        List<ProductDto> productDtos = productMapper.mapToProductDtoList(products);
         Collections.sort(productDtos, Comparator.comparing(ProductDto::getTitle));
         return productDtos;
     }
 
     public List<ProductDto> getProductsToEdit() {
         List<Product> products = productDao.findAll();
-        return mapper.mapToProductDtoList(products);
+        return productMapper.mapToProductDtoList(products);
     }
 
     public void removeProductFromDatabase(ProductDto productDto) throws InterruptedException {
@@ -138,85 +130,64 @@ public class ProductService {
         System.out.println("h: " + h + "; min: " + hmin + "; sec: " + hsec);
     }
 
-    /// skorzystaj z mapera
     public void updateProduct(ProductDto productDto) {
-        boolean isReminderEmpty= false;
-        Reminder reminderEmpty = new Reminder();
-        List<Reminder> remindersEmpty = new ArrayList<>();
-
         Product product = productDao.findById(productDto.getId());
         if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")) {
-            System.out.println("Notifiy users that product is available now");
-            System.out.println("remove emails form database");
-
-            List<Reminder> reminders = product.getProductEmailReminders();
-            for (Reminder reminder : reminders) {
-//                reminder.setProducts(new ArrayList<>());
-                String subject = "Product " + product.getTitle() + " soon unavailable in Computer WebShop";
-                String message = "Dear user you set reminder for product " + product.getTitle() + " now it is accessible";
-                simpleEmailService.send(new Mail(
-                        reminder.getEmail(),
-                        subject,
-                        message
-                ));
-
-
-                reminder.getProducts().remove(product);
-                productEmailReminderDao.save(reminder);
-
-                if (reminder.getProducts().size() == 0) {
-                    System.out.println("SEt isReminderEmpty true");
-                    remindersEmpty.add(reminder);
-                   isReminderEmpty=true;
-                }
-
-            }
-            product.setProductEmailReminders(new ArrayList<>());
-            productDao.save(product);
+            product = notifyUsers(product);
         }
-
-        if (isReminderEmpty) {
-            System.out.println("THIS EMAIL HAS NO PRODUCT TO SUB");
-            reminderEmpty.setProducts(null);
-            System.out.println(reminderEmpty.toString());
-            for (Reminder reminder: remindersEmpty) {
-                productEmailReminderDao.save(reminder);
-                productEmailReminderDao.delete(reminder);
-            }
-
-
-            System.out.println("Remoivng succesfull!!!");
-
-        }
-
-        product.setPrice(productDto.getPrice());
-        product.setImageLink(productDto.getImageLink());
-        product.setDescription(productDto.getDescription());
-        product.setAvailableAmount(productDto.getTotalAmount());
-        product.setTotalAmount(productDto.getTotalAmount());
-        product.setTitle(productDto.getTitle());
-        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
-        product.setStatus(productStatus);
+        product = productMapper.mapToProduct(product, productDto);
         productDao.save(product);
     }
 
+    public Product notifyUsers(Product product) {
+        List<Reminder> remindersEmpty = new ArrayList<>();
+        List<Reminder> reminders = product.getProductEmailReminders();
+
+        for (Reminder reminder : reminders) {
+            sendEmailProductAvailable(reminder.getEmail(), product.getTitle());
+            reminder.getProducts().remove(product);
+            productEmailReminderDao.save(reminder);
+            if (reminder.getProducts().size() == 0) {
+                remindersEmpty.add(reminder);
+            }
+        }
+        product.setProductEmailReminders(new ArrayList<>());
+        productDao.save(product);
+
+        for (Reminder reminder : remindersEmpty) {
+            productEmailReminderDao.save(reminder);
+            productEmailReminderDao.delete(reminder);
+        }
+        return product;
+    }
+
+    public void sendEmailProductAvailable(String email, String productTitle) {
+        String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
+        String message = "Dear user you set reminder for product " + productTitle + " now it is accessible";
+        simpleEmailService.send(new Mail(
+                email,
+                subject,
+                message
+        ));
+    }
+
     public Product saveProduct(ProductDto productDto) {
-        Product product = mapper.mapToProduct(productDto);
+        Product product = productMapper.mapToProduct(productDto);
         return productDao.save(product);
     }
 
     public ProductDto getOneProduct(Long id) {
-        ProductDto productDto = mapper.mapToProductDto(productDao.findById(id));
+        ProductDto productDto = productMapper.mapToProductDto(productDao.findById(id));
         return productDto;
     }
 
     public List<ProductDto> searchProduct(String title) {
 
-        return mapper.mapToProductDtoList(productDao.findProductContainstTitleWithLetters(title));
+        return productMapper.mapToProductDtoList(productDao.findProductContainstTitleWithLetters(title));
     }
 
     public List<ProductDto> filterProductWithPriceBetween(FilterPrice filterPrice) {
-        return mapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(), filterPrice.getBelow()));
+        return productMapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(), filterPrice.getBelow()));
     }
 
     public List<String> getAllProductsTitle() {
@@ -228,51 +199,28 @@ public class ProductService {
         return productsTitle;
     }
 
-    public boolean setReminder(ProductEmailReminderDto productEmailReminderDto) {
+    public void setReminder(ProductEmailReminderDto productEmailReminderDto) {
         Product product = productDao.findById(productEmailReminderDto.getProductId());
-        System.out.println("productTitle: " + product.getTitle());
-
-        boolean exit = productEmailReminderDao.existsByEmail(productEmailReminderDto.getEmail());
-        if (exit) {
-            System.out.println("This email exit in database");
-            boolean isSubscirbe = false;
-            List<Reminder> reminders = product.getProductEmailReminders();
-
-            if (reminders.size() > 0) {
-                System.out.println("New email to set: " + productEmailReminderDto.getEmail());
-                System.out.println("Subscirbent user");
-                for (Reminder reminder : reminders) {
-                    System.out.println("subEmail: " + reminder.getEmail());
-                    if (reminder.getEmail().equals(productEmailReminderDto.getEmail())) {
-                        isSubscirbe = true;
-                    }
+        List<Reminder> reminders;
+        boolean isSubscirbe = false;
+        if (productEmailReminderDao.existsByEmail(productEmailReminderDto.getEmail())) {
+            reminders = product.getProductEmailReminders();
+            for (Reminder reminder : reminders) {
+                if (reminder.getEmail().equals(productEmailReminderDto.getEmail())) {
+                    isSubscirbe = true;
                 }
             }
-
             if (!isSubscirbe) {
-                System.out.println("this user not yet subscribe this procuct. Set sub");
-                Reminder reminder = productEmailReminderDao.findByEmail(productEmailReminderDto.getEmail());
-                reminder.getProducts().add(product);
-                product.getProductEmailReminders().add(reminder);
-                productEmailReminderDao.save(reminder);
-            } else {
-                System.out.println("This user yet subscribe. Do nothing ");
+                Reminder reminder2 = productEmailReminderDao.findByEmail(productEmailReminderDto.getEmail());
+                reminder2.getProducts().add(product);
+                product.getProductEmailReminders().add(reminder2);
+                productEmailReminderDao.save(reminder2);
             }
-
         } else {
             Reminder productEmailReminder = new Reminder(productEmailReminderDto.getEmail());
             productEmailReminder.getProducts().add(product);
             product.getProductEmailReminders().add(productEmailReminder);
             productEmailReminderDao.save(productEmailReminder);
         }
-
-        List<Reminder> reminders = product.getProductEmailReminders();
-        for (Reminder reminder : reminders) {
-            System.out.println(reminder.getEmail());
-        }
-
-
-//        productDao.save(product);
-        return true;
     }
 }
