@@ -29,15 +29,6 @@ public class AuthenticationController {
     @Autowired
     private RoleDao roleDao;
 
-    //    @RequestMapping("/auth")
-//    public AuthResponse authic(@RequestBody AuthPar) {
-//        final Authentication authentication = authenticationManager.authenticate();
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        return securityContextService.currentUser().map(u -> { final String token = tokenHandler.createTokenForUser(u);
-//        return new AuthResponse(token);
-//        }).orElseThrow(RuntimeException::new);
-//        // it does not happen.
-//    }
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public UserDto singUp(@RequestBody @Valid UserDto userDto) {
         String passwordEncoded = bCryptPasswordEncoder.encode(userDto.getPassword());

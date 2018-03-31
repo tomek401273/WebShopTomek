@@ -1,7 +1,7 @@
 package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.bucket.UserBucketDto;
-import com.tgrajkowski.model.product.Bucket;
+import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.service.BucketService;
@@ -9,7 +9,6 @@ import com.tgrajkowski.service.BuyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

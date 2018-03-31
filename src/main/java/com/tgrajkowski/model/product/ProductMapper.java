@@ -27,7 +27,10 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getImageLink(),
                 product.getTotalAmount(),
-                product.getAvailableAmount()
+                product.getAvailableAmount(),
+                product.getStatus().code,
+                product.getStatus().name
+
         );
 
         return productDto;

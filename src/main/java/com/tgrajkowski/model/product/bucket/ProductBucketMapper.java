@@ -8,6 +8,7 @@ import java.util.List;
 public class ProductBucketMapper {
     ProductMapper productMapper = new ProductMapper();
 
+
     public ProductBucketDto mapToProductBucketDto(ProductBucket productBucket) {
         ProductBucketDto productBucketDto = new ProductBucketDto();
         productBucketDto.setProductDto(productMapper.mapToProductDto(productBucket.getProduct()));

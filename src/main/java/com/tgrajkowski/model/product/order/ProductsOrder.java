@@ -23,6 +23,7 @@ public class ProductsOrder {
 
     @Column
     private int totalValue;
+    // big decimal
 
     @Column
     private int totalAmount;
@@ -54,6 +55,8 @@ public class ProductsOrder {
             fetch = FetchType.LAZY
     )
     private ShippingAddress shippingAddress;
+    // adres dostawy może być inny niż zamieszkania
+    // kolejny stan i data dostarczenia
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_id")

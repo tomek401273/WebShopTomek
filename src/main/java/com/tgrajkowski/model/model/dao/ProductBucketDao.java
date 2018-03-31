@@ -6,10 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
 public interface ProductBucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
     @Override
     ProductBucket findOne(ProductBucketPK productBucketPK);
+
+//    void delete(List<ProductBucketPK> productBucketPKS);
 }

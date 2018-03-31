@@ -2,16 +2,18 @@ package com.tgrajkowski.model.product;
 
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
+import com.tgrajkowski.model.product.reminder.Reminder;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "Product.findProductContainstTitleWithLetters",
-                query="SELECT * FROM product WHERE title LIKE concat('%',:LETTERS,'%')",
+                query = "SELECT * FROM product WHERE title LIKE concat('%',:LETTERS,'%')",
                 resultClass = Product.class
         ),
         @NamedNativeQuery(
@@ -30,7 +32,8 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
+    @Column(name = "PRODUCT_ID", unique = true)
     private Long id;
 
     @Column
@@ -65,7 +68,20 @@ public class Product {
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
-    private List<ProductBought> productBoughts= new ArrayList<>();
+    private List<ProductBought> productBoughts = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "status_id")
+    private ProductStatus status;
+
+    @ManyToMany(
+            targetEntity = Reminder.class,
+            mappedBy = "products",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.EAGER
+    )
+    private List<Reminder> productEmailReminders = new ArrayList<>();
+
 
     public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
         this.price = price;

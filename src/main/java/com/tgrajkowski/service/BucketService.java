@@ -1,5 +1,6 @@
 package com.tgrajkowski.service;
 
+import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.bucket.UserBucketDto;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
@@ -8,6 +9,7 @@ import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class BucketService {
     @Autowired
     private ProductDao productDao;
@@ -42,7 +45,8 @@ public class BucketService {
         String login = userBucketDto.getLogin();
         User user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-
+        log.info("user: " + login + " add Product to Bucket");
+// programowanie aspektowe logownaie informacji
         long id = userBucketDto.getProductId();
         Product product = productDao.findById(id);
         if (product.getAvailableAmount() > 0) {
@@ -67,9 +71,7 @@ public class BucketService {
 
 
     public List<ProductBucketDto> showProductInBucket(String login) {
-        System.out.println("login: " + login);
         User user = userDao.findByLogin(login);
-        System.out.println("userId: " + user.getId());
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
 

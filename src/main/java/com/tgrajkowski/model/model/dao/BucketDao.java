@@ -1,9 +1,6 @@
 package com.tgrajkowski.model.model.dao;
 
-import com.tgrajkowski.model.product.Bucket;
-import com.tgrajkowski.model.product.Product;
-import org.hibernate.Criteria;
-import org.hibernate.Session;
+import com.tgrajkowski.model.bucket.Bucket;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

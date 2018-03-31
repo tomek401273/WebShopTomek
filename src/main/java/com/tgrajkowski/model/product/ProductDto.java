@@ -27,4 +27,16 @@ public class ProductDto {
     private int totalAmount;
     @Min(0)
     private int availableAmount;
+    private String statusCode;
+    private String statusMessage;
+
+    public ProductDto(Long id, Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
+        this.id = id;
+        this.price = price;
+        this.title = title;
+        this.description = description;
+        ImageLink = imageLink;
+        this.totalAmount = totalAmount;
+        this.availableAmount = availableAmount;
+    }
 }

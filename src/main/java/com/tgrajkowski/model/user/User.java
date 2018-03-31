@@ -32,7 +32,10 @@ public class User {
     private String login;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
-    @JoinTable(name = "User_Roles", joinColumns = {@JoinColumn (name = "user_id")}, inverseJoinColumns={@JoinColumn(name="role_id")})
+    @JoinTable(
+            name = "User_Roles",
+            joinColumns = {@JoinColumn (name = "user_id")},
+            inverseJoinColumns={@JoinColumn(name="role_id")})
     private List<Role> roleList = new ArrayList<>();
 
     @OneToMany(

@@ -2,7 +2,7 @@ package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.OrderStatus;
 import com.tgrajkowski.model.model.dao.*;
-import com.tgrajkowski.model.product.Bucket;
+import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
@@ -14,6 +14,7 @@ import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
 import com.tgrajkowski.model.user.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
+@Slf4j
 @Service
 public class BuyService {
     @Autowired
@@ -103,7 +104,7 @@ public class BuyService {
         try{
             productsOrders=productsOrderDao.findByUser_Id(user.getId());
         } catch (NullPointerException e) {
-            System.out.println(e);
+           log.error(e.getMessage());
         }
         return productsOrderMapper
                 .mapToProductsOrderDtoList
@@ -127,10 +128,7 @@ public class BuyService {
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
         }
-        if (productsOrderDao.findOne(paymentDto.getOrderId()).getStatus().getCode().equals("paid")) {
-            return true;
-        }
-        return false;
+        return productsOrderDao.findOne(paymentDto.getOrderId()).getStatus().getCode().equals("paid");
     }
 
     public boolean orderPrepared(OrderStatus orderStatus) {
@@ -141,10 +139,7 @@ public class BuyService {
             productsOrderDao.save(productsOrder);
         }
 
-        if (productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared")) {
-            return true;
-        }
-        return false;
+        return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared");
     }
 
     public boolean sendOrder(OrderStatus orderStatus) {
@@ -158,10 +153,7 @@ public class BuyService {
             productsOrderDao.save(productsOrder);
         }
 
-        if (productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("send")) {
-            return true;
-        }
-        return false;
+        return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("send");
     }
 
     public Set<ProductsOrderDto> searchOrderContainsProduct(String title) {
@@ -180,10 +172,6 @@ public class BuyService {
 
         for (ProductsOrder productsOrder : productsOrders) {
             productsOrderDtos.add(productsOrderMapper.mapToProductsOrderDto(productsOrder));
-        }
-
-        for (ProductsOrderDto productsOrderDto : productsOrderDtos) {
-            System.out.println(productsOrderDto.toString());
         }
         return productsOrderDtos;
     }
@@ -209,7 +197,7 @@ public class BuyService {
         }
         return productsOrderDtos;
     }
-
+/// przenieść do userDetailService
     public List<String> getAllUser() {
         List<String> userLoginList = new ArrayList<>();
         List<User> userList = userDao.findAll();

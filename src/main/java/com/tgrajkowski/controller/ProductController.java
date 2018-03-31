@@ -4,6 +4,7 @@ import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.ProductBucketDao;
 import com.tgrajkowski.model.product.*;
+import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ProductController {
     @Autowired
     ProductBucketDao product_bucketDao;
 
-
+    /// get
     @RequestMapping(method = RequestMethod.PUT, value = "/available")
     public int checkAvaiable(@RequestBody Long id) {
         return productService.checkAvailable(id);
@@ -39,6 +40,12 @@ public class ProductController {
     public @ResponseBody
     List<ProductDto> getProduct() {
         return productService.getProducts();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/getAllProductToEdit")
+    public @ResponseBody
+    List<ProductDto> getAllProductToEdit() {
+        return productService.getProductsToEdit();
     }
 
     @RequestMapping("/{id}")
@@ -53,8 +60,9 @@ public class ProductController {
         productService.saveProduct(productDto);
     }
 
+    ///// Daj delete !!!
     @RequestMapping(method = RequestMethod.PUT, value = "/deleteProduct")
-    public void deleteProduct(@RequestBody ProductDto productDto) {
+    public void deleteProduct(@RequestBody ProductDto productDto) throws InterruptedException {
         productService.removeProductFromDatabase(productDto);
     }
 
@@ -63,12 +71,14 @@ public class ProductController {
         productService.updateProduct(productDto);
     }
 
+    /// daj get
     @RequestMapping(method = RequestMethod.POST, value = "/searchProduct")
     public @ResponseBody
     List<ProductDto> searchProduct(@RequestBody String title) {
         return productService.searchProduct(title);
     }
 
+    /// get !!!
     @RequestMapping(method = RequestMethod.POST, value = "/filterPrice")
     public @ResponseBody
     List<ProductDto> filterPrice(@RequestBody FilterPrice filterPrice) {
@@ -79,6 +89,12 @@ public class ProductController {
     public @ResponseBody
     List<String> getAllProductsTitle() {
         return productService.getAllProductsTitle();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/setReminder")
+    public @ResponseBody
+    boolean setReminder(@RequestBody ProductEmailReminderDto productEmailReminderDto) {
+        return productService.setReminder(productEmailReminderDto);
     }
 }
 

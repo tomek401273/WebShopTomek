@@ -1,6 +1,6 @@
 package com.tgrajkowski.model.product.bucket;
 
-import com.tgrajkowski.model.product.Bucket;
+import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.product.Product;
 import lombok.Getter;
 import lombok.Setter;

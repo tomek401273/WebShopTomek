@@ -28,7 +28,7 @@ public class ProductBought implements Serializable {
 
     @Column
     private int amount;
-
+// usuń total price
     @Column
     private int totalPrice;
 

@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.product.bucket;
 
+import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.product.ProductDto;
 import lombok.*;
 

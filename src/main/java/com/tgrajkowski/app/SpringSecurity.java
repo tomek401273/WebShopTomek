@@ -33,6 +33,8 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/product/*").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/searchProduct").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/filterPrice").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/setReminder").permitAll()
+
 
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()

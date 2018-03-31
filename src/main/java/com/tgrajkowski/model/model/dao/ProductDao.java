@@ -28,4 +28,7 @@ public interface ProductDao extends CrudRepository<Product, Long> {
 
     @Query
     List<Product> findProductWithPriceBetween(@Param("ABOVE") int above, @Param("BELOW") int below);
+
+    List<Product> findByStatusId(Long statusId);
+
 }

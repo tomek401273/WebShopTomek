@@ -23,12 +23,9 @@ import java.util.stream.Collectors;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final long EXPIRATION_TIME = 30 * 60 * 1000;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    private UserDao userDao;
     static final String SECRET = "Secret";
     static final String HEADER_STRING = "Authorization";
     AuthenticationManager authenticationManager;
-    UserDto userDto;
     UserMapper userMapper = new UserMapper();
 
 
