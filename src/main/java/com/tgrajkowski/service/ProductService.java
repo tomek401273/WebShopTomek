@@ -142,19 +142,31 @@ public class ProductService {
     public void updateProduct(ProductDto productDto) {
         boolean isReminderEmpty= false;
         Reminder reminderEmpty = new Reminder();
+        List<Reminder> remindersEmpty = new ArrayList<>();
+
         Product product = productDao.findById(productDto.getId());
         if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")) {
             System.out.println("Notifiy users that product is available now");
             System.out.println("remove emails form database");
+
             List<Reminder> reminders = product.getProductEmailReminders();
             for (Reminder reminder : reminders) {
-//               reminder.setProducts(new ArrayList<>());
+//                reminder.setProducts(new ArrayList<>());
+                String subject = "Product " + product.getTitle() + " soon unavailable in Computer WebShop";
+                String message = "Dear user you set reminder for product " + product.getTitle() + " now it is accessible";
+                simpleEmailService.send(new Mail(
+                        reminder.getEmail(),
+                        subject,
+                        message
+                ));
+
+
                 reminder.getProducts().remove(product);
                 productEmailReminderDao.save(reminder);
 
                 if (reminder.getProducts().size() == 0) {
                     System.out.println("SEt isReminderEmpty true");
-                    reminderEmpty=reminder;
+                    remindersEmpty.add(reminder);
                    isReminderEmpty=true;
                 }
 
@@ -167,8 +179,12 @@ public class ProductService {
             System.out.println("THIS EMAIL HAS NO PRODUCT TO SUB");
             reminderEmpty.setProducts(null);
             System.out.println(reminderEmpty.toString());
-            productEmailReminderDao.save(reminderEmpty);
-            productEmailReminderDao.delete(reminderEmpty);
+            for (Reminder reminder: remindersEmpty) {
+                productEmailReminderDao.save(reminder);
+                productEmailReminderDao.delete(reminder);
+            }
+
+
             System.out.println("Remoivng succesfull!!!");
 
         }
