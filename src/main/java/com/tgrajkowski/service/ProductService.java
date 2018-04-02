@@ -6,7 +6,7 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
-import com.tgrajkowski.model.product.reminder.Reminder;
+import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,32 +61,14 @@ public class ProductService {
         Product product = productDao.findById(productDto.getId());
         List<ProductBucket> productBuckets = product.getProductBuckets();
         List<ProductBucketPK> productBucketPKS = new ArrayList<>();
-
         for (ProductBucket productBucket : productBuckets) {
-            String userLogin = productBucket.getBucket().getUser().getLogin();
-            String subject = "Product " + product.getTitle() + " soon unavailable in Computer WebShop";
-            String message = "Dear user " + productBucket.getBucket().getUser().getName() + " administrator redirect " + product.getTitle() + " to removing process. Product will be anavaiable until 23:59 this day";
-            simpleEmailService.send(new Mail(
-                    userLogin,
-                    subject,
-                    message
-            ));
+            sendEmailProductWithdrawn(
+                    productBucket.getBucket().getUser().getLogin(),
+                    product.getTitle(),
+                    productBucket.getBucket().getUser().getName());
         }
 
-
-        Date date = new Date();
-        System.out.println(date);
-        Date date2 = calculateDateTomorow();
-        System.out.println(date2);
-        Long futureDate = date2.getTime();
-        Long nowDate = System.currentTimeMillis();
-        Long calulatedDate = futureDate - nowDate;
-
-        convertMiliscendToNormalTime(calulatedDate);
-        Thread.sleep(calulatedDate);
-        System.out.println("Removing DATA");
-
-
+        Thread.sleep(calulateWaitingTime());
         for (ProductBucket productBucket : productBuckets) {
             productBucketPKS.add(new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId()));
             Bucket bucket = productBucket.getBucket();
@@ -103,16 +85,22 @@ public class ProductService {
         ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
         product.setStatus(productStatus);
         productDao.save(product);
+    }
 
-
-//        productDao.delete(product);
+    public Long calulateWaitingTime() {
+        Date dateTomorow = calculateDateTomorow();
+        Long futureDate = dateTomorow.getTime();
+        Long nowDate = System.currentTimeMillis();
+        Long calculatedDate = futureDate - nowDate;
+        convertMiliscendToNormalTime(calculatedDate);
+        return calculatedDate;
     }
 
     public Date calculateDateTomorow() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 19);
-        calendar.set(Calendar.MINUTE, 15);
+        calendar.set(Calendar.HOUR_OF_DAY, 10);
+        calendar.set(Calendar.MINUTE, 33);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
@@ -130,6 +118,12 @@ public class ProductService {
         System.out.println("h: " + h + "; min: " + hmin + "; sec: " + hsec);
     }
 
+    public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
+        String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
+        String message = "Dear user " + userName + " administrator redirect " + userName + " to removing process. Product will be anavaiable until 23:59 this day";
+        send(email, subject, message);
+    }
+
     public void updateProduct(ProductDto productDto) {
         Product product = productDao.findById(productDto.getId());
         if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")) {
@@ -140,10 +134,10 @@ public class ProductService {
     }
 
     public Product notifyUsers(Product product) {
-        List<Reminder> remindersEmpty = new ArrayList<>();
-        List<Reminder> reminders = product.getProductEmailReminders();
+        List<ProductEmailReminder> remindersEmpty = new ArrayList<>();
+        List<ProductEmailReminder> reminders = product.getProductEmailReminders();
 
-        for (Reminder reminder : reminders) {
+        for (ProductEmailReminder reminder : reminders) {
             sendEmailProductAvailable(reminder.getEmail(), product.getTitle());
             reminder.getProducts().remove(product);
             productEmailReminderDao.save(reminder);
@@ -154,7 +148,7 @@ public class ProductService {
         product.setProductEmailReminders(new ArrayList<>());
         productDao.save(product);
 
-        for (Reminder reminder : remindersEmpty) {
+        for (ProductEmailReminder reminder : remindersEmpty) {
             productEmailReminderDao.save(reminder);
             productEmailReminderDao.delete(reminder);
         }
@@ -164,6 +158,10 @@ public class ProductService {
     public void sendEmailProductAvailable(String email, String productTitle) {
         String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
         String message = "Dear user you set reminder for product " + productTitle + " now it is accessible";
+        send(email, subject, message);
+    }
+
+    public void send(String email, String subject, String message) {
         simpleEmailService.send(new Mail(
                 email,
                 subject,
@@ -201,26 +199,32 @@ public class ProductService {
 
     public void setReminder(ProductEmailReminderDto productEmailReminderDto) {
         Product product = productDao.findById(productEmailReminderDto.getProductId());
-        List<Reminder> reminders;
+        List<ProductEmailReminder> reminders;
         boolean isSubscirbe = false;
         if (productEmailReminderDao.existsByEmail(productEmailReminderDto.getEmail())) {
             reminders = product.getProductEmailReminders();
-            for (Reminder reminder : reminders) {
+            for (ProductEmailReminder reminder : reminders) {
                 if (reminder.getEmail().equals(productEmailReminderDto.getEmail())) {
                     isSubscirbe = true;
                 }
             }
             if (!isSubscirbe) {
-                Reminder reminder2 = productEmailReminderDao.findByEmail(productEmailReminderDto.getEmail());
+                ProductEmailReminder reminder2 = productEmailReminderDao.findByEmail(productEmailReminderDto.getEmail());
                 reminder2.getProducts().add(product);
                 product.getProductEmailReminders().add(reminder2);
                 productEmailReminderDao.save(reminder2);
             }
         } else {
-            Reminder productEmailReminder = new Reminder(productEmailReminderDto.getEmail());
+            ProductEmailReminder productEmailReminder = new ProductEmailReminder(productEmailReminderDto.getEmail());
             productEmailReminder.getProducts().add(product);
             product.getProductEmailReminders().add(productEmailReminder);
             productEmailReminderDao.save(productEmailReminder);
         }
+    }
+
+    public int maxPriceProduct() {
+        int maxValue = productDao.getMaxProductPrice().getPrice();
+        System.out.println("Max Value Value: "+maxValue);
+        return maxValue;
     }
 }

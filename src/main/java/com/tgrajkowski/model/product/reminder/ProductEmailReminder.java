@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class Reminder {
+public class ProductEmailReminder {
     @Id
     @GeneratedValue
     @Column(name = "REMINDER_ID", unique = true)
@@ -28,21 +27,21 @@ public class Reminder {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "JOINING_PRODUCT_REMINDER",
-            joinColumns = {@JoinColumn (name = "REMINDER_ID", referencedColumnName = "REMINDER_ID")} ,
-            inverseJoinColumns = {@JoinColumn (name = "PRODUCT_ID", referencedColumnName = "PRODUCT_ID")}
+            joinColumns = {@JoinColumn (name = "PRODUCTEMAILREMINDER_ID")} ,
+            inverseJoinColumns = {@JoinColumn (name = "PRODUCT_ID")}
     )
     private List<Product> products = new ArrayList<>();
 
-    public Reminder(String email) {
+    public ProductEmailReminder(String email) {
         this.email = email;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Reminder)) return false;
+        if (!(o instanceof ProductEmailReminder)) return false;
 
-        Reminder reminder = (Reminder) o;
+        ProductEmailReminder reminder = (ProductEmailReminder) o;
 
         if (id != null ? !id.equals(reminder.id) : reminder.id != null) return false;
         if (email != null ? !email.equals(reminder.email) : reminder.email != null) return false;

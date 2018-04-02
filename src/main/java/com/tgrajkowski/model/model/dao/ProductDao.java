@@ -31,4 +31,7 @@ public interface ProductDao extends CrudRepository<Product, Long> {
 
     List<Product> findByStatusId(Long statusId);
 
+    @Query
+    Product getMaxProductPrice();
+
 }

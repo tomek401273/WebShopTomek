@@ -95,5 +95,10 @@ public class ProductController {
     public void setReminder(@RequestBody ProductEmailReminderDto productEmailReminderDto) {
         productService.setReminder(productEmailReminderDto);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/maxprice")
+    public @ResponseBody int getMaxPriceProduct () {
+        return productService.maxPriceProduct();
+    }
 }
 

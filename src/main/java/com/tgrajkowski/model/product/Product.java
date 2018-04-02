@@ -2,11 +2,10 @@ package com.tgrajkowski.model.product;
 
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.product.reminder.Reminder;
+import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +18,11 @@ import java.util.List;
         @NamedNativeQuery(
                 name = "Product.findProductWithPriceBetween",
                 query = "SELECT * FROM product WHERE price >=:ABOVE AND price <=:BELOW",
+                resultClass = Product.class
+        ),
+        @NamedNativeQuery(
+                name = "Product.getMaxProductPrice",
+                query = "SELECT * FROM product WHERE price =(SELECT MAX(price) FROM product)",
                 resultClass = Product.class
         )
 })
@@ -75,12 +79,12 @@ public class Product {
     private ProductStatus status;
 
     @ManyToMany(
-            targetEntity = Reminder.class,
+            targetEntity = ProductEmailReminder.class,
             mappedBy = "products",
             cascade = CascadeType.PERSIST,
             fetch = FetchType.EAGER
     )
-    private List<Reminder> productEmailReminders = new ArrayList<>();
+    private List<ProductEmailReminder> productEmailReminders = new ArrayList<>();
 
 
     public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
