@@ -6,10 +6,7 @@ import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.product.order.ProductsOrder;
-import com.tgrajkowski.model.product.order.ProductsOrderDto;
-import com.tgrajkowski.model.product.order.ProductsOrderMapper;
-import com.tgrajkowski.model.product.order.Status;
+import com.tgrajkowski.model.product.order.*;
 import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
@@ -22,6 +19,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class BuyService {
@@ -51,7 +50,6 @@ public class BuyService {
     private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
 
 
-
     public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
         int orderValue = 0;
         int totalAmount = 0;
@@ -72,7 +70,7 @@ public class BuyService {
             Product product = productBucket.getProduct();
             ProductBought productBought = new ProductBought(product, productsOrder, productBucket.getAmount());
 
-            orderValue += productBought.getTotalPrice();
+            orderValue += productBought.getAmount()*productBought.getProduct().getPrice();
             totalAmount += productBought.getAmount();
             productBoughtDao.save(productBought);
         }
@@ -101,10 +99,10 @@ public class BuyService {
     public List<ProductsOrderDto> getAllProductsOrdersUser(String login) {
         User user = userDao.findByLogin(login);
         List<ProductsOrder> productsOrders = new ArrayList<>();
-        try{
-            productsOrders=productsOrderDao.findByUser_Id(user.getId());
+        try {
+            productsOrders = productsOrderDao.findByUser_Id(user.getId());
         } catch (NullPointerException e) {
-           log.error(e.getMessage());
+            log.error(e.getMessage());
         }
         return productsOrderMapper
                 .mapToProductsOrderDtoList
@@ -123,7 +121,7 @@ public class BuyService {
 
     public boolean paymentVerification(OrderStatus paymentDto) {
         Status status = statusDao.findByCode("paid");
-        if (paymentDto.isPaid()) {
+        if (paymentDto.getStatus().equals("paid")) {
             ProductsOrder productsOrder = productsOrderDao.findOne(paymentDto.getOrderId());
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
@@ -133,7 +131,7 @@ public class BuyService {
 
     public boolean orderPrepared(OrderStatus orderStatus) {
         Status status = statusDao.findByCode("prepared");
-        if (orderStatus.isPrepared()) {
+        if (orderStatus.getStatus().equals("prepared")) {
             ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
@@ -145,15 +143,44 @@ public class BuyService {
     public boolean sendOrder(OrderStatus orderStatus) {
         Status status = statusDao.findByCode("send");
 
-        if (orderStatus.isSend()) {
+        if (orderStatus.getStatus().equals("send")) {
             ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
             productsOrder.setStatus(status);
             productsOrder.setLinkDelivery(orderStatus.getLinkDelivery());
             productsOrder.setSendDate(new Date());
             productsOrderDao.save(productsOrder);
         }
-
         return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("send");
+    }
+
+    public boolean orderDelivered(OrderStatus orderStatus) throws InterruptedException {
+        Status status = statusDao.findByCode("delivered");
+
+        if (orderStatus.getStatus().equals("delivered")) {
+            ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
+            Thread.sleep(calulateWaitingTime());
+            productsOrder.setDeliveredDate(new Date());
+            productsOrder.setStatus(status);
+            productsOrderDao.save(productsOrder);
+        }
+        return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("delivered");
+    }
+
+
+    public Long calulateWaitingTime() {
+        Date dateTomorow = calculateDateShipping();
+        Long futureDate = dateTomorow.getTime();
+        Long nowDate = System.currentTimeMillis();
+        Long calculatedDate = futureDate - nowDate;
+        return calculatedDate;
+    }
+
+    public Date calculateDateShipping() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 1);
+        return calendar.getTime();
     }
 
     public Set<ProductsOrderDto> searchOrderContainsProduct(String title) {
@@ -177,33 +204,80 @@ public class BuyService {
     }
 
     public List<ProductsOrderDto> filterOrderState(String state) {
+        if (state.equals("all") || state.equals("null")) {
+            return new ArrayList<>();
+        }
         Status status = statusDao.findByCode(state);
         return productsOrderMapper.mapToProductsOrderDtoList(productsOrderDao.findByStatusId(status.getId()));
     }
 
     public List<ProductsOrderDto> filterOrderDate(String dateAfter, String dateBefore) {
         List<ProductsOrderDto> productsOrderDtos = new ArrayList<>();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date dateAfterFomated;
-        Date dateBeforeFormated;
+
+        String appendixAfter = " 00:00:00";
+        String appendixBefore = " 23:59:59";
+        dateAfter = dateFormat(dateAfter) + appendixAfter;
+        dateBefore = dateFormat(dateBefore) + appendixBefore;
+
         try {
-            dateAfterFomated = dateFormat.parse(dateAfter);
-            dateBeforeFormated= dateFormat.parse(dateBefore);
             productsOrderDtos = productsOrderMapper
-                    .mapToProductsOrderDtoList
-                            (productsOrderDao.findByBoughtDateAfterAndBoughtDateBefore(dateAfterFomated, dateBeforeFormated));
-        } catch (ParseException e) {
+                    .mapToProductsOrderDtoList(
+                            productsOrderDao.findOrderAfterDate(dateAfter, dateBefore)
+                    );
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return productsOrderDtos;
     }
-/// przenieść do userDetailService
-    public List<String> getAllUser() {
-        List<String> userLoginList = new ArrayList<>();
-        List<User> userList = userDao.findAll();
-        for (User user : userList) {
-            userLoginList.add(user.getLogin());
+
+    public String dateFormat(String data) {
+        if (data.length() == 9) {
+            data = "0" + data;
         }
-        return userLoginList;
+        data = data.replaceAll("[.]", "-");
+        String day = data.substring(0, 2);
+        String month = data.substring(2, 6);
+        String year = data.substring(6, data.length());
+        data = year + month + day;
+        return data;
+    }
+
+    public List<ProductsOrderDto> searchOrders(OrderSearch orderSearch) {
+        List<ProductsOrderDto> foundOrders = new ArrayList<>();
+        if (orderSearch.getProductTitle().length() > 3) {
+            Set<ProductsOrderDto> foundOrdersWithTitleSet = searchOrderContainsProduct(orderSearch.getProductTitle());
+            for (ProductsOrderDto productsOrderDto : foundOrdersWithTitleSet) {
+                foundOrders.add(productsOrderDto);
+            }
+        }
+        if (orderSearch.getDateFrom().length() > 8 && orderSearch.getDateTo().length() > 8) {
+            List<ProductsOrderDto> foundOrdersWithDate = filterOrderDate(orderSearch.getDateFrom(), orderSearch.getDateTo());
+            foundOrders = filterProductOrders(foundOrders, foundOrdersWithDate);
+        }
+        if (orderSearch.getStatus().length() > 3) {
+            List<ProductsOrderDto> foundState = filterOrderState(orderSearch.getStatus());
+            foundOrders = filterProductOrders(foundOrders, foundState);
+        }
+        if (orderSearch.getUserLogin().length() > 6 && !orderSearch.getUserLogin().equals("undefined")) {
+            List<ProductsOrderDto> foundOrdersWithLogin = getAllProductsOrdersUser(orderSearch.getUserLogin());
+            foundOrders = filterProductOrders(foundOrders, foundOrdersWithLogin);
+        }
+        return foundOrders;
+    }
+
+    private List<ProductsOrderDto> filterProductOrders(List<ProductsOrderDto> productsOrders1, List<ProductsOrderDto> productsOrders2) {
+        List<ProductsOrderDto> commonList = new ArrayList<>();
+        if (productsOrders1.size() == 0) {
+            return productsOrders2;
+        }
+        for (ProductsOrderDto productsOrder1 : productsOrders1) {
+            for (ProductsOrderDto productsOrder2 : productsOrders2) {
+                if (productsOrder1.getId().equals(productsOrder2.getId())) {
+                    commonList.add(productsOrder1);
+                }
+            }
+        }
+
+        return commonList;
     }
 }

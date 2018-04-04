@@ -9,6 +9,8 @@ import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.UserDto;
+import com.tgrajkowski.model.user.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,9 +31,10 @@ public class BucketService {
     private BucketDao bucketDao;
 
     @Autowired
-    ProductBucketDao productBucketDao;
+    private ProductBucketDao productBucketDao;
 
-    ProductBucketMapper productBucketMapper = new ProductBucketMapper();
+    private ProductBucketMapper productBucketMapper = new ProductBucketMapper();
+    private UserMapper userMapper = new UserMapper();
 
     public void addProductToBucketList(UserBucketDto userBucketDto) {
         List<Long> longProductIdList = userBucketDto.getProductIdArray();
@@ -79,20 +82,11 @@ public class BucketService {
         return productBucketDtoList;
     }
 
-
-    public void removeProductFromBucket(String login) {
+    public boolean removeSinggleItemFromBucket(String login, Long productId) {
+        int productBucketAmountActual;
         User user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-
-        bucketDao.save(userBucket);
-    }
-
-    public boolean removeSinggleItemFromBucket(UserBucketDto userBucketDto) {
-        int productBucketAmountActual;
-        String loging = userBucketDto.getLogin();
-        User user = userDao.findByLogin(loging);
-        Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-        Product product = productDao.findById(userBucketDto.getProductId());
+        Product product = productDao.findById(productId);
 
         ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
         ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
@@ -105,7 +99,7 @@ public class BucketService {
             product.setAvailableAmount(product.getAvailableAmount() + 1);
             productDao.save(product);
         } else {
-            removeSingleProductFromBucket(userBucketDto);
+            removeSingleProductFromBucket(login, productId);
         }
         return checkRemovingProdces(productBucketPK, productBucketAmountActual);
 
@@ -126,10 +120,10 @@ public class BucketService {
         }
     }
 
-    public void removeSingleProductFromBucket(UserBucketDto userBucketDto) {
-        User user = userDao.findByLogin(userBucketDto.getLogin());
+    public void removeSingleProductFromBucket(String login, Long productId) {
+        User user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-        Product product = productDao.findById(userBucketDto.getProductId());
+        Product product = productDao.findById(productId);
 
         ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
         ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
@@ -140,10 +134,12 @@ public class BucketService {
         product.getProductBuckets().remove(productBucket);
         product.setAvailableAmount(product.getTotalAmount());
         productDao.save(product);
-
-
         productBucketDao.delete(productBucket);
     }
 
-
+    public UserDto getAddressShipping(String login) {
+        User user = userDao.findByLogin(login);
+        UserDto userDto = userMapper.mapToUserDto(user);
+        return userDto;
+    }
 }

@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 
 @NoArgsConstructor
-//@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -19,9 +18,6 @@ public class ProductsOrderDto {
     private int totalValue;
     private int totalAmount;
     private String boughtDate;
-    private boolean isPaid;
-    private boolean isPrepared;
-    private boolean isSend;
     private String userLogin;
     private List<ProductBoughtDto> productBoughts = new ArrayList<>();
     private ShippingAddressDto shippingAddressDto;
@@ -29,6 +25,7 @@ public class ProductsOrderDto {
     private String linkDelivery;
     private String sendDate;
     private String deliveryDate;
+    private String statusCode;
 
     public ProductsOrderDto(
             Long id,
@@ -58,9 +55,6 @@ public class ProductsOrderDto {
 
         if (totalValue != that.totalValue) return false;
         if (totalAmount != that.totalAmount) return false;
-        if (isPaid != that.isPaid) return false;
-        if (isPrepared != that.isPrepared) return false;
-        if (isSend != that.isSend) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (boughtDate != null ? !boughtDate.equals(that.boughtDate) : that.boughtDate != null) return false;
         if (userLogin != null ? !userLogin.equals(that.userLogin) : that.userLogin != null) return false;
@@ -80,9 +74,6 @@ public class ProductsOrderDto {
         result = 31 * result + totalValue;
         result = 31 * result + totalAmount;
         result = 31 * result + (boughtDate != null ? boughtDate.hashCode() : 0);
-        result = 31 * result + (isPaid ? 1 : 0);
-        result = 31 * result + (isPrepared ? 1 : 0);
-        result = 31 * result + (isSend ? 1 : 0);
         result = 31 * result + (userLogin != null ? userLogin.hashCode() : 0);
         result = 31 * result + (productBoughts != null ? productBoughts.hashCode() : 0);
         result = 31 * result + (shippingAddressDto != null ? shippingAddressDto.hashCode() : 0);

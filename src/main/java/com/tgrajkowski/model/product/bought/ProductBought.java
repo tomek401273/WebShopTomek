@@ -28,9 +28,6 @@ public class ProductBought implements Serializable {
 
     @Column
     private int amount;
-// usuń total price
-    @Column
-    private int totalPrice;
 
     public ProductBought() {
     }
@@ -39,6 +36,5 @@ public class ProductBought implements Serializable {
         this.product = product;
         this.productsOrder = productsOrder;
         this.amount = amount;
-        this.totalPrice =amount*product.getPrice();
     }
 }

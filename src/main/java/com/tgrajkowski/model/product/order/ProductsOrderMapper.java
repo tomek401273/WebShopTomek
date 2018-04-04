@@ -1,19 +1,15 @@
 package com.tgrajkowski.model.product.order;
 
-import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bought.ProductBoughtDto;
 import com.tgrajkowski.model.product.bought.ProductBoughtMapper;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
-import org.hibernate.boot.jaxb.SourceType;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ProductsOrderMapper {
@@ -21,9 +17,9 @@ public class ProductsOrderMapper {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
     private String status;
-
     private String sendDateFormated;
     private String deliveryDateFromated;
+    private String statusCode;
 
     public ProductsOrderDto mapToProductsOrderDto(ProductsOrder productsOrder) {
         List<ProductBoughtDto> productBoughtDtos =
@@ -32,7 +28,7 @@ public class ProductsOrderMapper {
 
         ShippingAddressDto shippingAddressDto = shippingAddressMapper.mapToShippingAddressDto(productsOrder.getShippingAddress());
         status = productsOrder.getStatus().getName();
-
+        statusCode = productsOrder.getStatus().getCode();
 
 
         ProductsOrderDto productsOrderDto = new ProductsOrderDto(
@@ -45,6 +41,7 @@ public class ProductsOrderMapper {
                 shippingAddressDto,
                 status
         );
+        productsOrderDto.setStatusCode(statusCode);
 
         if (productsOrder.getStatus().getCode().equals("send")) {
 

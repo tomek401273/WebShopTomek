@@ -1,9 +1,12 @@
 package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.OrderStatus;
+import com.tgrajkowski.model.product.order.OrderSearch;
+import com.tgrajkowski.model.product.order.ProductsOrder;
 import com.tgrajkowski.model.product.order.ProductsOrderDto;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.service.BuyService;
+import com.tgrajkowski.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,9 @@ public class BuyController {
 
     @Autowired
     UserDetailsService userDetailsService;
+
+    @Autowired
+    UserService userService;
 
 
     @RequestMapping(method = RequestMethod.POST, value = "/buy")
@@ -70,7 +76,6 @@ public class BuyController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/filterOrderDate")
     public List<ProductsOrderDto> filterOrderDate(@RequestParam String dateAfter, @RequestParam String dateBefore) {
-        System.out.println("dateBefore: " + dateBefore);
         return buyService.filterOrderDate(dateAfter, dateBefore);
     }
 
@@ -81,8 +86,17 @@ public class BuyController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAllUserLogin")
     public List<String> getAllUserLogin() {
-        return buyService.getAllUser();
+        return userService.getAllUser();
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/orderSearch")
+    public List<ProductsOrderDto> orderSearch(@RequestParam String productTitle, @RequestParam String dateFrom, @RequestParam String dateTo, @RequestParam String status, @RequestParam String userLogin) {
+        OrderSearch orderSearch = new OrderSearch(productTitle, dateFrom, dateTo, status,userLogin);
+        return buyService.searchOrders(orderSearch);
+    }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/delivered")
+    public boolean delivered(@RequestBody OrderStatus orderStatus) throws InterruptedException {
+        return  buyService.orderDelivered(orderStatus);
+    }
 }

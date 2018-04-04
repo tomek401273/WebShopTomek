@@ -13,7 +13,13 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
     public UserDto mapToUserDto(User user) {
-        return new UserDto(user.getName(), user.getSurname(), user.getPassword(), user.getLogin());
+        return new UserDto(
+                user.getName(),
+                user.getSurname(),
+                user.getUserAddress().getCountry(),
+                user.getUserAddress().getCity(),
+                user.getUserAddress().getPostCode(),
+                user.getUserAddress().getStreet());
     }
 
     public User mapToUser(UserDto userDto) {

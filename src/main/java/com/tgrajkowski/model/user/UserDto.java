@@ -1,10 +1,10 @@
 package com.tgrajkowski.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -15,6 +15,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @JsonIgnoreProperties
+@ToString
 public class UserDto {
 
     private Long id;
@@ -27,6 +28,10 @@ public class UserDto {
     private String password;
     @Email
     private String login;
+    private String country;
+    private String city;
+    private String postCode;
+    private String street;
 
     public UserDto(String name, String surname, String password, String login) {
         this.name = name;
@@ -35,14 +40,13 @@ public class UserDto {
         this.login = login;
     }
 
-    @Override
-    public String toString() {
-        return "UserDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", password='" + password + '\'' +
-                ", login='" + login + '\'' +
-                '}';
+    public UserDto(String name, String surname, String country, String city, String postCode, String street) {
+        this.name = name;
+        this.surname = surname;
+        this.country = country;
+        this.city = city;
+        this.postCode = postCode;
+        this.street = street;
     }
+
 }

@@ -30,9 +30,8 @@ public class ProductController {
     @Autowired
     ProductBucketDao product_bucketDao;
 
-    /// get
-    @RequestMapping(method = RequestMethod.PUT, value = "/available")
-    public int checkAvaiable(@RequestBody Long id) {
+    @RequestMapping(method = RequestMethod.GET, value = "/available")
+    public int checkAvaiable(@RequestParam Long id) {
         return productService.checkAvailable(id);
     }
 
@@ -60,10 +59,9 @@ public class ProductController {
         productService.saveProduct(productDto);
     }
 
-    ///// Daj delete !!!
-    @RequestMapping(method = RequestMethod.PUT, value = "/deleteProduct")
-    public void deleteProduct(@RequestBody ProductDto productDto) throws InterruptedException {
-        productService.removeProductFromDatabase(productDto);
+    @RequestMapping(method = RequestMethod.DELETE, value = "/deleteProduct")
+    public void deleteProduct(@RequestParam  Long id) throws InterruptedException {
+        productService.removeProductFromDatabase(id);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateProduct")
@@ -71,18 +69,16 @@ public class ProductController {
         productService.updateProduct(productDto);
     }
 
-    /// daj get
-    @RequestMapping(method = RequestMethod.POST, value = "/searchProduct")
+    @RequestMapping(method = RequestMethod.GET, value = "/searchProduct")
     public @ResponseBody
-    List<ProductDto> searchProduct(@RequestBody String title) {
+    List<ProductDto> searchProduct(@RequestParam String title) {
         return productService.searchProduct(title);
     }
 
-    /// get !!!
-    @RequestMapping(method = RequestMethod.POST, value = "/filterPrice")
+    @RequestMapping(method = RequestMethod.GET, value = "/filterPrice")
     public @ResponseBody
-    List<ProductDto> filterPrice(@RequestBody FilterPrice filterPrice) {
-        return productService.filterProductWithPriceBetween(filterPrice);
+    List<ProductDto> filterPrice(@RequestParam int above, @RequestParam int below) {
+        return productService.filterProductWithPriceBetween(above, below);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAllProductsTitle")

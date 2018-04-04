@@ -46,6 +46,10 @@ public class User {
     )
     private List<ProductsOrder> orders = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    private UserAddress userAddress;
+
     public User(String name, String surname, String password, String login) {
         this.name = name;
         this.surname = surname;

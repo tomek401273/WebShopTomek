@@ -19,16 +19,19 @@ CREATE PROCEDURE InitData2()
 
     IF (COUNTROW=0) THEN
 
-      INSERT INTO user (login, name, password, surname) VALUES
-        ('tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas');
-      INSERT INTO user (login, name, password, surname) VALUES
-        ('tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user');
+
+    INSERT INTO user_address (city, country, post_code, street) VALUES ('NewYork', 'USA', '12345', 'Broadway');
+    INSERT INTO user_address (city, country, post_code, street) VALUES ('San Francisco', 'USA', '34333', 'Lombard');
+      INSERT INTO user (login, name, password, surname, address_id) VALUES
+        ('tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas', 1);
+      INSERT INTO user (login, name, password, surname, address_id) VALUES
+        ('tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user', 2);
 
       INSERT INTO role (code, name) VALUES ('admin', 'admin');
       INSERT INTO role (code, name) VALUES ('user', 'user');
 
       INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
-      INSERT INTO user_roles (user_id, role_id) VALUES (2, 1);
+      INSERT INTO user_roles (user_id, role_id) VALUES (2, 2);
       INSERT INTO user_roles (user_id, role_id) VALUES (1, 2);
 
       INSERT INTO bucket (user_id) VALUE (1);
@@ -52,22 +55,24 @@ CREATE PROCEDURE InitData2()
       INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://trojmiasto.wizytowka.waw.pl/wp-content/uploads/2017/11/dron-trojmiasto-bytow.jpg', 100, 'Super Dron Dron', 23000, 'Dron', 100, 2);
       INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://kaka.com.ng/image/data/layerslider/iphone%206.jpg', 100, 'super iphone iphone', 20000, 'iphone6', 100, 2);
 
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 1,  1, curdate()-1);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 2,  2, curdate()-2);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 3,  3, curdate()-3);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 4,  4, curdate()-4);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 5,  5, curdate()-5);
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 1,  1, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 2,  2, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 3,  3, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 4,  4, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 5,  5, curdate());
 
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 1,  1, curdate()-1);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 2,  2, curdate()-2);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 3,  3, curdate()-3);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 4,  4, curdate()-4);
-      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 5,  5, curdate()-5);
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 1,  1, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 2,  2, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 3,  3, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 4,  4, curdate());
+      INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 5,  5, curdate());
 
       INSERT INTO status (code, name) VALUES ('booked', 'Order was booked');
       INSERT INTO status (code, name) VALUES ('paid', 'Transaction confirmed');
       INSERT INTO status (code, name) VALUES ('prepared', 'Order was prepared and is ready to send ');
       INSERT INTO status (code, name) VALUES ('send', 'Order was send check status delivery in link');
+      INSERT INTO status (code, name) VALUES ('delivered', 'Order was delivered to client');
+
 
       INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
       INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
@@ -81,38 +86,38 @@ CREATE PROCEDURE InitData2()
       INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
       INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
 
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-1, 'link_delivery', curdate(), 2, 200, 1, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-1, 'link_delivery', curdate(), 2, 200, 1, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-2, 'link_delivery', curdate(), 2, 200, 2, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-3, 'link_delivery', 2, 200, 3, 3, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-4, 'link_delivery', 2, 200, 4, 2, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-5, 'link_delivery', 2, 200, 5, 1, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-6, 'link_delivery', curdate(), 2, 200, 6, 4, 2);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-7, 'link_delivery', curdate(), 2, 200, 7, 4, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-8, 'link_delivery', 2, 200, 8, 3, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-9, 'link_delivery', 2, 200, 1, 2, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate()-10, 'link_delivery', 2, 200, 1, 1, 2);
+      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', curdate(), 2, 200, 1, 4, 1);
+      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', curdate(), 2, 200, 1, 4, 1);
+      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', curdate(), 2, 200, 2, 4, 1);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 3, 3, 1);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 4, 2, 1);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 5, 1, 1);
+      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', curdate(), 2, 200, 6, 4, 2);
+      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', curdate(), 2, 200, 7, 4, 2);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 8, 3, 2);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 1, 2, 2);
+      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (curdate(), 'link_delivery', 2, 200, 1, 1, 2);
 
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (1, 1, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (2, 2, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (3, 3, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (4, 4, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (5, 5, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (6, 6, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (7, 7, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (8, 8, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (9, 9, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (10, 10, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (2, 1, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (3, 2, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (4, 3, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (5, 4, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (6, 5, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (7, 6, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (8, 7, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (9, 8, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (10, 9, 1, 100);
-      INSERT INTO product_bought (product_id, products_order_id, amount, total_price) VALUES (1, 10, 1, 100);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (1, 1, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (2, 2, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (3, 3, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (4, 4, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (5, 5, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (6, 6, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (7, 7, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (8, 8, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (9, 9, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (10, 10, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (2, 1, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (3, 2, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (4, 3, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (5, 4, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (6, 5, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (7, 6, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (8, 7, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (9, 8, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (10, 9, 1);
+      INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (1, 10, 1);
     END IF;
 
   END $$

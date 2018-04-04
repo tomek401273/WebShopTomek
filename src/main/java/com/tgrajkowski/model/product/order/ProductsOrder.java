@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@NamedNativeQuery(
+        name = "ProductsOrder.findOrderAfterDate",
+        query = "SELECT * FROM products_order WHERE bought_date >=:AFTER AND bought_date <=:BEFORE",
+        resultClass = ProductsOrder.class
+)
+
+
 @Entity
 @Getter
 @Setter
@@ -37,6 +44,9 @@ public class ProductsOrder {
     @Column
     private Date sendDate;
 
+    @Column
+    private Date deliveredDate;
+
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
@@ -55,14 +65,12 @@ public class ProductsOrder {
             fetch = FetchType.LAZY
     )
     private ShippingAddress shippingAddress;
-    // adres dostawy może być inny niż zamieszkania
-    // kolejny stan i data dostarczenia
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_id")
     private Status status;
 
-    public ProductsOrder( User user) {
+    public ProductsOrder(User user) {
         this.boughtDate = new Date();
         this.user = user;
     }

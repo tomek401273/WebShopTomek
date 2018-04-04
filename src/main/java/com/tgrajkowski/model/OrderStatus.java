@@ -10,8 +10,6 @@ import lombok.*;
 public class OrderStatus {
     private String login;
     private Long orderId;
-    private boolean paid;
-    private boolean prepared;
-    private boolean send;
+    private String status;
     private String linkDelivery;
 }

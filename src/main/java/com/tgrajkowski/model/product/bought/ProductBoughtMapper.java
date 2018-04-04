@@ -11,8 +11,7 @@ public class ProductBoughtMapper {
     public ProductBoughtDto mapToProductBoughtDto(ProductBought productBought) {
        return new ProductBoughtDto(
                 productMapper.mapToProductDto(productBought.getProduct()),
-                productBought.getAmount(),
-                productBought.getTotalPrice()
+                productBought.getAmount()
         );
     }
     public List<ProductBoughtDto> mapToProductBoughtDtoList (List<ProductBought> productBoughts) {

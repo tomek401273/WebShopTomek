@@ -31,7 +31,6 @@ import java.util.List;
 @Setter
 @Entity
 @NoArgsConstructor
-//@AllArgsConstructor
 @ToString
 public class Product {
 

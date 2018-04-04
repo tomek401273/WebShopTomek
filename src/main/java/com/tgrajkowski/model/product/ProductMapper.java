@@ -51,12 +51,9 @@ public class ProductMapper {
                 product.getAvailableAmount(),
                 product.getStatus().code,
                 product.getStatus().name
-
         );
-
         return productDto;
     }
-
 
     public List<ProductDto> mapToProductDtoList(List<Product> products) {
         List<ProductDto> dtoList = new ArrayList<>();
@@ -65,18 +62,6 @@ public class ProductMapper {
             dtoList.add(productDto);
         }
         return dtoList;
-    }
-
-    public ProductBucketDto maptoProcuctBucketDto(Product product){
-//        ProductBucketDto bucketDto = new ProductBucketDto();
-//        bucketDto.setId(product.getId());
-//        bucketDto.setAmount(0);
-//        bucketDto.setDescription(product.getDescription());
-//        bucketDto.setImageLink(product.getImageLink());
-//        bucketDto.setTotalPrice(product.getTotalPrice());
-//        bucketDto.setTitle(product.getTitle());
-//        return bucketDto;
-        return null;
     }
 
 }

@@ -11,5 +11,5 @@ import lombok.*;
 public class ProductBoughtDto {
     private ProductDto product;
     private int amount;
-    private int totalPrice;
+
 }

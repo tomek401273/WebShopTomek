@@ -1,9 +1,8 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.user.Role;
-import com.tgrajkowski.model.user.User;
-import com.tgrajkowski.model.user.UserDto;
-import com.tgrajkowski.model.user.UserMapper;
+import com.tgrajkowski.model.bucket.Bucket;
+import com.tgrajkowski.model.model.dao.BucketDao;
+import com.tgrajkowski.model.user.*;
 import com.tgrajkowski.model.model.dao.RoleDao;
 import com.tgrajkowski.model.model.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,12 @@ public class AuthenticationController {
 
     @Autowired
     private UserDao userDao;
+
     @Autowired
     private RoleDao roleDao;
+
+    @Autowired
+    private BucketDao bucketDao;
 
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public UserDto singUp(@RequestBody @Valid UserDto userDto) {
@@ -40,8 +43,16 @@ public class AuthenticationController {
         roles.add(role);
         user.setRoleList(roles);
 
+        UserAddress userAddress = new UserAddress(userDto.getCountry(), userDto.getCity(), userDto.getPostCode(), userDto.getStreet());
+        user.setUserAddress(userAddress);
+
         userDao.save(user);
         userDto.setId(user.getId());
+
+        Bucket bucket = new Bucket();
+        bucket.setUser(user);
+        bucketDao.save(bucket);
+
         return userDto;
     }
 

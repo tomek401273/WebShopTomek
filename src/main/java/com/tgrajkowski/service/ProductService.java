@@ -57,8 +57,8 @@ public class ProductService {
         return productMapper.mapToProductDtoList(products);
     }
 
-    public void removeProductFromDatabase(ProductDto productDto) throws InterruptedException {
-        Product product = productDao.findById(productDto.getId());
+    public void removeProductFromDatabase(Long id) throws InterruptedException {
+        Product product = productDao.findById(id);
         List<ProductBucket> productBuckets = product.getProductBuckets();
         List<ProductBucketPK> productBucketPKS = new ArrayList<>();
         for (ProductBucket productBucket : productBuckets) {
@@ -92,30 +92,17 @@ public class ProductService {
         Long futureDate = dateTomorow.getTime();
         Long nowDate = System.currentTimeMillis();
         Long calculatedDate = futureDate - nowDate;
-        convertMiliscendToNormalTime(calculatedDate);
         return calculatedDate;
     }
 
     public Date calculateDateTomorow() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 10);
-        calendar.set(Calendar.MINUTE, 33);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 49);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
-    }
-
-    public void convertMiliscendToNormalTime(Long milisec) {
-        System.out.println("milisec: " + milisec);
-        Long sec = milisec / 1000;
-        System.out.println("sec: " + sec);
-        Long min = sec / 60;
-        Long hsec = sec % 60;
-        System.out.println(" min: " + min);
-        Long h = min / 60;
-        Long hmin = min % 60;
-        System.out.println("h: " + h + "; min: " + hmin + "; sec: " + hsec);
     }
 
     public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
@@ -184,8 +171,8 @@ public class ProductService {
         return productMapper.mapToProductDtoList(productDao.findProductContainstTitleWithLetters(title));
     }
 
-    public List<ProductDto> filterProductWithPriceBetween(FilterPrice filterPrice) {
-        return productMapper.mapToProductDtoList(productDao.findProductWithPriceBetween(filterPrice.getAbove(), filterPrice.getBelow()));
+    public List<ProductDto> filterProductWithPriceBetween(int above, int below) {
+        return productMapper.mapToProductDtoList(productDao.findProductWithPriceBetween(above, below));
     }
 
     public List<String> getAllProductsTitle() {
@@ -224,7 +211,6 @@ public class ProductService {
 
     public int maxPriceProduct() {
         int maxValue = productDao.getMaxProductPrice().getPrice();
-        System.out.println("Max Value Value: "+maxValue);
         return maxValue;
     }
 }
