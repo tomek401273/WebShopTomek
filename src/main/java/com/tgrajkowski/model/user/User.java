@@ -1,5 +1,6 @@
 package com.tgrajkowski.model.user;
 
+import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.order.ProductsOrder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,11 +32,11 @@ public class User {
     @Column(unique = true)
     private String login;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER )
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             name = "User_Roles",
-            joinColumns = {@JoinColumn (name = "user_id")},
-            inverseJoinColumns={@JoinColumn(name="role_id")})
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private List<Role> roleList = new ArrayList<>();
 
     @OneToMany(
@@ -49,6 +50,14 @@ public class User {
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private UserAddress userAddress;
+
+    @OneToMany(
+            targetEntity = ProductMark.class,
+            mappedBy = "user",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<ProductMark> productMarks = new ArrayList<>();
 
     public User(String name, String surname, String password, String login) {
         this.name = name;

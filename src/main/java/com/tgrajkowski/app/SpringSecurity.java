@@ -29,13 +29,11 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/*").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.PUT, "/product/available").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/product/*").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/searchProduct").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/filterPrice").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/setReminder").permitAll()
-
-
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/bucket/coupon").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 .anyRequest().authenticated()

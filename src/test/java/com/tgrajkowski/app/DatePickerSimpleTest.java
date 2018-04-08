@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 public class DatePickerSimpleTest {
     @Test
@@ -26,6 +27,16 @@ public class DatePickerSimpleTest {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date dateFormated = dateFormat.parse(inputDateFrom);
         System.out.println(dateFormated);
+    }
+
+    @Test
+    public void testTest() throws ParseException {
+        Date created = new Date();
+        String parsedCreated;
+        System.out.println(created);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        parsedCreated = dateFormat.format(created);
+        System.out.println(parsedCreated);
     }
 
     @Test

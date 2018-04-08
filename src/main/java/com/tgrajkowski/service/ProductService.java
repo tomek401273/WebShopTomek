@@ -6,8 +6,14 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
+import com.tgrajkowski.model.product.comment.Comment;
+import com.tgrajkowski.model.product.comment.CommentDto;
+import com.tgrajkowski.model.product.comment.CommentMapper;
+import com.tgrajkowski.model.product.mark.ProductMark;
+import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
+import com.tgrajkowski.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +40,13 @@ public class ProductService {
     private ProductEmailReminderDao productEmailReminderDao;
 
     @Autowired
-    ProductMapper productMapper;
+    private ProductMapper productMapper;
+
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private ProductMarkDao productMarkDao;
 
     public int checkAvailable(Long id) {
         Product product = productDao.findById(id);
@@ -77,6 +89,7 @@ public class ProductService {
         }
         product.setProductBuckets(new ArrayList<>());
         product.setAvailableAmount(product.getTotalAmount());
+        product.setLastModification(new Date());
         productDao.save(product);
 
         for (ProductBucketPK productBucketPK : productBucketPKS) {
@@ -213,4 +226,30 @@ public class ProductService {
         int maxValue = productDao.getMaxProductPrice().getPrice();
         return maxValue;
     }
+
+    public int markProduct(ProductMarkDto productMarkDto) {
+        int sumMarks =0;
+        int averageMarks;
+        int countMarks = 0;
+        User user = userDao.findByLogin(productMarkDto.getLogin());
+        Product product = productDao.findById(productMarkDto.getProductId());
+
+        ProductMark productMark = new ProductMark(product, user, productMarkDto.getMark());
+        productMarkDao.save(productMark);
+
+        List<ProductMark> productMarks= product.getProductMarks();
+        for (ProductMark productMarkTemp: productMarks) {
+            sumMarks += productMarkTemp.getMark();
+            countMarks++;
+        }
+        averageMarks=sumMarks/countMarks;
+        product.setSumMarks(sumMarks);
+        product.setCountMarks(countMarks);
+        product.setAverageMarks(averageMarks);
+        productDao.save(product);
+
+        return averageMarks;
+    }
+
+
 }

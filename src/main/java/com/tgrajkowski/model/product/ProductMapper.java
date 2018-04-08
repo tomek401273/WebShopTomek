@@ -6,16 +6,24 @@ import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
 import com.tgrajkowski.model.product.ProductStatus;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
+import com.tgrajkowski.model.product.comment.CommentMapper;
+import com.tgrajkowski.model.product.order.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 @Component
 public class ProductMapper {
 
     @Autowired
     private ProductStatusDao productStatusDao;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
+
 
     public Product mapToProduct(ProductDto productDto) {
         Product product = new Product(
@@ -24,7 +32,10 @@ public class ProductMapper {
                 productDto.getDescription(),
                 productDto.getImageLink(),
                 productDto.getTotalAmount(),
-                productDto.getTotalAmount());
+                productDto.getTotalAmount(), new Date());
+        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
+        product.setStatus(productStatus);
+
         return product;
     }
 
@@ -37,6 +48,7 @@ public class ProductMapper {
         product.setTitle(productDto.getTitle());
         ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
         product.setStatus(productStatus);
+        product.setLastModification(new Date());
         return product;
     }
 
@@ -48,10 +60,14 @@ public class ProductMapper {
                 product.getDescription(),
                 product.getImageLink(),
                 product.getTotalAmount(),
-                product.getAvailableAmount(),
-                product.getStatus().code,
-                product.getStatus().name
+                product.getAvailableAmount()
         );
+        productDto.setStatusCode(product.getStatus().code);
+        productDto.setStatusMessage(product.getStatus().name);
+        productDto.setSumMarks(product.getSumMarks());
+        productDto.setCountMarks(product.getCountMarks());
+        productDto.setMarksAverage(product.getAverageMarks());
+        productDto.setCommentDtos(commentMapper.mapToCommentDtos(product.getComments()));
         return productDto;
     }
 

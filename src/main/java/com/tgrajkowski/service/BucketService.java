@@ -33,6 +33,9 @@ public class BucketService {
     @Autowired
     private ProductBucketDao productBucketDao;
 
+    @Autowired
+    private SubscriberDao subscriberDao;
+
     private ProductBucketMapper productBucketMapper = new ProductBucketMapper();
     private UserMapper userMapper = new UserMapper();
 
@@ -108,16 +111,18 @@ public class BucketService {
 
     public boolean checkRemovingProdces(ProductBucketPK productBucketPK, int productBucketAmountActual) {
         Optional<ProductBucket> optionalProductBucket = Optional.ofNullable(productBucketDao.findOne(productBucketPK));
-        optionalProductBucket.isPresent();
-        if (optionalProductBucket.isPresent()) {
-            if (optionalProductBucket.get().getAmount() < productBucketAmountActual) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
+//        optionalProductBucket.isPresent();
+//        if (optionalProductBucket.isPresent()) {
+//            if (optionalProductBucket.get().getAmount() < productBucketAmountActual) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } else {
+//            return true;
+//        }
+
+      return optionalProductBucket.filter(x->x.getAmount()< productBucketAmountActual).isPresent();
     }
 
     public void removeSingleProductFromBucket(String login, Long productId) {
@@ -141,5 +146,12 @@ public class BucketService {
         User user = userDao.findByLogin(login);
         UserDto userDto = userMapper.mapToUserDto(user);
         return userDto;
+    }
+
+    public boolean checkCodeAvailable(String code) {
+       if(subscriberDao.findByCode(code) != null) {
+           return true;
+       }
+       return false;
     }
 }

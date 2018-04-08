@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -33,5 +34,8 @@ public interface ProductDao extends CrudRepository<Product, Long> {
 
     @Query
     Product getMaxProductPrice();
+
+    List<Product> findByLastModificationAfter(Date date);
+
 
 }

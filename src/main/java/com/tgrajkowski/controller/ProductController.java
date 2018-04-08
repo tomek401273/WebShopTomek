@@ -4,6 +4,8 @@ import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.ProductBucketDao;
 import com.tgrajkowski.model.product.*;
+import com.tgrajkowski.model.product.comment.CommentDto;
+import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +97,11 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.GET, value = "/maxprice")
     public @ResponseBody int getMaxPriceProduct () {
         return productService.maxPriceProduct();
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/mark")
+    public @ResponseBody int markProduct(@RequestBody ProductMarkDto productMarkDto) {
+       return productService.markProduct(productMarkDto);
     }
 }
 

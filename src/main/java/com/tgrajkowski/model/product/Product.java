@@ -2,11 +2,14 @@ package com.tgrajkowski.model.product;
 
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
+import com.tgrajkowski.model.product.comment.Comment;
+import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @NamedNativeQueries({
@@ -45,7 +48,7 @@ public class Product {
     @Column
     private String title;
 
-    @Column
+    @Column()
     private String description;
 
     @Column
@@ -85,13 +88,52 @@ public class Product {
     )
     private List<ProductEmailReminder> productEmailReminders = new ArrayList<>();
 
+    @OneToMany(
+            targetEntity = ProductMark.class,
+            mappedBy = "product",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<ProductMark> productMarks = new ArrayList<>();
 
-    public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
+    @Column
+    private int averageMarks;
+
+    @Column
+    private int sumMarks;
+
+    @Column
+    private int countMarks;
+
+    @Column
+    private Date lastModification;
+
+    @OneToMany(
+            targetEntity = Comment.class,
+            mappedBy = "product",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+
+    )
+    private List<Comment> comments = new ArrayList<>();
+
+//    public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
+//        this.price = price;
+//        this.title = title;
+//        this.description = description;
+//        ImageLink = imageLink;
+//        this.totalAmount = totalAmount;
+//        this.availableAmount = availableAmount;
+//    }
+
+    public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount, Date lastModification) {
         this.price = price;
         this.title = title;
         this.description = description;
         ImageLink = imageLink;
         this.totalAmount = totalAmount;
         this.availableAmount = availableAmount;
+        this.lastModification = lastModification;
     }
+
 }

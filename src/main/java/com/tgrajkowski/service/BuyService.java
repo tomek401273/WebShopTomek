@@ -3,6 +3,7 @@ package com.tgrajkowski.service;
 import com.tgrajkowski.model.OrderStatus;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.bucket.Bucket;
+import com.tgrajkowski.model.newsletter.Subscriber;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
@@ -49,11 +50,26 @@ public class BuyService {
 
     private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
 
+    @Autowired
+    private SubscriberDao subscriberDao;
+
 
     public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
         int orderValue = 0;
         int totalAmount = 0;
         Long productOrderId;
+        boolean isCodeCorrect = false;
+        System.out.println("shippingAdderessDto: " + shippingAddressDto);
+        if (!shippingAddressDto.getCode().equals("null")) {
+            System.out.println("Code NOT NULL: " + shippingAddressDto.getCode());
+            Subscriber subscriber = subscriberDao.findByCode(shippingAddressDto.getCode());
+            if (subscriber != null) {
+                subscriber.setCode(null);
+                subscriberDao.save(subscriber);
+                isCodeCorrect = true;
+            }
+        }
+
 
         Status status = statusDao.findByCode("booked");
 
@@ -70,11 +86,14 @@ public class BuyService {
             Product product = productBucket.getProduct();
             ProductBought productBought = new ProductBought(product, productsOrder, productBucket.getAmount());
 
-            orderValue += productBought.getAmount()*productBought.getProduct().getPrice();
+            orderValue += productBought.getAmount() * productBought.getProduct().getPrice();
             totalAmount += productBought.getAmount();
             productBoughtDao.save(productBought);
         }
 
+        if (isCodeCorrect) {
+            orderValue= (int) (orderValue-(orderValue*0.1));
+        }
         productsOrder.setTotalValue(orderValue);
         productsOrder.setTotalAmount(totalAmount);
         productsOrder.setShippingAddress(shippingAddress);

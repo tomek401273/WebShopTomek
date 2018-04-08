@@ -58,4 +58,9 @@ public class BucketController {
       return bucketService.getAddressShipping(login);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/coupon")
+    public @ResponseBody boolean checkCouponAvailable(@RequestParam String code) {
+       return bucketService.checkCodeAvailable(code);
+    }
+
 }
