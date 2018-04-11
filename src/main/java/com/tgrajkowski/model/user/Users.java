@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +32,7 @@ public class User {
     @Column(unique = true)
     private String login;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             name = "User_Roles",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -59,7 +59,7 @@ public class User {
     )
     private List<ProductMark> productMarks = new ArrayList<>();
 
-    public User(String name, String surname, String password, String login) {
+    public Users(String name, String surname, String password, String login) {
         this.name = name;
         this.surname = surname;
         this.password = password;

@@ -1,7 +1,7 @@
 package com.tgrajkowski.model.bucket;
 
 import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,7 +23,7 @@ public class Bucket {
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
-    private User user;
+    private Users user;
 
     @OneToMany(
             targetEntity = ProductBucket.class,

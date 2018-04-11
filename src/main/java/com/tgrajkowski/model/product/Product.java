@@ -99,7 +99,7 @@ public class Product {
             targetEntity = ProductEmailReminder.class,
             mappedBy = "products",
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     private List<ProductEmailReminder> productEmailReminders = new ArrayList<>();
 

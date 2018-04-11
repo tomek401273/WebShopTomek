@@ -8,7 +8,7 @@ import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import com.tgrajkowski.model.user.UserDto;
 import com.tgrajkowski.model.user.UserMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +50,7 @@ public class BucketService {
 
     public boolean addProductToBucket(UserBucketDto userBucketDto) {
         String login = userBucketDto.getLogin();
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         log.info("user: " + login + " add Product to Bucket");
 // programowanie aspektowe logownaie informacji
@@ -78,7 +78,7 @@ public class BucketService {
 
 
     public List<ProductBucketDto> showProductInBucket(String login) {
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
 
@@ -88,7 +88,7 @@ public class BucketService {
 
     public boolean removeSinggleItemFromBucket(String login, Long productId) {
         int productBucketAmountActual;
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         Product product = productDao.findById(productId);
 
@@ -127,7 +127,7 @@ public class BucketService {
     }
 
     public void removeSingleProductFromBucket(String login, Long productId) {
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         Product product = productDao.findById(productId);
 
@@ -144,7 +144,7 @@ public class BucketService {
     }
 
     public UserDto getAddressShipping(String login) {
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         UserDto userDto = userMapper.mapToUserDto(user);
         return userDto;
     }

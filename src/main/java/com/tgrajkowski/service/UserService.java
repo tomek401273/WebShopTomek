@@ -1,7 +1,7 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.model.dao.UserDao;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +15,8 @@ public class UserService {
 
     public List<String> getAllUser() {
         List<String> userLoginList = new ArrayList<>();
-        List<User> userList = userDao.findAll();
-        for (User user : userList) {
+        List<Users> userList = userDao.findAll();
+        for (Users user : userList) {
             userLoginList.add(user.getLogin());
         }
         return userLoginList;

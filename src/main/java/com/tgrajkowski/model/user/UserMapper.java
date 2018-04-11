@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserMapper {
-    public UserDto mapToUserDto(User user) {
+    public UserDto mapToUserDto(Users user) {
         return new UserDto(
                 user.getName(),
                 user.getSurname(),
@@ -22,8 +22,8 @@ public class UserMapper {
                 user.getUserAddress().getStreet());
     }
 
-    public User mapToUser(UserDto userDto) {
-        return new User(userDto.getName(), userDto.getSurname(), userDto.getPassword(), userDto.getLogin());
+    public Users mapToUser(UserDto userDto) {
+        return new Users(userDto.getName(), userDto.getSurname(), userDto.getPassword(), userDto.getLogin());
     }
 
     public UserDto mapToUserDto(InputStream inputStream) {
@@ -37,11 +37,19 @@ public class UserMapper {
         return null;
     }
 
-    public UserDetails mapToUserDetails(User user) {
+    public UserDetails mapToUserDetails(Users user) {
         List<GrantedAuthority> userRoleList = new ArrayList<>();
+        System.out.println("getiing roleList");
+        List<Role> roleList = user.getRoleList();
+        System.out.println("roleList size: "+roleList.size());
+        for (Role role : roleList) {
+            System.out.println("role: " + role.getId()+" code: "+ role.getCode());
+        }
+        System.out.println("end roleList");
         userRoleList = user.getRoleList().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getCode()))
                 .collect(Collectors.toList());
+        System.out.println("UserMapper roleList: "+userRoleList.toString());
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), userRoleList);
         return userDetails;

@@ -2,7 +2,7 @@ package com.tgrajkowski.model.product.order;
 
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.shipping.ShippingAddress;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import lombok.*;
 
 import javax.persistence.*;
@@ -50,7 +50,7 @@ public class ProductsOrder {
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users user;
 
     @OneToMany(
             targetEntity = ProductBought.class,
@@ -64,13 +64,14 @@ public class ProductsOrder {
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
+    @JoinColumn(name = "shipping_address_id")
     private ShippingAddress shippingAddress;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "status_id")
     private Status status;
 
-    public ProductsOrder(User user) {
+    public ProductsOrder(Users user) {
         this.boughtDate = new Date();
         this.user = user;
     }

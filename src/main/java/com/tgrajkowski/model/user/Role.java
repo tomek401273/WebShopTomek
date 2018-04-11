@@ -22,6 +22,6 @@ public class  Role {
     private String code;
     @Column
     private String name;
-    @ManyToMany(mappedBy = "roleList")
-    private List<User> userList = new ArrayList<>();
+    @ManyToMany(mappedBy = "roleList", fetch = FetchType.EAGER)
+    private List<Users> userList = new ArrayList<>();
 }

@@ -1,7 +1,7 @@
 package com.tgrajkowski.model.product.mark;
 
 import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,7 +24,7 @@ public class ProductMark implements Serializable {
     @Id
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users user;
 
     @Column
     private int mark;
@@ -32,7 +32,7 @@ public class ProductMark implements Serializable {
     public ProductMark() {
     }
 
-    public ProductMark(Product product, User user, int mark) {
+    public ProductMark(Product product, Users user, int mark) {
         this.product = product;
         this.user = user;
         this.mark = mark;

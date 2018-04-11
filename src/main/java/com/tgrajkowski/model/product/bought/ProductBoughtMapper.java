@@ -10,7 +10,7 @@ public class ProductBoughtMapper {
 
     public ProductBoughtDto mapToProductBoughtDto(ProductBought productBought) {
        return new ProductBoughtDto(
-                productMapper.mapToProductDto(productBought.getProduct()),
+                productMapper.mapToProductDto2(productBought.getProduct()),
                 productBought.getAmount()
         );
     }

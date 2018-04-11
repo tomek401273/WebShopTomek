@@ -6,14 +6,11 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
-import com.tgrajkowski.model.product.comment.Comment;
-import com.tgrajkowski.model.product.comment.CommentDto;
-import com.tgrajkowski.model.product.comment.CommentMapper;
 import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -259,7 +256,7 @@ public class ProductService {
         int averageMarks;
         int countMarks = 0;
 
-        User user = userDao.findByLogin(productMarkDto.getLogin());
+        Users user = userDao.findByLogin(productMarkDto.getLogin());
         Product product = productDao.findById(productMarkDto.getProductId());
 
         ProductMark productMark = new ProductMark(product, user, productMarkDto.getMark());

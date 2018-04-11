@@ -33,7 +33,7 @@ public class AuthenticationService {
     public UserDto singUp(UserDto userDto) {
         String passwordEncoded = bCryptPasswordEncoder.encode(userDto.getPassword());
         userDto.setPassword(passwordEncoded);
-        User user = userMapper.mapToUser(userDto);
+        Users user = userMapper.mapToUser(userDto);
 
         List<Role> roles = new ArrayList<>();
         Role role = roleDao.findByName("user");

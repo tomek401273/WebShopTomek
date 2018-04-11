@@ -11,16 +11,12 @@ import com.tgrajkowski.model.product.order.*;
 import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
-import com.tgrajkowski.model.user.User;
+import com.tgrajkowski.model.user.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -74,7 +70,7 @@ public class BuyService {
         Status status = statusDao.findByCode("booked");
 
         ShippingAddress shippingAddress = shippingAddressMapper.mappToShippedAdderss(shippingAddressDto);
-        User user = userDao.findByLogin(shippingAddressDto.getLogin());
+        Users user = userDao.findByLogin(shippingAddressDto.getLogin());
         Bucket bucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> products = bucket.getProductBuckets();
 
@@ -116,7 +112,7 @@ public class BuyService {
     }
 
     public List<ProductsOrderDto> getAllProductsOrdersUser(String login) {
-        User user = userDao.findByLogin(login);
+        Users user = userDao.findByLogin(login);
         List<ProductsOrder> productsOrders = new ArrayList<>();
         try {
             productsOrders = productsOrderDao.findByUser_Id(user.getId());
