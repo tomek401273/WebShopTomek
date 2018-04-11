@@ -42,18 +42,32 @@ CREATE PROCEDURE InitData2()
       INSERT INTO product_status (code, name) VALUES ('withdrawn', 'Product is withdrawn form sale');
       INSERT INTO product_status (code, name) VALUES ('inaccessible', 'Product is inaccessible');
 
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://i.ebayimg.com/00/s/NTQzWDQxNQ==/z/X-IAAOSweDdaoUD1/$_86.JPG', 100, 'Samsung Galaxy S9', 100, 'Galaxy S9', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://www.att.com/catalog/en/skus/images/apple-iphone%20x-space%20gray-450x350.png', 100, 'super iphone iphone', 100, 'iphone10', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://nusignsupply.com/store/images/detailed/1/flatbed-front.jpg', 100, 'Super Printer', 100, 'Super Printer', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://image3.mouthshut.com/images/imagesp/925872676s.jpg', 100, 'Printer printer Cannon Printer', 100, 'Printer', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://assets.letemps.ch/sites/default/files/media/2018/01/19/file6yhesfeuttf1awwjugk.jpg', 100, 'Super Server', 100, 'Super Server', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://dataekb.ru/wp-content/uploads/2017/05/types-of-web-hosting-servers.jpg', 100, 'Server Server', 100, 'Server', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://static.pexels.com/photos/204611/pexels-photo-204611.jpeg', 100, 'Ultra Computer with Windows', 100, 'Ultra Compupter', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://des.gbtcdn.com/uploads/pdm-desc-pic/Electronic/image/2016/04/21/1461210911561985.jpg', 100, 'Standard Windows Computer', 100, 'Standard Comp', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://www.ex-astris-scientia.org/inconsistencies/monitors/monitor-tos-shine-theparadisesyndrome.jpg', 100, 'Super Spocks Computer', 100000, 'Spocks Computer', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('https://static.pexels.com/photos/204611/pexels-photo-204611.jpeg', 100, 'super computer computer', 200000, 'Super Comp', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://trojmiasto.wizytowka.waw.pl/wp-content/uploads/2017/11/dron-trojmiasto-bytow.jpg', 100, 'Super Dron Dron', 23000, 'Dron', 100, 2);
-      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id) VALUES ('http://kaka.com.ng/image/data/layerslider/iphone%206.jpg', 100, 'super iphone iphone', 20000, 'iphone6', 100, 2);
+      INSERT INTO category (name) VALUES ( 'PC Gaming');
+      INSERT INTO category (name) VALUES ( 'PC Desktop');
+      INSERT INTO category (name) VALUES ( 'Laptops');
+      INSERT INTO category (name) VALUES ( 'Phones');
+      INSERT INTO category (name) VALUES ( 'Tablets');
+      INSERT INTO category (name) VALUES ( 'Monitors');
+      INSERT INTO category (name) VALUES ( 'Computer Components');
+      INSERT INTO category (name) VALUES ( 'Storage & Hard Drivers');
+      INSERT INTO category (name) VALUES ( 'Networking');
+      INSERT INTO category (name) VALUES ( 'Computer Accessories');
+      INSERT INTO category (name) VALUES ( 'Printer');
+      INSERT INTO category (name) VALUES ( 'Server');
+
+
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://i.ebayimg.com/00/s/NTQzWDQxNQ==/z/X-IAAOSweDdaoUD1/$_86.JPG', 100, 'Samsung Galaxy S9', 100, 'Galaxy S9', 100, 2, 0, 0, 0, curdate(), 4);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://www.att.com/catalog/en/skus/images/apple-iphone%20x-space%20gray-450x350.png', 100, 'super iphone iphone', 100, 'iphone10', 100, 2, 0, 0, 0, curdate(), 4);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('http://nusignsupply.com/store/images/detailed/1/flatbed-front.jpg', 100, 'Super Printer', 100, 'Super Printer', 100, 2, 0, 0, 0, curdate(), 11);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://image3.mouthshut.com/images/imagesp/925872676s.jpg', 100, 'Printer printer Cannon Printer', 100, 'Printer', 100, 2, 0, 0, 0, curdate(), 11);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://assets.letemps.ch/sites/default/files/media/2018/01/19/file6yhesfeuttf1awwjugk.jpg', 100, 'Super Server', 100, 'Super Server', 100, 2, 0, 0, 0, curdate(), 12);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('http://dataekb.ru/wp-content/uploads/2017/05/types-of-web-hosting-servers.jpg', 100, 'Server Server', 100, 'Server', 100, 2, 0, 0, 0, curdate(), 12);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://static.pexels.com/photos/204611/pexels-photo-204611.jpeg', 100, 'Ultra Computer with Windows', 100, 'Ultra Compupter', 100, 2, 0, 0, 0, curdate(), 1);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://des.gbtcdn.com/uploads/pdm-desc-pic/Electronic/image/2016/04/21/1461210911561985.jpg', 100, 'Standard Windows Computer', 100, 'Standard Comp', 100, 2, 0, 0, 0, curdate(), 2);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('http://www.ex-astris-scientia.org/inconsistencies/monitors/monitor-tos-shine-theparadisesyndrome.jpg', 100, 'Super Spocks Computer', 100000, 'Spocks Computer', 100, 2, 0, 0, 0, curdate(), 1);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('https://static.pexels.com/photos/204611/pexels-photo-204611.jpeg', 100, 'super computer computer', 200000, 'Super Comp', 100, 2, 0, 0, 0, curdate(), 1);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('http://trojmiasto.wizytowka.waw.pl/wp-content/uploads/2017/11/dron-trojmiasto-bytow.jpg', 100, 'Super Dron Dron', 23000, 'Dron', 100, 2, 0, 0, 0, curdate(), 10);
+      INSERT INTO product (image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id) VALUES ('http://kaka.com.ng/image/data/layerslider/iphone%206.jpg', 100, 'super iphone iphone', 20000, 'iphone6', 100, 2, 0, 0, 0, curdate(), 4);
 
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 1,  1, curdate());
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 2,  2, curdate());

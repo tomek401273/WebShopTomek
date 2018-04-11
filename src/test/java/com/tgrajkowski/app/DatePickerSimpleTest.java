@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,5 +74,11 @@ public class DatePickerSimpleTest {
         calendar.setTime(date);
         calendar.add(Calendar.MINUTE, 10);
         return calendar.getTime();
+    }
+
+    @Test
+    public void justTest5() {
+        LocalDate localDate = LocalDate.now();
+        System.out.println(localDate);
     }
 }

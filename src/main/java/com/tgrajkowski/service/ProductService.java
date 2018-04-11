@@ -54,14 +54,7 @@ public class ProductService {
     }
 
     public List<ProductDto> getProducts() {
-        ProductStatus productStatus = productStatusDao.findProductStatusByCode("sale");
-        List<Product> products = productDao.findByStatusId(productStatus.getId());
-        ProductStatus productStatusInAccessible = productStatusDao.findProductStatusByCode("inaccessible");
-        List<Product> productsInAccessible = productDao.findByStatusId(productStatusInAccessible.getId());
-        products.addAll(productsInAccessible);
-        List<ProductDto> productDtos = productMapper.mapToProductDtoList(products);
-        Collections.sort(productDtos, Comparator.comparing(ProductDto::getTitle));
-        return productDtos;
+        return productMapper.mapToProductDtoList(productDao.getProductOnSaleAndInaccesiableAsc());
     }
 
     public List<ProductDto> getProductsToEdit() {
@@ -70,6 +63,7 @@ public class ProductService {
     }
 
     public void removeProductFromDatabase(Long id) throws InterruptedException {
+        System.out.println("start deleting");
         Product product = productDao.findById(id);
         List<ProductBucket> productBuckets = product.getProductBuckets();
         List<ProductBucketPK> productBucketPKS = new ArrayList<>();
@@ -80,7 +74,6 @@ public class ProductService {
                     productBucket.getBucket().getUser().getName());
         }
 
-        Thread.sleep(calulateWaitingTime());
         for (ProductBucket productBucket : productBuckets) {
             productBucketPKS.add(new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId()));
             Bucket bucket = productBucket.getBucket();
@@ -95,9 +88,34 @@ public class ProductService {
         for (ProductBucketPK productBucketPK : productBucketPKS) {
             productBucketDao.delete(productBucketPK);
         }
-        ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
-        product.setStatus(productStatus);
+
+//        ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
+//        product.setStatus(productStatus);
+//        productDao.save(product);
+        product.setToDelete(true);
         productDao.save(product);
+
+        System.out.println("stop deleting");
+    }
+
+    public void deleteProductFromSale() {
+        System.out.println("DELETE PRODUCT FORM SALE");
+        int beginToDelete = productDao.countByToDelete(true);
+        int checkCountProductToDelete;
+        System.out.println("Begin count to Delete: " + beginToDelete);
+        List<Product> productsToDelete = productDao.findByToDelete(true);
+        ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
+
+        for (Product product : productsToDelete) {
+            System.out.println("Id: " + product.getId() + " productTitle: " + product.getTitle());
+            product.setStatus(productStatus);
+            product.setToDelete(false);
+            productDao.save(product);
+        }
+        checkCountProductToDelete = productDao.countByToDelete(true);
+        System.out.println("Check remain produtct to delete: " + checkCountProductToDelete);
+
+        System.out.println("THE END");
     }
 
     public Long calulateWaitingTime() {
@@ -189,12 +207,21 @@ public class ProductService {
     }
 
     public List<String> getAllProductsTitle() {
-        List<String> productsTitle = new ArrayList<>();
-        List<Product> products = productDao.findAll();
-        for (Product product : products) {
-            productsTitle.add(product.getTitle());
+//        List<String> productsTitle = new ArrayList<>();
+//        List<Product> products = productDao.findAll();
+//        for (Product product : products) {
+//            productsTitle.add(product.getTitle());
+//        }
+//        return productsTitle;
+        System.out.println("Start");
+        List<String> productTitle = new ArrayList<>();
+        List<Product> products = productDao.getProductTitleOnSale();
+        for (Product product: products) {
+            System.out.println(product.getTitle());
+            productTitle.add(product.getTitle());
         }
-        return productsTitle;
+        System.out.println("End");
+        return  productTitle;
     }
 
     public void setReminder(ProductEmailReminderDto productEmailReminderDto) {
@@ -227,28 +254,31 @@ public class ProductService {
         return maxValue;
     }
 
-    public int markProduct(ProductMarkDto productMarkDto) {
-        int sumMarks =0;
+    public ProductMarkDto markProduct(ProductMarkDto productMarkDto) {
+        int sumMarks = 0;
         int averageMarks;
         int countMarks = 0;
+
         User user = userDao.findByLogin(productMarkDto.getLogin());
         Product product = productDao.findById(productMarkDto.getProductId());
 
         ProductMark productMark = new ProductMark(product, user, productMarkDto.getMark());
         productMarkDao.save(productMark);
 
-        List<ProductMark> productMarks= product.getProductMarks();
-        for (ProductMark productMarkTemp: productMarks) {
+        List<ProductMark> productMarks = product.getProductMarks();
+        for (ProductMark productMarkTemp : productMarks) {
             sumMarks += productMarkTemp.getMark();
             countMarks++;
         }
-        averageMarks=sumMarks/countMarks;
+        averageMarks = sumMarks / countMarks;
         product.setSumMarks(sumMarks);
         product.setCountMarks(countMarks);
         product.setAverageMarks(averageMarks);
         productDao.save(product);
 
-        return averageMarks;
+        productMarkDto.setAverageMarks(averageMarks);
+        productMarkDto.setCountMarks(countMarks);
+        return productMarkDto;
     }
 
 

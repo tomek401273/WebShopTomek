@@ -32,7 +32,7 @@ public class User {
     @Column(unique = true)
     private String login;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "User_Roles",
             joinColumns = {@JoinColumn(name = "user_id")},
@@ -47,7 +47,7 @@ public class User {
     )
     private List<ProductsOrder> orders = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private UserAddress userAddress;
 

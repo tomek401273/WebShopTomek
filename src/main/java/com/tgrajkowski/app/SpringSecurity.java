@@ -34,6 +34,12 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/bucket/coupon").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/category/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/tom/static").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/file/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/newsletter/**").permitAll()
+
+
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 .anyRequest().authenticated()

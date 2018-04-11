@@ -16,19 +16,12 @@ import java.util.List;
 @RequestMapping("/bucket")
 @CrossOrigin("*")
 public class BucketController {
-    @Autowired
-    BucketDao bucketDao;
+
     @Autowired
     BucketService bucketService;
 
     @Autowired
     BuyService buyService;
-
-    @RequestMapping("/all")
-    public @ResponseBody
-    List<Bucket> getProduct() {
-        return bucketDao.findAll();
-    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/add")
     public boolean addProductToBucket(@RequestBody UserBucketDto userBucketDto) {

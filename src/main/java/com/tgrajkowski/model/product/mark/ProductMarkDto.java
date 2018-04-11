@@ -11,4 +11,6 @@ public class ProductMarkDto {
     private String login;
     private Long productId;
     private int mark;
+    private int averageMarks;
+    private int countMarks;
 }

@@ -12,6 +12,12 @@ public class FileService {
     protected FileDao fileDao;
 
     public File getFile(String name) {
-        return fileDao.findByName(name);
+        System.out.println("file service: "+name);
+        File file = fileDao.findByName(name);
+        System.out.println("File id: "+file.getId());
+        System.out.println("File content type: "+file.getContentType());
+        System.out.println("File name: "+file.getName());
+        System.out.println("File byte: "+file.getFilteByte());
+        return file;
     }
 }

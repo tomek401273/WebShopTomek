@@ -17,12 +17,9 @@ public interface ProductDao extends CrudRepository<Product, Long> {
 
     Product findById(Long id);
 
-    List<Product> findByTitle(String title);
-
     @Override
     Product save(Product product);
 
-    void deleteById(Long id);
 
     @Query(nativeQuery = true)
     List<Product> findProductContainstTitleWithLetters(@Param("LETTERS") String letters);
@@ -37,5 +34,12 @@ public interface ProductDao extends CrudRepository<Product, Long> {
 
     List<Product> findByLastModificationAfter(Date date);
 
+    List<Product> findByToDelete(boolean status);
+    int countByToDelete(boolean status);
+
+    @Query(nativeQuery = true)
+    List<Product> getProductTitleOnSale();
+    @Query(nativeQuery = true)
+    List<Product> getProductOnSaleAndInaccesiableAsc();
 
 }

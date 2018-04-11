@@ -11,7 +11,7 @@ public class ProductBucketMapper {
 
     public ProductBucketDto mapToProductBucketDto(ProductBucket productBucket) {
         ProductBucketDto productBucketDto = new ProductBucketDto();
-        productBucketDto.setProductDto(productMapper.mapToProductDto(productBucket.getProduct()));
+        productBucketDto.setProductDto(productMapper.mapToProductDto2(productBucket.getProduct()));
         productBucketDto.setAmount(productBucket.getAmount());
         return productBucketDto;
     }

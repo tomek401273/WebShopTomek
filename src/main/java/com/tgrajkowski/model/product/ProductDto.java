@@ -33,6 +33,7 @@ public class ProductDto {
     private int countMarks;
     private int marksAverage;
     private List<CommentDto> commentDtos;
+    private String category;
 
     public ProductDto(Long id, Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
         this.id = id;

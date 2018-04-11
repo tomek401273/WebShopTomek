@@ -39,6 +39,7 @@ public class BucketService {
     private ProductBucketMapper productBucketMapper = new ProductBucketMapper();
     private UserMapper userMapper = new UserMapper();
 
+
     public void addProductToBucketList(UserBucketDto userBucketDto) {
         List<Long> longProductIdList = userBucketDto.getProductIdArray();
         for (Long productId : longProductIdList) {

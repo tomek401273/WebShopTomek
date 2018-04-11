@@ -5,6 +5,7 @@ import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.ProductBucketDao;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.comment.CommentDto;
+import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.service.ProductService;
@@ -20,17 +21,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/product")
 @CrossOrigin("*")
 public class ProductController {
-    @Autowired
-    ProductDao productDao;
-
-    @Autowired
-    BucketDao bucketDao;
 
     @Autowired
     ProductService productService;
-
-    @Autowired
-    ProductBucketDao product_bucketDao;
 
     @RequestMapping(method = RequestMethod.GET, value = "/available")
     public int checkAvaiable(@RequestParam Long id) {
@@ -57,12 +50,12 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/save", consumes = APPLICATION_JSON_VALUE)
-    public void createProduct(@RequestBody @Valid ProductDto productDto) {
-        productService.saveProduct(productDto);
+    public Long createProduct(@RequestBody @Valid ProductDto productDto) {
+        return productService.saveProduct(productDto).getId();
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteProduct")
-    public void deleteProduct(@RequestParam  Long id) throws InterruptedException {
+    public void deleteProduct(@RequestParam Long id) throws InterruptedException {
         productService.removeProductFromDatabase(id);
     }
 
@@ -95,13 +88,15 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/maxprice")
-    public @ResponseBody int getMaxPriceProduct () {
+    public @ResponseBody
+    int getMaxPriceProduct() {
         return productService.maxPriceProduct();
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/mark")
-    public @ResponseBody int markProduct(@RequestBody ProductMarkDto productMarkDto) {
-       return productService.markProduct(productMarkDto);
+    public @ResponseBody
+    ProductMarkDto markProduct(@RequestBody ProductMarkDto productMarkDto) {
+        return productService.markProduct(productMarkDto);
     }
 }
 
