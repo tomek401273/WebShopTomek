@@ -2,6 +2,7 @@ package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.model.dao.BucketDao;
+import com.tgrajkowski.model.newsletter.ConfirmDto;
 import com.tgrajkowski.model.user.*;
 import com.tgrajkowski.model.model.dao.RoleDao;
 import com.tgrajkowski.model.model.dao.UserDao;
@@ -27,9 +28,13 @@ public class AuthenticationController {
         return authenticationService.singUp(userDto);
     }
 
-    @RequestMapping(value = "/checkLoginAvailable", method = RequestMethod.POST)
-    public boolean checkLoginAvailable(@RequestBody String login) {
+    @RequestMapping(value = "/checkLoginAvailable", method = RequestMethod.GET)
+    public boolean checkLoginAvailable(@RequestParam String login) {
         return authenticationService.checkLoginAvailable(login);
     }
 
+    @RequestMapping(value ="/account/confirm", method = RequestMethod.POST)
+    public ConfirmDto accountConfirm(@RequestBody ConfirmDto confirmDto) {
+        return authenticationService.accountConfirm(confirmDto);
+    }
 }

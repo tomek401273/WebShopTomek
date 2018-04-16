@@ -2,6 +2,7 @@ package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.mail.Mail;
+import com.tgrajkowski.model.mail.MailType;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
@@ -14,6 +15,7 @@ import com.tgrajkowski.model.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -59,8 +61,7 @@ public class ProductService {
         return productMapper.mapToProductDtoList(products);
     }
 
-    public void removeProductFromDatabase(Long id) throws InterruptedException {
-        System.out.println("start deleting");
+    public void removeProductFromDatabase(Long id) {
         Product product = productDao.findById(id);
         List<ProductBucket> productBuckets = product.getProductBuckets();
         List<ProductBucketPK> productBucketPKS = new ArrayList<>();
@@ -85,52 +86,19 @@ public class ProductService {
         for (ProductBucketPK productBucketPK : productBucketPKS) {
             productBucketDao.delete(productBucketPK);
         }
-
-//        ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
-//        product.setStatus(productStatus);
-//        productDao.save(product);
         product.setToDelete(true);
         productDao.save(product);
-
-        System.out.println("stop deleting");
     }
 
     public void deleteProductFromSale() {
-        System.out.println("DELETE PRODUCT FORM SALE");
-        int beginToDelete = productDao.countByToDelete(true);
-        int checkCountProductToDelete;
-        System.out.println("Begin count to Delete: " + beginToDelete);
         List<Product> productsToDelete = productDao.findByToDelete(true);
         ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
 
         for (Product product : productsToDelete) {
-            System.out.println("Id: " + product.getId() + " productTitle: " + product.getTitle());
             product.setStatus(productStatus);
             product.setToDelete(false);
             productDao.save(product);
         }
-        checkCountProductToDelete = productDao.countByToDelete(true);
-        System.out.println("Check remain produtct to delete: " + checkCountProductToDelete);
-
-        System.out.println("THE END");
-    }
-
-    public Long calulateWaitingTime() {
-        Date dateTomorow = calculateDateTomorow();
-        Long futureDate = dateTomorow.getTime();
-        Long nowDate = System.currentTimeMillis();
-        Long calculatedDate = futureDate - nowDate;
-        return calculatedDate;
-    }
-
-    public Date calculateDateTomorow() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE, 0);
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 49);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTime();
     }
 
     public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
@@ -180,7 +148,8 @@ public class ProductService {
         simpleEmailService.send(new Mail(
                 email,
                 subject,
-                message
+                message,
+                MailType.PRODUCT_AVAILABLE
         ));
     }
 
@@ -204,20 +173,11 @@ public class ProductService {
     }
 
     public List<String> getAllProductsTitle() {
-//        List<String> productsTitle = new ArrayList<>();
-//        List<Product> products = productDao.findAll();
-//        for (Product product : products) {
-//            productsTitle.add(product.getTitle());
-//        }
-//        return productsTitle;
-        System.out.println("Start");
         List<String> productTitle = new ArrayList<>();
         List<Product> products = productDao.getProductTitleOnSale();
         for (Product product: products) {
-            System.out.println(product.getTitle());
             productTitle.add(product.getTitle());
         }
-        System.out.println("End");
         return  productTitle;
     }
 
@@ -246,15 +206,15 @@ public class ProductService {
         }
     }
 
-    public int maxPriceProduct() {
-        int maxValue = productDao.getMaxProductPrice().getPrice();
+    public BigDecimal maxPriceProduct() {
+        BigDecimal maxValue = productDao.getMaxProductPrice().getPrice();
         return maxValue;
     }
 
     public ProductMarkDto markProduct(ProductMarkDto productMarkDto) {
-        int sumMarks = 0;
-        int averageMarks;
-        int countMarks = 0;
+        BigDecimal sumMarks = BigDecimal.ZERO;
+        BigDecimal averageMarks;
+        BigDecimal countMarks = BigDecimal.ZERO;
 
         Users user = userDao.findByLogin(productMarkDto.getLogin());
         Product product = productDao.findById(productMarkDto.getProductId());
@@ -264,10 +224,10 @@ public class ProductService {
 
         List<ProductMark> productMarks = product.getProductMarks();
         for (ProductMark productMarkTemp : productMarks) {
-            sumMarks += productMarkTemp.getMark();
-            countMarks++;
+            sumMarks = sumMarks.add(new BigDecimal(productMarkTemp.getMark()));
+            countMarks = countMarks.add(BigDecimal.ONE);
         }
-        averageMarks = sumMarks / countMarks;
+        averageMarks = sumMarks.divide(countMarks);
         product.setSumMarks(sumMarks);
         product.setCountMarks(countMarks);
         product.setAverageMarks(averageMarks);
@@ -277,6 +237,4 @@ public class ProductService {
         productMarkDto.setCountMarks(countMarks);
         return productMarkDto;
     }
-
-
 }

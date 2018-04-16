@@ -28,7 +28,9 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().cors()
-                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/*").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/signup").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/auth/checkLoginAvailable").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/auth/account/confirm").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/product/*").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/setReminder").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
@@ -38,6 +40,8 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/tom/static").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/file/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/newsletter/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/confirm").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/location/**").permitAll()
 
 
                 .antMatchers(HttpMethod.OPTIONS)

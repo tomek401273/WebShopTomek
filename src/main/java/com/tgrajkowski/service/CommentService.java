@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.tokens.CommentToken;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -30,21 +31,24 @@ public class CommentService {
         return commentMapper.mapToCommentDtos(commentDao.findAllByProduct(product));
     }
 
+    @Transactional
     public boolean removeComment(Long commentId) {
         Comment comment = commentDao.findById(commentId);
         Product product = comment.getProduct();
         List<Comment> commentListProduct = product.getComments();
         commentListProduct.remove(comment);
         product.setComments(commentListProduct);
-        productDao.save(product);
+//        productDao.save(product);
         commentDao.delete(comment);
         return true;
     }
 
+// objekt musi pochodzić z bazy
+    @Transactional
     public CommentDto updateComment(CommentDto commentDto) {
         Comment comment = commentDao.findById(commentDto.getId());
         comment.setMessage(commentDto.getMessage());
-        commentDao.save(comment);
+//        commentDao.save(comment);
         CommentDto commentDtoUpdated= commentMapper.mapToCommentDto(commentDao.findById(commentDto.getId()));
         return commentDtoUpdated;
     }

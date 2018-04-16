@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column
@@ -58,6 +58,12 @@ public class Users {
             fetch = FetchType.LAZY
     )
     private List<ProductMark> productMarks = new ArrayList<>();
+
+    @Column
+    private boolean confirm;
+
+    @Column
+    private String codeConfirm;
 
     public Users(String name, String surname, String password, String login) {
         this.name = name;

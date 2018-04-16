@@ -1,83 +1,81 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.app.AdminConfig;
-import com.tgrajkowski.app.CompanyConfig;
+import com.tgrajkowski.app.WebShopConfig;
+import com.tgrajkowski.model.mail.Mail;
+import com.tgrajkowski.model.mail.MailType;
+import com.tgrajkowski.model.product.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 @Service
 public class MailCreatorService {
-    @Autowired
-    private AdminConfig adminConfig;
 
     @Autowired
-    private CompanyConfig companyConfig;
+    private WebShopConfig webShopConfig;
 
     @Autowired
     @Qualifier("templateEngine")
     private TemplateEngine templateEngine;
 
-    private String welcome = "Welcome welcome";
+    private String welcome;
     private String godbye = "Have a nice day";
 
-    public String buildTrelloCardEmail(String message) {
-        List<String> functionality = new ArrayList<>();
-        boolean isSchedulingEmail = false;
+    public String create(Mail mail) {
+        Context context = new Context();
 
-        if (message.contains("Currently")) {
-            functionality.add("Today will be great day");
-            functionality.add("you will accomplish all your scheduld task ");
-            functionality.add("Yes you can !!!");
-            isSchedulingEmail= true;
-        } else {
-            functionality.add("You can menanage your tasks");
-            functionality.add("Previous connection with Trello Account");
-            functionality.add("Application allow sending tasks to trello ");
+
+        context.setVariable("companyConfig", webShopConfig);
+        context.setVariable("godbyeMessage", godbye);
+        if (mail.getMailType().equals(MailType.SCHEDULED_NEWSLETTER)) {
+            return scheduledNewsletterEmail(mail, context);
         }
-
-        Context context = new Context();
-        context.setVariable("message", message);
-        context.setVariable("tasks_url", "https://tomek401273.github.io/index.html");
-        context.setVariable("button", "Visit website");
-        context.setVariable("admin_name", adminConfig.getAdminName());
-        context.setVariable("show_button", false);
-        context.setVariable("is_friend", false);
-        context.setVariable("admin_config", adminConfig);
-        context.setVariable("application_functionality", functionality);
-        context.setVariable("companyConfig", companyConfig);
-        context.setVariable("welcomeMessage", welcome);
-        context.setVariable("godbyeMessage", godbye);
-        context.setVariable("isScheduling", isSchedulingEmail);
-        return templateEngine.process("mail/created-trello-card-mail", context);
+        if(mail.getMailType().equals(MailType.CONFIRM_NEWSLETTER)) {
+            return confirmNewsletter(mail, context);
+        }
+        return templateEngine.process("mail/newsletter-mail", context);
     }
 
-    public String buildScheduleEmail(String message) {
-        List<String> posibility = new ArrayList<>();
-        posibility.add("Today will be great day");
-        posibility.add("you will accomplish all your scheduld task ");
-        posibility.add("Yes you can !!!");
-
-        Context context = new Context();
-        context.setVariable("message", message);
-        context.setVariable("tasks_url", "https://tomek401273.github.io/index.html");
-        context.setVariable("button", "Visit website");
-        context.setVariable("admin_name", adminConfig.getAdminName());
-        context.setVariable("show_button", false);
-        context.setVariable("is_friend", false);
-        context.setVariable("admin_config", adminConfig);
-        context.setVariable("application_functionality", posibility);
-        context.setVariable("companyConfig", companyConfig);
+    private String scheduledNewsletterEmail(Mail mail, Context context) {
+        List<ProductDto> newOffer = mail.getNewProductOffer();
+        welcome = "Welcome subscriber";
+        context.setVariable("message", mail.getMessage());
         context.setVariable("welcomeMessage", welcome);
-        context.setVariable("godbyeMessage", godbye);
+        context.setVariable("newOffer", newOffer);
 
-
-        return templateEngine.process("mail/scheduled-mail", context);
+        return templateEngine.process("mail/newsletter-mail", context);
     }
+
+    private String confirmNewsletter(Mail mail, Context context) {
+        welcome ="Welcome in Computer WebShop newsletter";
+        String confirmationLink = "http://localhost:4200/newsletter/confirm?email="+mail.getMailTo()+"&code-confirm="+mail.getConfirmCode();
+//        String confirmationLink = "http://localhost:8080/newsletter/confirm?email="+mail.getMailTo()+"&confirmCode="+mail.getConfirmCode();
+        String explain = "You or someone has subscribed to this list on "+mail.getCreateDate()+" using the address "+mail.getMailTo();
+        String message = "If you want to receive 10% discount in Computer WebShop please confirm this email";
+        context.setVariable("welcomeMessage", welcome);
+        context.setVariable("message", message);
+        context.setVariable("confirmationLink", confirmationLink);
+        context.setVariable("explain", explain);
+
+        return templateEngine.process("/mail/confim-newsletter", context);
+    }
+
+    public String createMailMessage(Mail mail) {
+        Context context = new Context();
+        context.setVariable("welcomeMessage", mail.getWelcome());
+        context.setVariable("message", mail.getMessage());
+        context.setVariable("confirmationLink", mail.getLinkConfirm());
+        context.setVariable("explain", mail.getExplain());
+        context.setVariable("mailType", mail.getMailType());
+        context.setVariable("godbyeMessage", mail.getGoodbye());
+        context.setVariable("companyConfig", webShopConfig);
+        context.setVariable("confirmAccount", mail.isConfirmAccount());
+
+        return templateEngine.process("/mail/web-shop-mail", context);
+    }
+    
 }

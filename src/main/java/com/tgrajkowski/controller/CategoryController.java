@@ -15,7 +15,6 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-
     @RequestMapping(method = RequestMethod.GET, value = "/all")
     public List<String> getAllCategory() {
         return categoryService.getAllCategoryName();

@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Setter
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(unique = true)

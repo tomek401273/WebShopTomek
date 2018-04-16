@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -55,7 +56,7 @@ public class ProductController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/deleteProduct")
-    public void deleteProduct(@RequestParam Long id) throws InterruptedException {
+    public void deleteProduct(@RequestParam Long id) {
         productService.removeProductFromDatabase(id);
     }
 
@@ -89,7 +90,7 @@ public class ProductController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/maxprice")
     public @ResponseBody
-    int getMaxPriceProduct() {
+    BigDecimal getMaxPriceProduct() {
         return productService.maxPriceProduct();
     }
 

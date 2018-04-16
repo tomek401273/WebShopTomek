@@ -16,7 +16,7 @@ import java.util.Date;
 @ToString
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

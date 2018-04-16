@@ -20,13 +20,13 @@ CREATE PROCEDURE InitData2()
     IF (COUNTROW=0) THEN
 
 
-    INSERT INTO user_address (city, country, post_code, street) VALUES ('NewYork', 'USA', '12345', 'Broadway');
-    INSERT INTO user_address (city, country, post_code, street) VALUES ('San Francisco', 'USA', '34333', 'Lombard');
-    INSERT INTO users (login, name, password, surname, address_id) VALUES ('tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas', 1);
-    INSERT INTO users (login, name, password, surname, address_id) VALUES ('tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user', 2);
+    INSERT INTO user_address (id, city, country, post_code, street) VALUES (1, 'NewYork', 'USA', '12345', 'Broadway');
+    INSERT INTO user_address (id, city, country, post_code, street) VALUES (2, 'San Francisco', 'USA', '34333', 'Lombard');
+    INSERT INTO users (id, login, name, password, surname, address_id) VALUES (1, 'tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas', 1);
+    INSERT INTO users (id, login, name, password, surname, address_id) VALUES (2, 'tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user', 2);
 
-    INSERT INTO role (code, name) VALUES ('admin', 'admin');
-    INSERT INTO role (code, name) VALUES ('user', 'user');
+    INSERT INTO role (id, code, name) VALUES (1, 'admin', 'admin');
+    INSERT INTO role (id, code, name) VALUES (2, 'user', 'user');
 
       INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
       INSERT INTO user_roles (user_id, role_id) VALUES (2, 2);
@@ -35,23 +35,23 @@ CREATE PROCEDURE InitData2()
       INSERT INTO bucket (id, user_id) VALUES (1, 1);
       INSERT INTO bucket (id, user_id) VALUES (2, 2);
 
-      INSERT INTO product_status (code, name) VALUES ('initial', 'Product was initialised in shop');
-      INSERT INTO product_status (code, name) VALUES ('sale', 'Product is on sale');
-      INSERT INTO product_status (code, name) VALUES ('withdrawn', 'Product is withdrawn form sale');
-      INSERT INTO product_status (code, name) VALUES ('inaccessible', 'Product is inaccessible');
+      INSERT INTO product_status (id, code, name) VALUES (1, 'initial', 'Product was initialised in shop');
+      INSERT INTO product_status (id, code, name) VALUES (2, 'sale', 'Product is on sale');
+      INSERT INTO product_status (id, code, name) VALUES (3, 'withdrawn', 'Product is withdrawn form sale');
+      INSERT INTO product_status (id, code, name) VALUES (4, 'inaccessible', 'Product is inaccessible');
 
-      INSERT INTO category (name) VALUES ( 'PC Gaming');
-      INSERT INTO category (name) VALUES ( 'PC Desktop');
-      INSERT INTO category (name) VALUES ( 'Laptops');
-      INSERT INTO category (name) VALUES ( 'Phones');
-      INSERT INTO category (name) VALUES ( 'Tablets');
-      INSERT INTO category (name) VALUES ( 'Monitors');
-      INSERT INTO category (name) VALUES ( 'Computer Components');
-      INSERT INTO category (name) VALUES ( 'Storage & Hard Drivers');
-      INSERT INTO category (name) VALUES ( 'Networking');
-      INSERT INTO category (name) VALUES ( 'Computer Accessories');
-      INSERT INTO category (name) VALUES ( 'Printer');
-      INSERT INTO category (name) VALUES ( 'Server');
+      INSERT INTO category (id, name) VALUES (1, 'PC Desktop');
+      INSERT INTO category (id, name) VALUES (2, 'Laptops');
+      INSERT INTO category (id, name) VALUES (3, 'Phones');
+      INSERT INTO category (id, name) VALUES (4, 'Tablets');
+      INSERT INTO category (id, name) VALUES (5, 'Monitors');
+      INSERT INTO category (id, name) VALUES (6, 'Computer Components');
+      INSERT INTO category (id, name) VALUES (7, 'Storage & Hard Drivers');
+      INSERT INTO category (id, name) VALUES (8, 'Networking');
+      INSERT INTO category (id, name) VALUES (9, 'Computer Accessories');
+      INSERT INTO category (id, name) VALUES (10, 'Printer');
+      INSERT INTO category (id, name) VALUES (11, 'Server');
+      INSERT INTO category (id, name) VALUES (12, 'PC Gaming');
 
 
       INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (1, 'https://i.ebayimg.com/00/s/NTQzWDQxNQ==/z/X-IAAOSweDdaoUD1/$_86.JPG', 100, 'Samsung Galaxy S9', 100, 'Galaxy S9', 100, 2, 0, 0, 0, localtimestamp, 4, false);
@@ -65,50 +65,50 @@ CREATE PROCEDURE InitData2()
       INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (9, 'http://www.ex-astris-scientia.org/inconsistencies/monitors/monitor-tos-shine-theparadisesyndrome.jpg', 100, 'Super Spocks Computer', 100000, 'Spocks Computer', 100, 2, 0, 0, 0, localtimestamp, 1, false);
       INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (10, 'https://static.pexels.com/photos/204611/pexels-photo-204611.jpeg', 100, 'super computer computer', 200000, 'Super Comp', 100, 2, 0, 0, 0, localtimestamp, 1, false);
       INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (11, 'http://trojmiasto.wizytowka.waw.pl/wp-content/uploads/2017/11/dron-trojmiasto-bytow.jpg', 100, 'Super Dron Dron', 23000, 'Dron', 100, 2, 0, 0, 0, localtimestamp, 10, false);
-      INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (12, 'http://kaka.com.ng/image/data/layerslider/iphone%206.jpg', 100, 'super iphone iphone', 20000, 'iphone6', 100, 2, 0, 0, 0, localtimestamp, 4, false);
+      INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (12, 'http://kaka.com.ng/image/data/layerslider/iphone%206.jpg', 100, 'super iphone iphone', 200.22, 'iphone6', 100, 2, 0, 0, 0, localtimestamp, 4, false);
+      INSERT INTO product (product_id, image_link, available_amount, description, price, title, total_amount, status_id, average_marks, count_marks, sum_marks, last_modification, category_id, to_delete) VALUES (13, 'https://i.ebayimg.com/00/s/NTQzWDQxNQ==/z/X-IAAOSweDdaoUD1/$_86.JPG', 100, 'Samsung Galaxy S9', 100, 'Galaxy S9', 100, 2, 0, 0, 0, to_date('03 03 2018', 'DD MM YYYY'), 4, false);
 
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 1,  1, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 2,  2, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 3,  3, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 4,  4, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (1, 5,  5, localtimestamp);
-
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 1,  1, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 2,  2, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 3,  3, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 4,  4, localtimestamp);
       INSERT INTO  product_bucket (bucket_id, product_id, amount, date_added) VALUES (2, 5,  5, localtimestamp);
 
-      INSERT INTO status (code, name) VALUES ('booked', 'Order was booked');
-      INSERT INTO status (code, name) VALUES ('paid', 'Transaction confirmed');
-      INSERT INTO status (code, name) VALUES ('prepared', 'Order was prepared and is ready to send ');
-      INSERT INTO status (code, name) VALUES ('send', 'Order was send check status delivery in link');
-      INSERT INTO status (code, name) VALUES ('delivered', 'Order was delivered to client');
+      INSERT INTO status (id, code, name) VALUES (1, 'booked', 'Order was booked');
+      INSERT INTO status (id, code, name) VALUES (2, 'paid', 'Transaction confirmed');
+      INSERT INTO status (id, code, name) VALUES (3, 'prepared', 'Order was prepared and is ready to send ');
+      INSERT INTO status (id, code, name) VALUES (4, 'send', 'Order was send check status delivery in link');
+      INSERT INTO status (id, code, name) VALUES (5, 'delivered', 'Order was delivered to client');
 
 
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
-      INSERT INTO shipping_address (city, country, name, post_code, street, supplier, surname) VALUES ('Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (1, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (2, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (3, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (4, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (5, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (6, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (7, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (8, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (9, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (11, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
+     INSERT INTO shipping_address (id, city, country, name, post_code, street, supplier, surname) VALUES (11, 'Warsaw', 'Poland', 'Thomas', '00-100', 'Street', 'InPost', 'Smith');
 
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', localtimestamp, 2, 200, 1, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', localtimestamp, 2, 200, 1, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', localtimestamp, 2, 200, 2, 4, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 3, 3, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 4, 2, 1);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 5, 1, 1);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', localtimestamp, 2, 200, 6, 4, 2);
-      INSERT INTO products_order (bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', localtimestamp, 2, 200, 7, 4, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 8, 3, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 1, 2, 2);
-      INSERT INTO products_order (bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (localtimestamp, 'link_delivery', 2, 200, 1, 1, 2);
+      INSERT INTO products_order (id, bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (1, localtimestamp, 'link_delivery', localtimestamp, 2, 200, 1, 4, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (2, localtimestamp, 'link_delivery', localtimestamp, 2, 200, 1, 4, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (3, localtimestamp, 'link_delivery', localtimestamp, 2, 200, 2, 4, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (4, localtimestamp, 'link_delivery', 2, 200, 3, 3, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (5, localtimestamp, 'link_delivery', 2, 200, 4, 2, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (6, localtimestamp, 'link_delivery', 2, 200, 5, 1, 1);
+      INSERT INTO products_order (id, bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (7, localtimestamp, 'link_delivery', localtimestamp, 2, 200, 6, 4, 2);
+      INSERT INTO products_order (id, bought_date, link_delivery, send_date, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (8, localtimestamp, 'link_delivery', localtimestamp, 2, 200, 7, 4, 2);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (9, localtimestamp, 'link_delivery', 2, 200, 8, 3, 2);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (10, localtimestamp, 'link_delivery', 2, 200, 1, 2, 2);
+      INSERT INTO products_order (id, bought_date, link_delivery, total_amount, total_value, shipping_address_id, status_id, user_id) VALUES (11, localtimestamp, 'link_delivery', 2, 200, 1, 1, 2);
 
       INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (1, 1, 1);
       INSERT INTO product_bought (product_id, products_order_id, amount) VALUES (2, 2, 1);

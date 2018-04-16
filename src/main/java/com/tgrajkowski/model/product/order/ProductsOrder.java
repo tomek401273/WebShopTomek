@@ -6,6 +6,7 @@ import com.tgrajkowski.model.user.Users;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,12 +26,11 @@ import java.util.List;
 public class ProductsOrder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column
-    private int totalValue;
-    // big decimal
+    private BigDecimal totalValue;
 
     @Column
     private int totalAmount;

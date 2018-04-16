@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,23 +26,11 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username: " + username);
         Users users = userDao.findByLogin(username);
-        System.out.println("Users: " + users.getLogin());
-
-        System.out.println("ROLE DAO");
-        List<Role> roleList = roleDao.findAll();
-        for (Role role : roleList) {
-            System.out.println("role: " + role.getId()+" code: "+ role.getCode());
-            List<Users> usersList = role.getUserList();
-            for (Users users1 : usersList) {
-                System.out.println("login: "+users1.getLogin());
-            }
-            
+        if (!users.isConfirm()) {
+            return null;
         }
-
         return userMapper.mapToUserDetails(users);
-//        return userMapper.mapToUserDetails(userDao.findByLogin(username));
     }
 
 }

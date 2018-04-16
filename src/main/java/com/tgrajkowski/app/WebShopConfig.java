@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-public class CompanyConfig {
+public class WebShopConfig {
     @Value("${info.app.name}")
     private String companyName;
 

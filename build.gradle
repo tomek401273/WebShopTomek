@@ -52,7 +52,15 @@ dependencies {
     compile('io.springfox:springfox-swagger2:2.7.0')
     compile('io.springfox:springfox-swagger-ui:2.7.0')
     compile('com.google.code.gson:gson:2.8.2')
+
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+
+    compile group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.1.RELEASE'
+    compile group: 'org.thymeleaf', name: 'thymeleaf-spring4', version: '3.0.1.RELEASE'
+    compile group: 'nz.net.ultraq.thymeleaf', name: 'thymeleaf-layout-dialect', version: '2.0.3'
+
+
+    compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.3.1'
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

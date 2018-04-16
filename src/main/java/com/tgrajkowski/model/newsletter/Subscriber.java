@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Subscriber {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
     @Column
@@ -29,9 +29,14 @@ public class Subscriber {
     @Column
     private Date lastNewsletterSend;
 
-    public Subscriber(String name, String email, String code) {
+    @Column
+    private boolean isConfirm;
+
+    @Column
+    private String confirmCode;
+
+    public Subscriber(String name, String email) {
         this.name = name;
         this.email = email;
-        this.code = code;
     }
 }

@@ -38,18 +38,9 @@ public class UserMapper {
     }
 
     public UserDetails mapToUserDetails(Users user) {
-        List<GrantedAuthority> userRoleList = new ArrayList<>();
-        System.out.println("getiing roleList");
-        List<Role> roleList = user.getRoleList();
-        System.out.println("roleList size: "+roleList.size());
-        for (Role role : roleList) {
-            System.out.println("role: " + role.getId()+" code: "+ role.getCode());
-        }
-        System.out.println("end roleList");
-        userRoleList = user.getRoleList().stream()
+        List<GrantedAuthority> userRoleList = user.getRoleList().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getCode()))
                 .collect(Collectors.toList());
-        System.out.println("UserMapper roleList: "+userRoleList.toString());
 
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), userRoleList);
         return userDetails;

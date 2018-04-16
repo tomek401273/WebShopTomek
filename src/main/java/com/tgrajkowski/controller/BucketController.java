@@ -30,7 +30,7 @@ public class BucketController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAllProductFromBucket")
     public List<ProductBucketDto> getAllProductFromBucket(@RequestParam String login) {
-        return bucketService.showProductInBucket(login);
+        return bucketService.showProductInBucket();
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/addList")

@@ -2,6 +2,8 @@ package com.tgrajkowski.model.product.mark;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @AllArgsConstructor
 @Getter
 @Setter
@@ -11,6 +13,6 @@ public class ProductMarkDto {
     private String login;
     private Long productId;
     private int mark;
-    private int averageMarks;
-    private int countMarks;
+    private BigDecimal averageMarks;
+    private BigDecimal countMarks;
 }

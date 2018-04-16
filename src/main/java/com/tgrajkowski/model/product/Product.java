@@ -10,6 +10,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,12 +51,12 @@ import java.util.List;
 public class Product {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "PRODUCT_ID", unique = true)
     private Long id;
 
     @Column
-    private Integer price;
+    private BigDecimal price;
 
     @Column
     private String title;
@@ -99,7 +100,7 @@ public class Product {
             targetEntity = ProductEmailReminder.class,
             mappedBy = "products",
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     private List<ProductEmailReminder> productEmailReminders = new ArrayList<>();
 
@@ -112,13 +113,13 @@ public class Product {
     private List<ProductMark> productMarks = new ArrayList<>();
 
     @Column
-    private int averageMarks;
+    private BigDecimal averageMarks;
 
     @Column
-    private int sumMarks;
+    private BigDecimal sumMarks;
 
     @Column
-    private int countMarks;
+    private BigDecimal countMarks;
 
     @Column
     private Date lastModification;
@@ -137,7 +138,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Product(Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount, Date lastModification) {
+    public Product(BigDecimal price, String title, String description, String imageLink, int totalAmount, int availableAmount, Date lastModification) {
         this.price = price;
         this.title = title;
         this.description = description;

@@ -4,6 +4,7 @@ import com.tgrajkowski.model.product.bought.ProductBoughtDto;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ProductsOrderDto {
 
     private Long id;
-    private int totalValue;
+    private BigDecimal totalValue;
     private int totalAmount;
     private String boughtDate;
     private String userLogin;
@@ -29,7 +30,7 @@ public class ProductsOrderDto {
 
     public ProductsOrderDto(
             Long id,
-            int totalValue,
+            BigDecimal totalValue,
             int totalAmount,
             String boughtDate,
             String userLogin,
@@ -53,9 +54,9 @@ public class ProductsOrderDto {
 
         ProductsOrderDto that = (ProductsOrderDto) o;
 
-        if (totalValue != that.totalValue) return false;
         if (totalAmount != that.totalAmount) return false;
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (totalValue != null ? !totalValue.equals(that.totalValue) : that.totalValue != null) return false;
         if (boughtDate != null ? !boughtDate.equals(that.boughtDate) : that.boughtDate != null) return false;
         if (userLogin != null ? !userLogin.equals(that.userLogin) : that.userLogin != null) return false;
         if (productBoughts != null ? !productBoughts.equals(that.productBoughts) : that.productBoughts != null)
@@ -65,13 +66,14 @@ public class ProductsOrderDto {
         if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (linkDelivery != null ? !linkDelivery.equals(that.linkDelivery) : that.linkDelivery != null) return false;
         if (sendDate != null ? !sendDate.equals(that.sendDate) : that.sendDate != null) return false;
-        return deliveryDate != null ? deliveryDate.equals(that.deliveryDate) : that.deliveryDate == null;
+        if (deliveryDate != null ? !deliveryDate.equals(that.deliveryDate) : that.deliveryDate != null) return false;
+        return statusCode != null ? statusCode.equals(that.statusCode) : that.statusCode == null;
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + totalValue;
+        result = 31 * result + (totalValue != null ? totalValue.hashCode() : 0);
         result = 31 * result + totalAmount;
         result = 31 * result + (boughtDate != null ? boughtDate.hashCode() : 0);
         result = 31 * result + (userLogin != null ? userLogin.hashCode() : 0);
@@ -81,6 +83,7 @@ public class ProductsOrderDto {
         result = 31 * result + (linkDelivery != null ? linkDelivery.hashCode() : 0);
         result = 31 * result + (sendDate != null ? sendDate.hashCode() : 0);
         result = 31 * result + (deliveryDate != null ? deliveryDate.hashCode() : 0);
+        result = 31 * result + (statusCode != null ? statusCode.hashCode() : 0);
         return result;
     }
 }

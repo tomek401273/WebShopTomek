@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
+import java.math.BigDecimal;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class ProductDto {
 
     private Long id;
     @Min(0)
-    private Integer price;
+    private BigDecimal price;
     @NotBlank
     private String title;
     @NotBlank
@@ -29,13 +30,14 @@ public class ProductDto {
     private int availableAmount;
     private String statusCode;
     private String statusMessage;
-    private int sumMarks;
-    private int countMarks;
-    private int marksAverage;
+    private BigDecimal sumMarks;
+    private BigDecimal countMarks;
+    private BigDecimal marksAverage;
     private List<CommentDto> commentDtos;
     private String category;
+    private String directLink;
 
-    public ProductDto(Long id, Integer price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
+    public ProductDto(Long id, BigDecimal price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
         this.id = id;
         this.price = price;
         this.title = title;

@@ -104,6 +104,7 @@ public class ProductMapper {
         productDto.setSumMarks(product.getSumMarks());
         productDto.setCountMarks(product.getCountMarks());
         productDto.setMarksAverage(product.getAverageMarks());
+        productDto.setDirectLink("http://localhost:4200/product/"+product.getId());
         return productDto;
     }
 

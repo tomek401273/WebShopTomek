@@ -13,6 +13,7 @@ import com.tgrajkowski.model.user.UserDto;
 import com.tgrajkowski.model.user.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,7 +64,6 @@ public class BucketService {
             int amountBucketedProduct = 0;
 
             if (productBucket != null) {
-
                 amountBucketedProduct = productBucket.getAmount();
             }
 
@@ -77,8 +77,10 @@ public class BucketService {
     }
 
 
-    public List<ProductBucketDto> showProductInBucket(String login) {
-        Users user = userDao.findByLogin(login);
+    public List<ProductBucketDto> showProductInBucket() {
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        // odzielna klasa
+        Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
 
@@ -123,7 +125,7 @@ public class BucketService {
 //            return true;
 //        }
 
-      return optionalProductBucket.filter(x->x.getAmount()< productBucketAmountActual).isPresent();
+        return optionalProductBucket.filter(x -> x.getAmount() < productBucketAmountActual).isPresent();
     }
 
     public void removeSingleProductFromBucket(String login, Long productId) {
@@ -150,9 +152,9 @@ public class BucketService {
     }
 
     public boolean checkCodeAvailable(String code) {
-       if(subscriberDao.findByCode(code) != null) {
-           return true;
-       }
-       return false;
+        if (subscriberDao.findByCode(code) != null) {
+            return true;
+        }
+        return false;
     }
 }

@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 public class Bucket {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

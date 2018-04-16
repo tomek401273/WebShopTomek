@@ -18,7 +18,7 @@ import java.util.List;
 @ToString
 public class ProductEmailReminder {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "REMINDER_ID", unique = true)
     private Long id;
 

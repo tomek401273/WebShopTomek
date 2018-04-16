@@ -63,6 +63,7 @@ public class FileController {
 //        String filename = "/home/tomasz/Obrazy/" + name + ".jpg";
 //        InputStream inputImage = new FileInputStream(filename);
 //        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        // dodaj optionala na tym
         File file = fileService.getFile(name);
 
 //        byte[] buffer = new byte[512];
@@ -76,7 +77,7 @@ public class FileController {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "image/jpeg");
         headers.set("Content-Disposition", "attachment; filename=\"" + name + ".jpg\"");
-
+// dla obrazków nie dodawaj
        ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(file.getFilteByte(), headers, HttpStatus.OK);
 
 

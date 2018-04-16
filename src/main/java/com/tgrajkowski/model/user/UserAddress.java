@@ -12,7 +12,7 @@ import javax.persistence.*;
 @ToString
 public class UserAddress {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
     @Column
     private String country;

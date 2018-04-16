@@ -13,4 +13,5 @@ public interface BucketDao extends CrudRepository<Bucket, Long> {
     List<Bucket> findAll();
     Bucket findById(Long id);
     Bucket findByUser_Id(Long id);
+    long count();
 }

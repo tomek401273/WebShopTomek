@@ -20,11 +20,12 @@ public class EmailScheduler {
     private ProductService productService;
 
 
-//    @Scheduled(fixedDelay =  10000)
+    @Scheduled(fixedDelay = 360000)
     public void sendInformationEmail() {
         newsletterService.sendNewsLetter();
     }
-//    @Scheduled(cron = "0 0 00 * * *")
+
+    //    @Scheduled(cron = "0 0 00 * * *")
 //    @Scheduled(fixedDelay = 360000)
     public void deleteProduct() {
         productService.deleteProductFromSale();

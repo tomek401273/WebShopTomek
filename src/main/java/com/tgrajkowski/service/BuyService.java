@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Slf4j
@@ -51,13 +52,11 @@ public class BuyService {
 
 
     public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
-        int orderValue = 0;
+        BigDecimal orderValue = BigDecimal.ZERO;
         int totalAmount = 0;
         Long productOrderId;
         boolean isCodeCorrect = false;
-        System.out.println("shippingAdderessDto: " + shippingAddressDto);
         if (!shippingAddressDto.getCode().equals("null")) {
-            System.out.println("Code NOT NULL: " + shippingAddressDto.getCode());
             Subscriber subscriber = subscriberDao.findByCode(shippingAddressDto.getCode());
             if (subscriber != null) {
                 subscriber.setCode(null);
@@ -81,14 +80,16 @@ public class BuyService {
         for (ProductBucket productBucket : products) {
             Product product = productBucket.getProduct();
             ProductBought productBought = new ProductBought(product, productsOrder, productBucket.getAmount());
-
-            orderValue += productBought.getAmount() * productBought.getProduct().getPrice();
+            orderValue = orderValue.add(productBought.getProduct().getPrice().multiply(new BigDecimal(productBought.getAmount())));
             totalAmount += productBought.getAmount();
+
             productBoughtDao.save(productBought);
         }
 
         if (isCodeCorrect) {
-            orderValue= (int) (orderValue-(orderValue*0.1));
+            double discount = 0.1;
+            BigDecimal discountDecimal = new BigDecimal(discount);
+            orderValue = orderValue.subtract(orderValue.multiply(discountDecimal));
         }
         productsOrder.setTotalValue(orderValue);
         productsOrder.setTotalAmount(totalAmount);
@@ -173,6 +174,7 @@ public class BuyService {
 
         if (orderStatus.getStatus().equals("delivered")) {
             ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
+            // zrób corn joba frontend co 1s request odświerzający czy zmnienilo się status order cykliczne metody Angulara
             Thread.sleep(calulateWaitingTime());
             productsOrder.setDeliveredDate(new Date());
             productsOrder.setStatus(status);
