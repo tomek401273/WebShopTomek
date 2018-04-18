@@ -13,4 +13,30 @@ import lombok.*;
 public class Address {
     @JsonProperty("Label")
     private String label;
+
+    @JsonProperty("Country")
+    private String country;
+
+    @JsonProperty("State")
+    private String state;
+
+    @JsonProperty("County")
+    private String county;
+
+    @JsonProperty("City")
+    private String city;
+
+    @JsonProperty("District")
+    private String district;
+
+    @JsonProperty("Subdistrict")
+    private String subdistrict;
+
+    @JsonProperty("Street")
+    private String street;
+
+    @JsonProperty("PostalCode")
+    private String postalCode;
+
+
 }

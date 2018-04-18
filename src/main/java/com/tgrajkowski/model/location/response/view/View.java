@@ -21,6 +21,6 @@ public class View {
     int viewId;
 
     @JsonProperty("Result")
-    private List<Result> result;
+    private Result[] result;
 
 }

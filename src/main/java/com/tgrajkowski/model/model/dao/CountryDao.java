@@ -12,4 +12,5 @@ import java.util.List;
 public interface CountryDao extends CrudRepository<Country, Long> {
     long count();
     List<Country> findAll();
+    List<Country> findByApproved(boolean approved);
 }

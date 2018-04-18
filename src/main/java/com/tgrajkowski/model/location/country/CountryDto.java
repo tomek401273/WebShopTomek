@@ -17,4 +17,18 @@ public class CountryDto {
 
     @JsonProperty("code")
     private String code;
+
+    @JsonProperty("alpha2Code")
+    private String alpha2Code;
+
+    @JsonProperty("alpha3Code")
+    private String alpha3Code;
+
+    private boolean approved;
+
+    public CountryDto(String name, String code, boolean approved) {
+        this.name = name;
+        this.code = code;
+        this.approved = approved;
+    }
 }

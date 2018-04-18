@@ -1,6 +1,7 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.OrderStatus;
+import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.newsletter.Subscriber;
@@ -50,6 +51,9 @@ public class BuyService {
     @Autowired
     private SubscriberDao subscriberDao;
 
+    @Autowired
+    private LocationService locationService;
+
 
     public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
         BigDecimal orderValue = BigDecimal.ZERO;
@@ -67,8 +71,15 @@ public class BuyService {
 
 
         Status status = statusDao.findByCode("booked");
+        AddressDto addressDto = locationService.searchLocation(shippingAddressDto.getSearch());
+        if (addressDto == null) {
+            return null;
+        }
 
-        ShippingAddress shippingAddress = shippingAddressMapper.mappToShippedAdderss(shippingAddressDto);
+//        ShippingAddress shippingAddress = shippingAddressMapper.mappToShippedAdderss(shippingAddressDto);
+        ShippingAddress shippingAddress = shippingAddressMapper.mapToShippingAddresFromAddressDto(addressDto, shippingAddressDto);
+
+
         Users user = userDao.findByLogin(shippingAddressDto.getLogin());
         Bucket bucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> products = bucket.getProductBuckets();
@@ -120,6 +131,7 @@ public class BuyService {
         } catch (NullPointerException e) {
             log.error(e.getMessage());
         }
+        System.out.println("Product products size: " + productsOrders.size());
         return productsOrderMapper
                 .mapToProductsOrderDtoList
                         (productsOrders);

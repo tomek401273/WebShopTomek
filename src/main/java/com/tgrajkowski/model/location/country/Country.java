@@ -23,8 +23,16 @@ public class Country {
     @Column
     private String alpha2Code;
 
-    public Country(String name, String alpha2Code) {
+    @Column
+    private String alpha3Code;
+
+    @Column
+    private boolean approved;
+
+    public Country(String name, String alpha2Code, String alpha3Code, boolean approved) {
         this.name = name;
         this.alpha2Code = alpha2Code;
+        this.alpha3Code = alpha3Code;
+        this.approved = approved;
     }
 }

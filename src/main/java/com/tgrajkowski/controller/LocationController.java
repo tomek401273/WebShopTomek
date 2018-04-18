@@ -1,6 +1,8 @@
 package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.location.country.CountryDto;
+import com.tgrajkowski.model.location.response.view.result.location.address.Address;
+import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
 import com.tgrajkowski.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +59,12 @@ public class LocationController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/check")
-    public void searchLocation(@RequestParam String search) {
-        locationService.searchLocation(search);
+    public AddressDto searchLocation(@RequestParam String search) {
+      return locationService.searchLocation(search);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/country/approved")
+    public List<String> getApprovedCountry() {
+        return locationService.getApprovedCountry();
     }
 }

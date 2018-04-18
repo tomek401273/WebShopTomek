@@ -16,12 +16,27 @@ public class UserAddress {
     Long id;
     @Column
     private String country;
+
+    @Column
+    private String state;
+
+    @Column
+    private String county;
+
     @Column
     private String city;
+
     @Column
-    private String postCode;
+    private String district;
+
+    @Column
+    private String subdistrict;
+
     @Column
     private String street;
+
+    @Column
+    private String postCode;
 
     public UserAddress(String country, String city, String postCode, String street) {
         this.country = country;

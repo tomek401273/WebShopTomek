@@ -30,6 +30,14 @@ public class ShippingAddress {
     private String surname;
     @Column
     private String supplier;
+    @Column
+    private String state;
+    @Column
+    private String county;
+    @Column
+    private String district;
+    @Column
+    private String subdistrict;
 
     public ShippingAddress(String country, String city, String postCode, String street, String name, String surname, String supplier) {
         this.country = country;

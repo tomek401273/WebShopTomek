@@ -22,8 +22,8 @@ CREATE PROCEDURE InitData2()
 
     INSERT INTO user_address (id, city, country, post_code, street) VALUES (1, 'NewYork', 'USA', '12345', 'Broadway');
     INSERT INTO user_address (id, city, country, post_code, street) VALUES (2, 'San Francisco', 'USA', '34333', 'Lombard');
-    INSERT INTO users (id, login, name, password, surname, address_id) VALUES (1, 'tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas', 1);
-    INSERT INTO users (id, login, name, password, surname, address_id) VALUES (2, 'tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user', 2);
+    INSERT INTO users (id, login, name, password, surname, address_id, confirm) VALUES (1, 'tomek371240@gmail.com', 'thomas', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'thomas', 1, true);
+    INSERT INTO users (id, login, name, password, surname, address_id, confirm) VALUES (2, 'tomek371242@gmail.com', 'user', '$2a$10$Nijs1aGPCtgEGNzkDpabB./aeTTUUz6D3Lrc8YLNw2hFRjr.X/89i', 'user', 2, true);
 
     INSERT INTO role (id, code, name) VALUES (1, 'admin', 'admin');
     INSERT INTO role (id, code, name) VALUES (2, 'user', 'user');

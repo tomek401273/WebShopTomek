@@ -6,6 +6,7 @@ import com.tgrajkowski.model.product.order.ProductsOrder;
 import com.tgrajkowski.model.product.order.ProductsOrderDto;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.service.BuyService;
+import com.tgrajkowski.service.LocationService;
 import com.tgrajkowski.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,14 +21,13 @@ import java.util.Set;
 public class BuyController {
 
     @Autowired
-    BuyService buyService;
+    private BuyService buyService;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
-    UserService userService;
-
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/buy")
     public Long buyAllProductInBucket(@RequestBody ShippingAddressDto shippingAddressDto) {
@@ -91,12 +91,12 @@ public class BuyController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/orderSearch")
     public List<ProductsOrderDto> orderSearch(@RequestParam String productTitle, @RequestParam String dateFrom, @RequestParam String dateTo, @RequestParam String status, @RequestParam String userLogin) {
-        OrderSearch orderSearch = new OrderSearch(productTitle, dateFrom, dateTo, status,userLogin);
+        OrderSearch orderSearch = new OrderSearch(productTitle, dateFrom, dateTo, status, userLogin);
         return buyService.searchOrders(orderSearch);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/delivered")
     public boolean delivered(@RequestBody OrderStatus orderStatus) throws InterruptedException {
-        return  buyService.orderDelivered(orderStatus);
+        return buyService.orderDelivered(orderStatus);
     }
 }

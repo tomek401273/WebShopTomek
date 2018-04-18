@@ -12,6 +12,11 @@ import lombok.*;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Result {
+
+    @JsonProperty("MatchLevel")
+    private String matchLevel;
+
     @JsonProperty("Location")
     private Location location;
+
 }

@@ -15,5 +15,5 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
     @JsonProperty("View")
-    private List<View> view;
+    private View [] view;
 }

@@ -8,10 +8,10 @@ import java.util.List;
 @Component
 public class CountryMapper {
     public Country mapToCountry(CountryDto countryDto) {
-        return new Country(countryDto.getName(), countryDto.getCode());
+        return new Country(countryDto.getName(), countryDto.getAlpha2Code(), countryDto.getAlpha3Code(), false);
     }
 
-    public List<Country> mapToCountryDtoList(CountryDto[] countryDtos) {
+    public List<Country> mapToCountryList(CountryDto[] countryDtos) {
         List<Country> countryList = new ArrayList<>();
         for (CountryDto countryDto: countryDtos) {
             countryList.add(mapToCountry(countryDto));
@@ -20,7 +20,7 @@ public class CountryMapper {
     }
 
     public CountryDto mapToCountryDto(Country country) {
-        return new CountryDto(country.getName(), country.getAlpha2Code());
+        return new CountryDto(country.getName(), country.getAlpha2Code(), country.isApproved());
     }
 
     public List<CountryDto> mapToCountryDtoList(List<Country> countryList) {
