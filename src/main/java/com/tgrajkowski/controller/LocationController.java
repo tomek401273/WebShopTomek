@@ -23,34 +23,9 @@ public class LocationController {
     @Autowired
     private LocationService locationService;
 
-//    @RequestMapping(method = RequestMethod.GET, value = "city")
-//    public void getLocationCity(@RequestParam String countryAlpha2Code, @RequestParam String city) {
-//        System.out.println("Searching in country: "+countryAlpha2Code+" city: "+ city)
-//        ;
-//        URI uri = UriComponentsBuilder.fromUri(URI.create("http://gd.geobytes.com/AutoCompleteCity?callback=?&filter=PL&q=tor"))
-//                .build().encode().toUri();
-//        String geting = restTemplate.getForObject(uri, String.class);
-//        System.out.println("fatting: "+geting);
-//    }
-
-//    @RequestMapping(method = RequestMethod.GET, value = "city")
-//    public List<String> getLocationCity(@RequestParam String countryAlpha2Code, @RequestParam String city) {
-//        locationService.getCity(countryAlpha2Code, city);
-//        return null;
-//    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/updateDatabase")
     public void getAllCountrysOnTheWold() {
         locationService.getAllCountryFromServer();
-    }
-    @RequestMapping(method = RequestMethod.GET, value = "/regions")
-    public void getAllRegionsWithCountry() {
-        locationService.getAllRegionFroServer();
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/city")
-    public void getAllCityWithRegion() {
-        locationService.getAllCityFroServer();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/country")

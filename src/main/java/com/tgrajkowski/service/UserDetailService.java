@@ -28,7 +28,6 @@ public class UserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("username: "+username);
         Users users = userDao.findByLogin(username);
-        System.out.println("usersConfirm: "+users.isConfirm());
         if (!users.isConfirm()) {
             return null;
         }

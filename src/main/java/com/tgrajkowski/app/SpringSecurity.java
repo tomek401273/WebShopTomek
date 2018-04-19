@@ -42,6 +42,8 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/newsletter/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/confirm").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/location/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/upload/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/upload/**").permitAll()
 
 
                 .antMatchers(HttpMethod.OPTIONS)

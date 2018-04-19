@@ -54,7 +54,6 @@ public class BucketService {
         Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         log.info("user: " + login + " add Product to Bucket");
-// programowanie aspektowe logownaie informacji
         long id = userBucketDto.getProductId();
         Product product = productDao.findById(id);
         if (product.getAvailableAmount() > 0) {
@@ -79,7 +78,6 @@ public class BucketService {
 
     public List<ProductBucketDto> showProductInBucket() {
         String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        // odzielna klasa
         Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();

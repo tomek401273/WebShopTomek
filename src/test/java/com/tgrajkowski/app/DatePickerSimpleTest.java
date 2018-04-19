@@ -81,4 +81,20 @@ public class DatePickerSimpleTest {
         LocalDate localDate = LocalDate.now();
         System.out.println(localDate);
     }
+
+    public Long calulateWaitingTime() {
+        Date dateTomorow = calculateDateShipping();
+        Long futureDate = dateTomorow.getTime();
+        Long nowDate = System.currentTimeMillis();
+        Long calculatedDate = futureDate - nowDate;
+        return calculatedDate;
+    }
+
+    public Date calculateDateShipping() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, 1);
+        return calendar.getTime();
+    }
 }

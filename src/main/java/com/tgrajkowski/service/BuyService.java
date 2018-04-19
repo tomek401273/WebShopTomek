@@ -14,9 +14,11 @@ import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
 import com.tgrajkowski.model.user.Users;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -181,35 +183,15 @@ public class BuyService {
         return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("send");
     }
 
-    public boolean orderDelivered(OrderStatus orderStatus) throws InterruptedException {
-        Status status = statusDao.findByCode("delivered");
-
-        if (orderStatus.getStatus().equals("delivered")) {
-            ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
-            // zrób corn joba frontend co 1s request odświerzający czy zmnienilo się status order cykliczne metody Angulara
-            Thread.sleep(calulateWaitingTime());
+    @Transactional
+    public void orderDeliver() {
+        Status send = statusDao.findByCode("send");
+        Status delivered = statusDao.findByCode("delivered");
+        List<ProductsOrder> sendOrders = productsOrderDao.findByStatusId(send.getId());
+        for (ProductsOrder productsOrder: sendOrders) {
             productsOrder.setDeliveredDate(new Date());
-            productsOrder.setStatus(status);
-            productsOrderDao.save(productsOrder);
+            productsOrder.setStatus(delivered);
         }
-        return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("delivered");
-    }
-
-
-    public Long calulateWaitingTime() {
-        Date dateTomorow = calculateDateShipping();
-        Long futureDate = dateTomorow.getTime();
-        Long nowDate = System.currentTimeMillis();
-        Long calculatedDate = futureDate - nowDate;
-        return calculatedDate;
-    }
-
-    public Date calculateDateShipping() {
-        Calendar calendar = Calendar.getInstance();
-        Date date = new Date();
-        calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, 1);
-        return calendar.getTime();
     }
 
     public Set<ProductsOrderDto> searchOrderContainsProduct(String title) {
@@ -306,7 +288,6 @@ public class BuyService {
                 }
             }
         }
-
         return commonList;
     }
 }

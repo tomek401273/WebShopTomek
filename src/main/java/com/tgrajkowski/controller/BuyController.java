@@ -95,8 +95,4 @@ public class BuyController {
         return buyService.searchOrders(orderSearch);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/delivered")
-    public boolean delivered(@RequestBody OrderStatus orderStatus) throws InterruptedException {
-        return buyService.orderDelivered(orderStatus);
-    }
 }
