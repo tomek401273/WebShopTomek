@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.tgrajkowski.file.convert.FileConverter;
-import com.tgrajkowski.model.file.File;
-import com.tgrajkowski.model.Upload;
+import com.tgrajkowski.model.file.Photo;
 import com.tgrajkowski.model.model.dao.FileDao;
 import com.tgrajkowski.model.model.dao.UploadDao;
 import com.tgrajkowski.service.StorageService;
-import org.apache.commons.codec.binary.Base64;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -44,13 +43,14 @@ public class UploadController {
 
     @PostMapping("/post")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+        System.out.println("upload");
         String message = "";
         try {
             storageService.store(file);
             files.add(file.getOriginalFilename());
 //			InputStream inputStream = new ByteArrayInputStream(byteArr);
 //			byte[] bytes = file.getBytes();
-//			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new File("spock")));
+//			BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(new Photo("spock")));
 //			stream.write(bytes);
 //			stream.close();
 
@@ -59,12 +59,27 @@ public class UploadController {
 //			inputStream.read(byteArr);
 //			inputStream.close();
 
-            String base64 = fileConverter.encodeFileToBase64Binary(fileConverter.convert(file));
+//            String base64 = fileConverter.encodeFileToBase64Binary(fileConverter.convert(file));
 //            System.out.println("Start: ");
 //            base64 = base64.replace("[", "");
 //            System.out.println(base64);
 //            System.out.println("Stop");
-            fileDao.savePhotoBase64((long)4, base64, "spock4");
+//            fileDao.savePhotoBase64((long)4, base64, "spock4");
+
+            File convertedFile = fileConverter.convert(file);
+
+            byte[] picInBytes = new byte[(int) convertedFile.length()];
+            FileInputStream fileInputStream = new FileInputStream(convertedFile);
+            fileInputStream.read(picInBytes);
+            fileInputStream.close();
+            Photo photo = new Photo();
+            photo.setId((long)10);
+            photo.setContentType("jpg");
+            photo.setFilteByte(picInBytes);
+            String photoName = convertedFile.getName();
+            photoName = photoName.replace(".jpg", "");
+            photo.setName(photoName);
+            fileDao.save(photo);
 
             message = "You successfully uploaded " + file.getOriginalFilename() + "!";
             return ResponseEntity.status(HttpStatus.OK).body(message);
@@ -73,7 +88,6 @@ public class UploadController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
         }
     }
-
 
 
     @GetMapping("/getallfiles")
@@ -94,5 +108,4 @@ public class UploadController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .body(file);
     }
-
 }

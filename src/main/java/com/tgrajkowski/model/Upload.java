@@ -18,12 +18,8 @@ public class Upload {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Column(unique = true)
-    private String name;
-
-    @Lob
     @Column
-    @Type(type="org.hibernate.type.BinaryType")
+    @Lob
     @Basic(fetch = FetchType.LAZY)
-    private byte []filteByte;
+    private byte []fileByte;
 }

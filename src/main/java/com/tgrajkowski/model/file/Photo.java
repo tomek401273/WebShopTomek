@@ -7,9 +7,9 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @NamedNativeQuery(
-        name="File.savePhotoBase64",
-        query = "INSERT INTO file(id, content_type, filte_byte, name) VALUES (:ID, 'jpg', lo_from_bytea(0, DECODE(:BASE64, 'base64')), :NAME)",
-        resultClass = File.class
+        name="Photo.savePhotoBase64",
+        query = "INSERT INTO photo(id, content_type, filte_byte, name) VALUES (:ID, 'jpg', lo_from_bytea(0, :BYTEA), :NAME)",
+        resultClass = Photo.class
 )
 
 @Entity
@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class File {
+public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;

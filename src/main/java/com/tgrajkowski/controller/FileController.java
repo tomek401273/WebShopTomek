@@ -1,6 +1,6 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.file.File;
+import com.tgrajkowski.model.file.Photo;
 import com.tgrajkowski.model.model.dao.UploadDao;
 import com.tgrajkowski.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class FileController {
 
         //   InputStream inputImage = new FileInputStream(filename);
 //        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        Optional<File> file = Optional.ofNullable(fileService.getFile(name));
+        Optional<Photo> file = Optional.ofNullable(fileService.getFile(name));
 
 //        byte[] buffer = new byte[512];
 //        int l = inputImage.read(buffer);

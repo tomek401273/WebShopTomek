@@ -50,7 +50,7 @@ public class BucketService {
     }
 
     public boolean addProductToBucket(UserBucketDto userBucketDto) {
-        String login = userBucketDto.getLogin();
+        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         log.info("user: " + login + " add Product to Bucket");
@@ -88,7 +88,8 @@ public class BucketService {
 
     public boolean removeSinggleItemFromBucket(String login, Long productId) {
         int productBucketAmountActual;
-        Users user = userDao.findByLogin(login);
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         Product product = productDao.findById(productId);
 
