@@ -81,8 +81,12 @@ public class BucketService {
         Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
-
         List<ProductBucketDto> productBucketDtoList = productBucketMapper.mapToProductBucketDtoList(productBuckets);
+        System.out.println("START");
+        for (ProductBucketDto productBucketDto: productBucketDtoList) {
+            System.out.println(productBucketDto.getProductDto().toString());
+        }
+        System.out.println("STOP");
         return productBucketDtoList;
     }
 

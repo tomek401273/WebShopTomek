@@ -15,7 +15,6 @@ import javax.persistence.*;
 @Entity
 @Table
 @NoArgsConstructor
-@Getter
 @Setter
 public class Photo {
     @Id
@@ -32,4 +31,20 @@ public class Photo {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte []filteByte;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public byte[] getFilteByte() {
+        return filteByte;
+    }
 }
