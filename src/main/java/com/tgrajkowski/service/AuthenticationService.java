@@ -11,6 +11,7 @@ import com.tgrajkowski.model.newsletter.RandomString;
 import com.tgrajkowski.model.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,9 @@ public class AuthenticationService {
 
     @Autowired
     AuthenticationManager authenticationManager;
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    private UserMapper userMapper = new UserMapper();
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private UserDao userDao;
@@ -42,31 +44,46 @@ public class AuthenticationService {
     private SimpleEmailService simpleEmailService;
 
     public UserDto singUp(UserDto userDto) {
-        String passwordEncoded = bCryptPasswordEncoder.encode(userDto.getPassword());
-        userDto.setPassword(passwordEncoded);
-        Users user = userMapper.mapToUser(userDto);
+        Users user = userMapper.mapToUserPasswordEncode(userDto);
+        if (user != null) {
+            List<Role> roles = new ArrayList<>();
+            Role role = roleDao.findByName("user");
+            roles.add(role);
+            user.setRoleList(roles);
 
-        List<Role> roles = new ArrayList<>();
-        Role role = roleDao.findByName("user");
-        roles.add(role);
-        user.setRoleList(roles);
+            user.setConfirm(false);
+            String codeConfirm = generateCode();
+            user.setCodeConfirm(codeConfirm);
 
-        UserAddress userAddress = new UserAddress(userDto.getCountry(), userDto.getCity(), userDto.getPostCode(), userDto.getStreet());
-        user.setUserAddress(userAddress);
+            userDao.save(user);
+            userDto.setId(user.getId());
 
-        user.setConfirm(false);
-        String codeConfirm = generateCode();
-        user.setCodeConfirm(codeConfirm);
+            Bucket bucket = new Bucket();
+            bucket.setUser(user);
+            bucketDao.save(bucket);
+            sendEmailConfirmAccount(userDto.getName(), userDto.getLogin(), user.getId(), codeConfirm);
+            return userDto;
+        }
+        return null;
+    }
 
-        userDao.save(user);
-        userDto.setId(user.getId());
+    public void accountUpdate(UserDto userDto) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users users = userDao.findByLogin(login);
+        Users usersUpdated = userMapper.mapToUserWithoutPassword(userDto, users);
+        userDao.save(usersUpdated);
+    }
 
-        Bucket bucket = new Bucket();
-        bucket.setUser(user);
-        bucketDao.save(bucket);
-        sendEmailConfirmAccount(userDto.getName(), userDto.getLogin(), user.getId(), codeConfirm);
+    @Transactional
+    public void passwordUpdate(ChangePassword changePassword) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users users = userDao.findByLogin(login);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        return userDto;
+        if (bCryptPasswordEncoder.matches(changePassword.getOldPassword(), users.getPassword())) {
+            String newPassword = bCryptPasswordEncoder.encode(changePassword.getNewPassword());
+            users.setPassword(newPassword);
+        }
     }
 
     public boolean checkLoginAvailable(String login) {
@@ -84,10 +101,12 @@ public class AuthenticationService {
         String explain = "If you believe that this is a mistake and you did not intend on subscribing to this list, you can ignore this message and nothing else will happen.";
         String goodbye = "Best wishes from Computer WebShop Company";
         Mail mail = new Mail(email, subject, message, MailType.CONFIRM_ACCOUNT);
+        mail.setTemplate("account");
+        mail.setFragment("confirm");
         mail.setWelcome(welcome);
         mail.setExplain(explain);
         mail.setGoodbye(goodbye);
-        mail.setLinkConfirm("http://localhost:4200/confirm-account?email="+email+"&code-confirm="+codeConfirm);
+        mail.setLinkConfirm("http://localhost:4200/confirm-account?email=" + email + "&code-confirm=" + codeConfirm);
         mail.setConfirmAccount(true);
         simpleEmailService.sendMail(mail);
     }

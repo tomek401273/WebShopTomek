@@ -38,10 +38,10 @@ public class UserAddress {
     @Column
     private String postCode;
 
-    public UserAddress(String country, String city, String postCode, String street) {
-        this.country = country;
-        this.city = city;
-        this.postCode = postCode;
-        this.street = street;
-    }
+    @Column
+    private int house;
+
+    @Column
+    private int apartment;
+
 }

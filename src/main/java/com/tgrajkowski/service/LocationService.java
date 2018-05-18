@@ -55,7 +55,6 @@ public class LocationService {
     }
 
     public AddressDto searchLocation(String search) {
-        System.out.println("search: " + search);
         URI url = UriComponentsBuilder.fromHttpUrl("https://geocoder.cit.api.here.com/6.2/geocode.json")
                 .queryParam("searchtext", search)
                 .queryParam("app_id", "ZurixIlHeTvNn84GbCkq")
@@ -65,7 +64,7 @@ public class LocationService {
         Address address = locationAddress.getResponse().getView()[0].getResult()[0].getLocation().getAddress();
         AddressDto addressDto = addressMapper.mapToAddresDto(address);
         String matchesLevel = locationAddress.getResponse().getView()[0].getResult()[0].getMatchLevel();
-        if (matchesLevel.equals("street") || matchesLevel.equals("district") || matchesLevel.equals("houseNumber")) {
+        if (matchesLevel.equals("street") || matchesLevel.equals("district")) {
             return addressDto;
         }
         return null;

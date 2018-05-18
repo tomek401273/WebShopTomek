@@ -26,7 +26,8 @@ public class Mail {
     private String goodbye;
     private String linkConfirm;
     private boolean confirmAccount = false;
-
+    private String template;
+    private String fragment;
 
     public Mail(String mailTo, String subject, String message, MailType mailType) {
         this.mailTo = mailTo;
@@ -39,5 +40,10 @@ public class Mail {
         this.mailTo = mailTo;
         this.subject = subject;
         this.mailType = mailType;
+    }
+
+    public Mail(String mailTo, String subject) {
+        this.mailTo = mailTo;
+        this.subject = subject;
     }
 }

@@ -16,7 +16,7 @@ public class ShippingAddressMapper {
 //    }
 
     public ShippingAddressDto mapToShippingAddressDto (ShippingAddress shippingAddress) {
-
+        System.out.println("ShippingAddress: "+shippingAddress.toString());
         ShippingAddressDto shippingAddressDto = new ShippingAddressDto(
                 shippingAddress.getCountry(),
                 shippingAddress.getCity(),
@@ -29,11 +29,14 @@ public class ShippingAddressMapper {
         shippingAddressDto.setCounty(shippingAddress.getCounty());
         shippingAddressDto.setDistrict(shippingAddress.getDistrict());
         shippingAddressDto.setSubdistrict(shippingAddress.getSubdistrict());
+        shippingAddressDto.setHouse(shippingAddress.getHouse());
+        shippingAddressDto.setApartment(shippingAddress.getApartment());
 
         return  shippingAddressDto;
     }
 
     public ShippingAddress mapToShippingAddresFromAddressDto(AddressDto addressDto, ShippingAddressDto shippingAddressDto) {
+        System.out.println("ShippingAddresMapper: "+shippingAddressDto.toString());
         ShippingAddress shippingAddress = new ShippingAddress(
                 addressDto.getCountry(),
                 addressDto.getCity(),
@@ -47,6 +50,8 @@ public class ShippingAddressMapper {
         shippingAddress.setCounty(addressDto.getCounty());
         shippingAddress.setDistrict(addressDto.getDistrict());
         shippingAddress.setSubdistrict(addressDto.getSubdistrict());
+        shippingAddress.setHouse(shippingAddressDto.getHouse());
+        shippingAddress.setApartment(shippingAddressDto.getApartment());
         return shippingAddress;
     }
 }

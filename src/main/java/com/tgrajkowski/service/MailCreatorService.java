@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.context.WebContext;
 
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class MailCreatorService {
         welcome = "Welcome subscriber";
         context.setVariable("message", mail.getMessage());
         context.setVariable("welcomeMessage", welcome);
-        context.setVariable("newOffer", newOffer);
+        context.setVariable("newOffer", mail.getNewProductOffer());
 
         return templateEngine.process("mail/newsletter-mail", context);
     }
@@ -53,7 +54,6 @@ public class MailCreatorService {
     private String confirmNewsletter(Mail mail, Context context) {
         welcome ="Welcome in Computer WebShop newsletter";
         String confirmationLink = "http://localhost:4200/newsletter/confirm?email="+mail.getMailTo()+"&code-confirm="+mail.getConfirmCode();
-//        String confirmationLink = "http://localhost:8080/newsletter/confirm?email="+mail.getMailTo()+"&confirmCode="+mail.getConfirmCode();
         String explain = "You or someone has subscribed to this list on "+mail.getCreateDate()+" using the address "+mail.getMailTo();
         String message = "If you want to receive 10% discount in Computer WebShop please confirm this email";
         context.setVariable("welcomeMessage", welcome);
@@ -70,12 +70,14 @@ public class MailCreatorService {
         context.setVariable("message", mail.getMessage());
         context.setVariable("confirmationLink", mail.getLinkConfirm());
         context.setVariable("explain", mail.getExplain());
-        context.setVariable("mailType", mail.getMailType());
         context.setVariable("godbyeMessage", mail.getGoodbye());
         context.setVariable("companyConfig", webShopConfig);
-        context.setVariable("confirmAccount", mail.isConfirmAccount());
+        context.setVariable("newOffer", mail.getNewProductOffer());
+        context.setVariable("template", mail.getTemplate());
+        context.setVariable("fragment", mail.getFragment());
 
-        return templateEngine.process("/mail/web-shop-mail", context);
+
+        return templateEngine.process("/web-shop-mail", context);
     }
     
 }

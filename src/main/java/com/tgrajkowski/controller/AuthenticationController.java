@@ -1,20 +1,14 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.bucket.Bucket;
-import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.newsletter.ConfirmDto;
-import com.tgrajkowski.model.user.*;
-import com.tgrajkowski.model.model.dao.RoleDao;
-import com.tgrajkowski.model.model.dao.UserDao;
+import com.tgrajkowski.model.user.ChangePassword;
+import com.tgrajkowski.model.user.UserDto;
 import com.tgrajkowski.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @RestController()
 @RequestMapping("/auth")
@@ -36,5 +30,15 @@ public class AuthenticationController {
     @RequestMapping(value ="/account/confirm", method = RequestMethod.POST)
     public ConfirmDto accountConfirm(@RequestBody ConfirmDto confirmDto) {
         return authenticationService.accountConfirm(confirmDto);
+    }
+
+    @RequestMapping(value = "/update/account", method = RequestMethod.PUT)
+    public void updateAccount(@RequestBody UserDto userDto) {
+        authenticationService.accountUpdate(userDto);
+    }
+
+    @RequestMapping(value = "/update/password", method = RequestMethod.PUT)
+    public void updatePassword(@RequestBody ChangePassword changePassword){
+        authenticationService.passwordUpdate(changePassword);
     }
 }

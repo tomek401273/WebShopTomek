@@ -1,6 +1,7 @@
 package com.tgrajkowski.app;
 
 import org.junit.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -63,10 +64,30 @@ public class SimpleTest {
         System.out.println(" min: " + min);
         Long h = min / 60;
         Long hmin = min % 60;
-        System.out.println("h: " + h + "; min: " + hmin+"; sec: "+hsec);
+        System.out.println("h: " + h + "; min: " + hmin + "; sec: " + hsec);
     }
 
     public void convertMiliscendToNormalTime2(Long milisec) {
     }
 
+    @Test
+    public void tetTet() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String s = bCryptPasswordEncoder.encode("tomek");
+        boolean b = bCryptPasswordEncoder.matches("tomek3", s);
+        System.out.println(s);
+        System.out.println("Are equals passwords ???  "+ b);
+    }
+
+    @Test
+    public void tetst() {
+        String fileName = "spock.gif";
+        int lastDot = fileName.lastIndexOf(".");
+
+        String photoName = fileName.substring(0, lastDot);
+        String suffix = fileName.substring(lastDot+1, fileName.length());
+        System.out.println(fileName);
+        System.out.println(photoName);
+        System.out.println(suffix);
+    }
 }

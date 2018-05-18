@@ -26,7 +26,7 @@ public class EmailScheduler {
     }
 
     //    @Scheduled(cron = "0 0 00 * * *")
-//    @Scheduled(fixedDelay = 360000)
+    @Scheduled(fixedDelay = 360000)
     public void deleteProduct() {
         productService.deleteProductFromSale();
     }

@@ -103,7 +103,7 @@ public class ProductService {
 
     public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
         String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
-        String message = "Dear user " + userName + " administrator redirect " + userName + " to removing process. Product will be anavaiable until 23:59 this day";
+        String message = "Dear user " + userName + " administrator redirect " + productTitle + " to removing process. Product will be anavaiable until 23:59 this day";
         send(email, subject, message);
     }
 
@@ -145,12 +145,11 @@ public class ProductService {
     }
 
     public void send(String email, String subject, String message) {
-        simpleEmailService.send(new Mail(
-                email,
-                subject,
-                message,
-                MailType.PRODUCT_AVAILABLE
-        ));
+        Mail mail = new Mail(email, subject);
+        mail.setMessage(message);
+        mail.setTemplate("product");
+        mail.setFragment("information");
+        simpleEmailService.sendMail(mail);
     }
 
     public Product saveProduct(ProductDto productDto) {
@@ -175,10 +174,10 @@ public class ProductService {
     public List<String> getAllProductsTitle() {
         List<String> productTitle = new ArrayList<>();
         List<Product> products = productDao.getProductTitleOnSale();
-        for (Product product: products) {
+        for (Product product : products) {
             productTitle.add(product.getTitle());
         }
-        return  productTitle;
+        return productTitle;
     }
 
     public void setReminder(ProductEmailReminderDto productEmailReminderDto) {

@@ -28,6 +28,7 @@ public class ProductController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/available")
     public int checkAvaiable(@RequestParam Long id) {
+        System.out.println("Avaialble");
         return productService.checkAvailable(id);
     }
 

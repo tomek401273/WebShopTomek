@@ -8,8 +8,7 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @NoArgsConstructor
 @Getter
@@ -19,17 +18,36 @@ import javax.validation.constraints.Size;
 public class UserDto {
 
     private Long id;
+
+    @Email
+    private String login;
+
     @NotBlank
     private String name;
+
     @NotBlank
     private String surname;
+
     @Size(min = 6)
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}")
     private String password;
-    @Email
-    private String login;
+
+    @NotNull
+    private String address;
+
+    @NotNull
+    @Min(1)
+    @Max(999)
+    private int house;
+
+    @Max(999)
+    int apartment;
+
     private String country;
+    private String state;
+    private String county;
     private String city;
+    private String district;
     private String postCode;
     private String street;
 

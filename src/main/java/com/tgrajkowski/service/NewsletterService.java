@@ -61,19 +61,40 @@ public class NewsletterService {
 
     public void sendEmailConfirmSubscription(String email, String username, String confirmCode, Date dateSubscription) {
         String subject = "Computer WebShop Newsletter";
-        Mail mail = new Mail(email, subject, MailType.CONFIRM_NEWSLETTER);
+        Mail mail = new Mail(email, subject);
+        mail.setWelcome("Welcome in Computer WebShop newsletter");
         mail.setUserName(username);
         mail.setConfirmCode(confirmCode);
         mail.setCreateDate(dateSubscription);
-        simpleEmailService.send(mail);
+
+        mail.setLinkConfirm("http://localhost:4200/newsletter/confirm?email=" + email + "&code-confirm=" + confirmCode);
+        mail.setExplain("You or someone has subscribed to this list on " + mail.getCreateDate() + " using the address " + mail.getMailTo());
+        mail.setMessage("If you want to receive 10% discount in Computer WebShop please confirm this email");
+        mail.setTemplate("newsletter");
+        mail.setFragment("confirm");
+        simpleEmailService.sendMail(mail);
     }
+
+    public void sendNewsletterToSubscriber(String email, String name, List<ProductDto> newProductOffer) {
+        LocalDate localDate = LocalDate.now();
+        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) + localDate;
+        String message = "Dear " + name + " please browse our new product offer";
+        Mail mail = new Mail(email, subject);
+        mail.setWelcome("Welcome subscriber");
+        mail.setMessage(message);
+        mail.setNewProductOffer(newProductOffer);
+        mail.setTemplate("newsletter");
+        mail.setFragment("scheduled");
+        simpleEmailService.sendMail(mail);
+    }
+
 
     public ConfirmDto confirmEmail(ConfirmDto confirmDto) {
         Optional<Subscriber> subscriber =
                 Optional.ofNullable(subscriberDao.findByEmail(confirmDto.getEmail()));
         if (subscriber.isPresent()) {
             if (subscriber.get().getConfirmCode().equals(confirmDto.getConfirmCode())
-                    && subscriber.get().isConfirm()==false) {
+                    && subscriber.get().isConfirm() == false) {
 
                 subscriber.get().setConfirm(true);
                 String ticket = generateCode();
@@ -101,29 +122,16 @@ public class NewsletterService {
                     if (product.getStatus().getCode().equals("sale")) {
                         productTitle.add(product.getTitle());
                         newProductOffer.add(productMapper.mapToProductDto2(product));
+                        subscriber.setLastNewsletterSend(new Date());
+                        subscriberDao.save(subscriber);
+                        sendNewsletterToSubscriber(subscriber.getEmail(), subscriber.getName(), newProductOffer);
                     }
                 }
-                subscriber.setLastNewsletterSend(new Date());
-                subscriberDao.save(subscriber);
-                sendNewsletterToSubscriber(subscriber.getEmail(), subscriber.getName(), newProductOffer);
+
             }
         }
         return true;
     }
 
-
-    public void sendNewsletterToSubscriber(String email, String name, List<ProductDto> newProductOffer) {
-        LocalDate localDate = LocalDate.now();
-        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) + localDate;
-        String message = "Dear " + name + " please browse our new product offer";
-        send(email, subject, message, newProductOffer);
-    }
-
-    public void send(String email, String subject, String message, List<ProductDto> newProductOffer) {
-        Mail mail = new Mail(email, subject, message, MailType.SCHEDULED_NEWSLETTER);
-        mail.setNewProductOffer(newProductOffer);
-
-        simpleEmailService.send(mail);
-    }
 
 }

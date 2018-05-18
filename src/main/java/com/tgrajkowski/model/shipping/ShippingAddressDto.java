@@ -22,8 +22,8 @@ public class ShippingAddressDto {
     private String subdistrict;
     private String street;
     private String search;
-//    private String postalCode;
-
+    private int house;
+    private int apartment;
 
     public ShippingAddressDto(String country, String city, String postalCode, String street, String name, String surname, String supplier) {
         this.country = country;
