@@ -23,14 +23,12 @@ public class ProductMapper {
     @Autowired
     private ProductStatusDao productStatusDao;
 
-    @Autowired
-    private CommentMapper commentMapper;
-
-    @Autowired
-    private CategoryDao categoryDao;
+    private CommentMapper commentMapper = new CommentMapper();
 
 
-    public Product mapToProduct(ProductDto productDto) {
+
+
+    public Product mapToProduct(ProductDto productDto, ProductStatus productStatus, Category category) {
         Product product = new Product(
                 productDto.getPrice(),
                 productDto.getTitle(),
@@ -38,23 +36,18 @@ public class ProductMapper {
                 productDto.getImageLink(),
                 productDto.getTotalAmount(),
                 productDto.getTotalAmount(), new Date());
-        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
         product.setStatus(productStatus);
-
-        Category category = categoryDao.findByName(productDto.getCategory());
         product.setCategory(category);
-
         return product;
     }
 
-    public Product mapToProduct(Product product, ProductDto productDto) {
+    public Product mapToProduct(Product product, ProductDto productDto, ProductStatus productStatus) {
         product.setPrice(productDto.getPrice());
         product.setImageLink(productDto.getImageLink());
         product.setDescription(productDto.getDescription());
         product.setAvailableAmount(productDto.getTotalAmount());
         product.setTotalAmount(productDto.getTotalAmount());
         product.setTitle(productDto.getTitle());
-        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
         product.setStatus(productStatus);
         product.setLastModification(new Date());
         return product;

@@ -2,6 +2,8 @@ package com.tgrajkowski;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 public class SearchLocation {
 
     @Test
@@ -15,5 +17,16 @@ public class SearchLocation {
         String label = locationAddress.substring(labelStart, labelEnd-1);
         label = label.replace("Label\":", "");
         System.out.println(label);
+    }
+
+    @Test
+    public void simple() {
+        BigDecimal orderValue = new BigDecimal(500);
+        BigDecimal discountDecimal = new BigDecimal("0.1");
+        System.out.println("discountDecimal: "+discountDecimal);
+        BigDecimal discount = orderValue.multiply(discountDecimal);
+        System.out.println("discount: "+discount);
+        orderValue = orderValue.subtract(discount);
+        System.out.println("orderValue: "+orderValue);
     }
 }

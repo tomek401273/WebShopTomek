@@ -1,4 +1,4 @@
-package com.tgrajkowski.app;
+package com.tgrajkowski;
 
 import com.tgrajkowski.service.StorageService;
 import org.springframework.boot.SpringApplication;
@@ -22,22 +22,22 @@ public class App {
         SpringApplication.run(App.class, args);
     }
 
-    @Resource
-    StorageService storageService;
-
-    @Bean
-    public LocaleResolver localeResolver() {
-        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-        sessionLocaleResolver.setDefaultLocale(Locale.US);
-        System.out.println("Run run..");
-        storageService.deleteAll();
-        storageService.init();
-        return sessionLocaleResolver;
-    }
-
-    public void run() throws Exception {
-        System.out.println("Run run..");
-        storageService.deleteAll();
-        storageService.init();
-    }
+//    @Resource
+//    StorageService storageService;
+//
+//    @Bean
+//    public LocaleResolver localeResolver() {
+//        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+//        sessionLocaleResolver.setDefaultLocale(Locale.US);
+//        System.out.println("Run run..");
+//        storageService.deleteAll();
+//        storageService.init();
+//        return sessionLocaleResolver;
+//    }
+//
+//    public void run() throws Exception {
+//        System.out.println("Run run..");
+//        storageService.deleteAll();
+//        storageService.init();
+//    }
 }

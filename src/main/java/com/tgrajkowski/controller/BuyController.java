@@ -30,7 +30,7 @@ public class BuyController {
     private UserService userService;
 
     @RequestMapping(method = RequestMethod.POST, value = "/buy")
-    public Long buyAllProductInBucket(@RequestBody ShippingAddressDto shippingAddressDto) {
+    public ProductsOrderDto buyAllProductInBucket(@RequestBody ShippingAddressDto shippingAddressDto) {
         return buyService.buyAllProductInBucket(shippingAddressDto);
     }
 

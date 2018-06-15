@@ -18,6 +18,13 @@ import java.util.List;
 )
 
 
+//@NamedNativeQuery(
+//        name = "ProductsOrder.findOrderAfterDate",
+//        query = "SELECT * FROM products_order WHERE bought_date >= '2018-06-01 00:00:00' and bought_date <= '2018-06-15 00:00:00'",
+//        resultClass = ProductsOrder.class
+//)
+
+
 @Entity
 @Getter
 @Setter
@@ -76,3 +83,6 @@ public class ProductsOrder {
         this.user = user;
     }
 }
+
+
+

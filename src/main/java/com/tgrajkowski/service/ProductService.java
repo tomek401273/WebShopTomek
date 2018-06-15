@@ -7,6 +7,7 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
+import com.tgrajkowski.model.product.category.Category;
 import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
@@ -38,8 +39,7 @@ public class ProductService {
     @Autowired
     private ProductEmailReminderDao productEmailReminderDao;
 
-    @Autowired
-    private ProductMapper productMapper;
+    private ProductMapper productMapper = new ProductMapper();
 
     @Autowired
     private UserDao userDao;
@@ -47,13 +47,20 @@ public class ProductService {
     @Autowired
     private ProductMarkDao productMarkDao;
 
+    @Autowired
+    private CategoryDao categoryDao;
+
     public int checkAvailable(Long id) {
-        Product product = productDao.findById(id);
-        return product.getAvailableAmount();
+        Optional<Product> product = Optional.ofNullable(productDao.findById(id));
+        if (product.isPresent()) {
+            return product.get().getAvailableAmount();
+        }
+        return -1;
     }
 
     public List<ProductDto> getProducts() {
-        return productMapper.mapToProductDtoList(productDao.getProductOnSaleAndInaccesiableAsc());
+        List<Product> productList = productDao.getProductOnSaleAndInaccesiableAsc();
+        return productMapper.mapToProductDtoList(productList);
     }
 
     public List<ProductDto> getProductsToEdit() {
@@ -112,14 +119,15 @@ public class ProductService {
         if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")) {
             product = notifyUsers(product);
         }
-        product = productMapper.mapToProduct(product, productDto);
+        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
+        product = productMapper.mapToProduct(product, productDto, productStatus);
         productDao.save(product);
     }
+
 
     public Product notifyUsers(Product product) {
         List<ProductEmailReminder> remindersEmpty = new ArrayList<>();
         List<ProductEmailReminder> reminders = product.getProductEmailReminders();
-
         for (ProductEmailReminder reminder : reminders) {
             sendEmailProductAvailable(reminder.getEmail(), product.getTitle());
             reminder.getProducts().remove(product);
@@ -153,17 +161,23 @@ public class ProductService {
     }
 
     public Product saveProduct(ProductDto productDto) {
-        Product product = productMapper.mapToProduct(productDto);
-        return productDao.save(product);
+        ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
+        Category category = categoryDao.findByName(productDto.getCategory());
+
+        Product product = productMapper.mapToProduct(productDto, productStatus, category);
+        productDao.save(product);
+        return product;
     }
 
     public ProductDto getOneProduct(Long id) {
-        ProductDto productDto = productMapper.mapToProductDto(productDao.findById(id));
-        return productDto;
+        Optional<Product> product = Optional.ofNullable(productDao.findById(id));
+        if (product.isPresent()) {
+            return productMapper.mapToProductDto(product.get());
+        }
+        return new ProductDto();
     }
 
     public List<ProductDto> searchProduct(String title) {
-
         return productMapper.mapToProductDtoList(productDao.findProductContainstTitleWithLetters(title));
     }
 
@@ -221,6 +235,7 @@ public class ProductService {
         ProductMark productMark = new ProductMark(product, user, productMarkDto.getMark());
         productMarkDao.save(productMark);
 
+        product = productDao.findById(productMarkDto.getProductId());
         List<ProductMark> productMarks = product.getProductMarks();
         for (ProductMark productMarkTemp : productMarks) {
             sumMarks = sumMarks.add(new BigDecimal(productMarkTemp.getMark()));

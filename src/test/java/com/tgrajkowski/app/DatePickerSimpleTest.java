@@ -31,6 +31,15 @@ public class DatePickerSimpleTest {
     }
 
     @Test
+    public void justTest323() throws ParseException {
+        String input = "1.06.2018";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date date = dateFormat.parse(input);
+        System.out.println(date);
+    }
+
+
+    @Test
     public void testTest() throws ParseException {
         Date created = new Date();
         String parsedCreated;
@@ -39,6 +48,7 @@ public class DatePickerSimpleTest {
         parsedCreated = dateFormat.format(created);
         System.out.println(parsedCreated);
     }
+
 
     @Test
     public void justTest2() {

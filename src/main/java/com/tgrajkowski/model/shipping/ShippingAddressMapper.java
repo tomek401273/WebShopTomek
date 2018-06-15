@@ -1,7 +1,9 @@
 package com.tgrajkowski.model.shipping;
 
 import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ShippingAddressMapper {
 //    public ShippingAddress mappToShippedAdderss(ShippingAddressDto shippingAddressDto) {
 //        ShippingAddress shippingAddress = new ShippingAddress(shippingAddressDto.getCountry(), shippingAddressDto.getCity(), shippingAddressDto.getPostalCode(),

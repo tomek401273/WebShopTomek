@@ -20,6 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -48,7 +51,10 @@ public class BuyService {
 
     private ProductsOrderMapper productsOrderMapper = new ProductsOrderMapper();
 
-    private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
+    @Autowired
+    private ShippingAddressMapper shippingAddressMapper;
+
+//    private ShippingAddressMapper shippingAddressMapper = new ShippingAddressMapper();
 
     @Autowired
     private SubscriberDao subscriberDao;
@@ -57,10 +63,9 @@ public class BuyService {
     private LocationService locationService;
 
 
-    public Long buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
+    public ProductsOrderDto buyAllProductInBucket(ShippingAddressDto shippingAddressDto) {
         BigDecimal orderValue = BigDecimal.ZERO;
         int totalAmount = 0;
-        Long productOrderId;
         boolean isCodeCorrect = false;
         if (!shippingAddressDto.getCode().equals("null")) {
             Subscriber subscriber = subscriberDao.findByCode(shippingAddressDto.getCode());
@@ -70,38 +75,28 @@ public class BuyService {
                 isCodeCorrect = true;
             }
         }
-
-
         Status status = statusDao.findByCode("booked");
         AddressDto addressDto = locationService.searchLocation(shippingAddressDto.getSearch());
         if (addressDto == null) {
             return null;
         }
-
-//        ShippingAddress shippingAddress = shippingAddressMapper.mappToShippedAdderss(shippingAddressDto);
         ShippingAddress shippingAddress = shippingAddressMapper.mapToShippingAddresFromAddressDto(addressDto, shippingAddressDto);
-
-
         Users user = userDao.findByLogin(shippingAddressDto.getLogin());
         Bucket bucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> products = bucket.getProductBuckets();
 
         ProductsOrder productsOrder = new ProductsOrder(user);
         productsOrderDao.save(productsOrder);
-        productOrderId = productsOrder.getId();
 
         for (ProductBucket productBucket : products) {
             Product product = productBucket.getProduct();
             ProductBought productBought = new ProductBought(product, productsOrder, productBucket.getAmount());
             orderValue = orderValue.add(productBought.getProduct().getPrice().multiply(new BigDecimal(productBought.getAmount())));
             totalAmount += productBought.getAmount();
-
             productBoughtDao.save(productBought);
         }
-
         if (isCodeCorrect) {
-            double discount = 0.1;
-            BigDecimal discountDecimal = new BigDecimal(discount);
+            BigDecimal discountDecimal = new BigDecimal("0.1");
             orderValue = orderValue.subtract(orderValue.multiply(discountDecimal));
         }
         productsOrder.setTotalValue(orderValue);
@@ -110,7 +105,8 @@ public class BuyService {
         productsOrder.setStatus(status);
         productsOrderDao.save(productsOrder);
         cleaningBucket(products, bucket);
-        return productOrderId;
+        ProductsOrderDto productsOrderDto = productsOrderMapper.mapToProductsOrderDto(productsOrder);
+        return productsOrderDto;
     }
 
     public void cleaningBucket(List<ProductBucket> productBuckets, Bucket bucket) {
@@ -140,7 +136,11 @@ public class BuyService {
     }
 
     public ProductsOrderDto getProductsOrder(Long id) {
-        return productsOrderMapper.mapToProductsOrderDto(productsOrderDao.findOne(id));
+        Optional<ProductsOrder> productsOrder = Optional.ofNullable(productsOrderDao.findOne(id));
+        if (productsOrder.isPresent()) {
+            return productsOrderMapper.mapToProductsOrderDto(productsOrder.get());
+        }
+        return null;
     }
 
     public List<ProductsOrderDto> getAllOrders() {
@@ -150,8 +150,8 @@ public class BuyService {
     }
 
     public boolean paymentVerification(OrderStatus paymentDto) {
-        Status status = statusDao.findByCode("paid");
         if (paymentDto.getStatus().equals("paid")) {
+            Status status = statusDao.findByCode("paid");
             ProductsOrder productsOrder = productsOrderDao.findOne(paymentDto.getOrderId());
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
@@ -162,11 +162,13 @@ public class BuyService {
     public boolean orderPrepared(OrderStatus orderStatus) {
         Status status = statusDao.findByCode("prepared");
         if (orderStatus.getStatus().equals("prepared")) {
+            System.out.println("Order prepared work correctly");
             ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
         }
 
+        System.out.println("Return statement: " + productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared"));
         return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared");
     }
 
@@ -188,7 +190,7 @@ public class BuyService {
         Status send = statusDao.findByCode("send");
         Status delivered = statusDao.findByCode("delivered");
         List<ProductsOrder> sendOrders = productsOrderDao.findByStatusId(send.getId());
-        for (ProductsOrder productsOrder: sendOrders) {
+        for (ProductsOrder productsOrder : sendOrders) {
             productsOrder.setDeliveredDate(new Date());
             productsOrder.setStatus(delivered);
         }
@@ -223,35 +225,22 @@ public class BuyService {
     }
 
     public List<ProductsOrderDto> filterOrderDate(String dateAfter, String dateBefore) {
-        List<ProductsOrderDto> productsOrderDtos = new ArrayList<>();
+        Date dateA = null;
+        Date dateB = null;
+        dateAfter = dateAfter + " 00:00:00";
+        dateBefore = dateBefore + " 23:59:59";
 
-        String appendixAfter = " 00:00:00";
-        String appendixBefore = " 23:59:59";
-        dateAfter = dateFormat(dateAfter) + appendixAfter;
-        dateBefore = dateFormat(dateBefore) + appendixBefore;
-
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         try {
-            productsOrderDtos = productsOrderMapper
-                    .mapToProductsOrderDtoList(
-                            productsOrderDao.findOrderAfterDate(dateAfter, dateBefore)
-                    );
-        } catch (Exception e) {
+            dateA = dateFormat.parse(dateAfter);
+            dateB = dateFormat.parse(dateBefore);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
-        return productsOrderDtos;
+        return productsOrderMapper.mapToProductsOrderDtoList(
+                productsOrderDao.findByBoughtDateBetween(dateA, dateB));
     }
 
-    public String dateFormat(String data) {
-        if (data.length() == 9) {
-            data = "0" + data;
-        }
-        data = data.replaceAll("[.]", "-");
-        String day = data.substring(0, 2);
-        String month = data.substring(2, 6);
-        String year = data.substring(6, data.length());
-        data = year + month + day;
-        return data;
-    }
 
     public List<ProductsOrderDto> searchOrders(OrderSearch orderSearch) {
         List<ProductsOrderDto> foundOrders = new ArrayList<>();

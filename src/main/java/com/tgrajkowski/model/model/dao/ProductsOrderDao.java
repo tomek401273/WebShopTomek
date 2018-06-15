@@ -17,8 +17,14 @@ public interface ProductsOrderDao extends CrudRepository<ProductsOrder, Long> {
     List<ProductsOrder> findByUser_Id(Long id);
     List<ProductsOrder> findAll();
     List<ProductsOrder> findByStatusId(Long id);
-    List<ProductsOrder> findByBoughtDateAfterAndBoughtDateBefore(Date dateAfter,Date dateBefore);
+//    List<ProductsOrder> findByBoughtDateAfterAndBoughtDateBefore(Date dateAfter,Date dateBefore);
 
+//    @Query(nativeQuery = true)
+//    List<ProductsOrder> findOrderAfterDate();
+
+    List<ProductsOrder> findByBoughtDateBefore(Date date);
+    List<ProductsOrder> findByBoughtDateAfterAndBoughtDateBefore(Date after, Date before);
+    List<ProductsOrder> findByBoughtDateBetween(Date after, Date before);
     @Query(nativeQuery = true)
     List<ProductsOrder> findOrderAfterDate(@Param("AFTER") String after, @Param("BEFORE") String before);
 }
