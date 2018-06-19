@@ -65,7 +65,6 @@ public class UserMapper {
         return null;
     }
 
-
     public Users mapToUserWithoutPassword(UserDto userDto, Users users) {
         users.setLogin(userDto.getLogin());
         users.setName(userDto.getName());
@@ -89,8 +88,6 @@ public class UserMapper {
         }
         return null;
     }
-
-
 
     public UserDto mapToUserDto(InputStream inputStream) {
         ObjectMapper objectMapper = new ObjectMapper();

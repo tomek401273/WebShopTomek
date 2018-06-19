@@ -34,26 +34,4 @@ public class RandomString {
         this.symbols = symbols.toCharArray();
         this.buf = new char[length];
     }
-
-    /**
-     * Create an alphanumeric string generator.
-     */
-    public RandomString(int length, SecureRandom random) {
-        this(length, random, alphanum);
-    }
-
-    /**
-     * Create an alphanumeric strings from a secure generator.
-     */
-    public RandomString(int length) {
-        this(length, new SecureRandom());
-    }
-
-    /**
-     * Create session identifiers.
-     */
-    public RandomString() {
-        this(21);
-    }
-
 }

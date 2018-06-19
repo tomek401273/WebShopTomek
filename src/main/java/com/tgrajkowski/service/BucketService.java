@@ -42,9 +42,10 @@ public class BucketService {
 
 
     public void addProductToBucketList(UserBucketDto userBucketDto) {
+        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         List<Long> longProductIdList = userBucketDto.getProductIdArray();
         for (Long productId : longProductIdList) {
-            UserBucketDto userBucketDtoTemp = new UserBucketDto(productId, userBucketDto.getLogin());
+            UserBucketDto userBucketDtoTemp = new UserBucketDto(productId, login);
             addProductToBucket(userBucketDtoTemp);
         }
     }
@@ -53,7 +54,6 @@ public class BucketService {
         String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users user = userDao.findByLogin(login);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
-        log.info("user: " + login + " add Product to Bucket");
         long id = userBucketDto.getProductId();
         Product product = productDao.findById(id);
         if (product.getAvailableAmount() > 0) {
@@ -75,22 +75,16 @@ public class BucketService {
         return false;
     }
 
-
     public List<ProductBucketDto> showProductInBucket() {
         String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> productBuckets = userBucket.getProductBuckets();
         List<ProductBucketDto> productBucketDtoList = productBucketMapper.mapToProductBucketDtoList(productBuckets);
-        System.out.println("START");
-        for (ProductBucketDto productBucketDto: productBucketDtoList) {
-            System.out.println(productBucketDto.getProductDto().toString());
-        }
-        System.out.println("STOP");
         return productBucketDtoList;
     }
 
-    public boolean removeSinggleItemFromBucket(String login, Long productId) {
+    public boolean removeSinggleItemFromBucket(Long productId) {
         int productBucketAmountActual;
         String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users user = userDao.findByLogin(userLogin);
@@ -108,48 +102,38 @@ public class BucketService {
             product.setAvailableAmount(product.getAvailableAmount() + 1);
             productDao.save(product);
         } else {
-            removeSingleProductFromBucket(login, productId);
+            removeSingleProductFromBucket(productId);
         }
-        return checkRemovingProdces(productBucketPK, productBucketAmountActual);
-
-
+        return checkRemovingProcess(productBucketPK, productBucketAmountActual);
     }
 
-    public boolean checkRemovingProdces(ProductBucketPK productBucketPK, int productBucketAmountActual) {
+    public boolean checkRemovingProcess(ProductBucketPK productBucketPK, int productBucketAmountActual) {
         Optional<ProductBucket> optionalProductBucket = Optional.ofNullable(productBucketDao.findOne(productBucketPK));
-//        optionalProductBucket.isPresent();
-//        if (optionalProductBucket.isPresent()) {
-//            if (optionalProductBucket.get().getAmount() < productBucketAmountActual) {
-//                return true;
-//            } else {
-//                return false;
-//            }
-//        } else {
-//            return true;
-//        }
-
         return optionalProductBucket.filter(x -> x.getAmount() < productBucketAmountActual).isPresent();
     }
 
-    public void removeSingleProductFromBucket(String login, Long productId) {
-        Users user = userDao.findByLogin(login);
+    public void removeSingleProductFromBucket(Long productId) {
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
         Bucket userBucket = bucketDao.findByUser_Id(user.getId());
         Product product = productDao.findById(productId);
+        if (product != null) {
+            ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
+            ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
 
-        ProductBucketPK productBucketPK = new ProductBucketPK(product.getId(), userBucket.getId());
-        ProductBucket productBucket = productBucketDao.findOne(productBucketPK);
+            userBucket.getProductBuckets().remove(productBucket);
+            bucketDao.save(userBucket);
 
-        userBucket.getProductBuckets().remove(productBucket);
-        bucketDao.save(userBucket);
-
-        product.getProductBuckets().remove(productBucket);
-        product.setAvailableAmount(product.getTotalAmount());
-        productDao.save(product);
-        productBucketDao.delete(productBucket);
+            product.getProductBuckets().remove(productBucket);
+            product.setAvailableAmount(product.getTotalAmount());
+            productDao.save(product);
+            productBucketDao.delete(productBucket);
+        }
     }
 
-    public UserDto getAddressShipping(String login) {
-        Users user = userDao.findByLogin(login);
+    public UserDto getAddressShipping() {
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
         UserDto userDto = userMapper.mapToUserDto(user);
         return userDto;
     }

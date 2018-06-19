@@ -39,16 +39,16 @@ public class BucketController {
     }
     @RequestMapping(method = RequestMethod.DELETE, value = "/removeSingleProduct")
     public void removeSingleProductFromBucket(@RequestParam String login, @RequestParam Long productId) {
-        bucketService.removeSingleProductFromBucket(login, productId);
+        bucketService.removeSingleProductFromBucket(productId);
     }
     @RequestMapping(method = RequestMethod.DELETE, value = "/removeSingeItemFromBucket")
     public boolean removeSingleItemFromBucket(@RequestParam String login, @RequestParam Long productId) {
-      return bucketService.removeSinggleItemFromBucket(login, productId);
+      return bucketService.removeSinggleItemFromBucket(productId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/addressShipping")
     public UserDto getAddressShippig(String login) {
-      return bucketService.getAddressShipping(login);
+      return bucketService.getAddressShipping();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/coupon")

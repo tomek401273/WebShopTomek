@@ -5,17 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ShippingAddressMapper {
-//    public ShippingAddress mappToShippedAdderss(ShippingAddressDto shippingAddressDto) {
-//        ShippingAddress shippingAddress = new ShippingAddress(shippingAddressDto.getCountry(), shippingAddressDto.getCity(), shippingAddressDto.getPostalCode(),
-//                shippingAddressDto.getStreet(), shippingAddressDto.getName(), shippingAddressDto.getSurname(),
-//                shippingAddressDto.getSupplier());
-//        shippingAddress.setState(shippingAddressDto.getState());
-//        shippingAddress.setCounty(shippingAddressDto.getCounty());
-//        shippingAddress.setDistrict(shippingAddress.getDistrict());
-//        shippingAddress.setSubdistrict(shippingAddress.getSubdistrict());
-//
-//        return shippingAddress;
-//    }
 
     public ShippingAddressDto mapToShippingAddressDto (ShippingAddress shippingAddress) {
         System.out.println("ShippingAddress: "+shippingAddress.toString());

@@ -11,14 +11,6 @@ public class CountryMapper {
         return new Country(countryDto.getName(), countryDto.getAlpha2Code(), countryDto.getAlpha3Code(), false);
     }
 
-    public List<Country> mapToCountryList(CountryDto[] countryDtos) {
-        List<Country> countryList = new ArrayList<>();
-        for (CountryDto countryDto: countryDtos) {
-            countryList.add(mapToCountry(countryDto));
-        }
-        return  countryList;
-    }
-
     public CountryDto mapToCountryDto(Country country) {
         return new CountryDto(country.getName(), country.getAlpha2Code(), country.isApproved());
     }

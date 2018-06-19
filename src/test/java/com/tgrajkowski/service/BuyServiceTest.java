@@ -9,16 +9,11 @@ import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductStatus;
 import com.tgrajkowski.model.product.bought.ProductBought;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.product.order.ProductsOrder;
-import com.tgrajkowski.model.product.order.ProductsOrderDto;
-import com.tgrajkowski.model.product.order.ProductsOrderMapper;
-import com.tgrajkowski.model.product.order.Status;
+import com.tgrajkowski.model.product.order.*;
 import com.tgrajkowski.model.shipping.ShippingAddress;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
 import com.tgrajkowski.model.user.Users;
-import org.hibernate.engine.internal.StatisticalLoggingSessionEventListener;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,13 +22,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringRunner.class)
@@ -64,7 +62,6 @@ public class BuyServiceTest {
     private StatusDao statusDao;
 
     private ProductsOrderMapper productsOrderMapper = new ProductsOrderMapper();
-
 
     @Mock
     private SubscriberDao subscriberDao;
@@ -632,17 +629,220 @@ public class BuyServiceTest {
     }
 
     @Test
-    public void filterOrderDateTest(){
+    public void filterOrderDateTest() throws ParseException {
+        // Given
         List<ProductsOrder> orderList = new ArrayList<>();
         orderList.add(createProductsOrder());
         orderList.add(createProductsOrder());
         orderList.add(createProductsOrder());
-//        when(productsOrderDao.findOrderAfterDate())
+
+        String inputA = "1.06.2018 00:00:00";
+        String inputB = "15.06.2018 23:59:59";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Date dateA = dateFormat.parse(inputA);
+        Date dateB = dateFormat.parse(inputB);
+        when(productsOrderDao.findByBoughtDateBetween(dateA, dateB)).thenReturn(orderList);
+        // When
+        List<ProductsOrderDto> retrieved = buyService.filterOrderDate("1.06.2018", "15.06.2018");
+        // Then
+        assertEquals(3, retrieved.size());
+        assertEquals(new BigDecimal(100), retrieved.get(0).getTotalValue());
+        assertEquals(1, retrieved.get(0).getTotalAmount());
     }
 
     @Test
-    public void dateFormatTest() {
+    public void filterOrderDateEmptyList() throws ParseException {
+        // Given
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        String inputA = "1.06.2018 00:00:00";
+        String inputB = "15.06.2018 23:59:59";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Date dateA = dateFormat.parse(inputA);
+        Date dateB = dateFormat.parse(inputB);
+        when(productsOrderDao.findByBoughtDateBetween(dateA, dateB)).thenReturn(productsOrders);
+        // When
+        List<ProductsOrderDto> retrieved = buyService.filterOrderDate("1.06.2018", "15.06.2018");
+        // Then
+        assertEquals(0, retrieved.size());
+    }
 
+    @Test
+    public void searchOrdersWithIitleTest() {
+        List<Product> productList = new ArrayList<>();
+        productList.add(createProduct());
+        when(productDao.findProductContainstTitleWithLetters("title")).thenReturn(productList);
+
+        List<ProductBought> productBoughts = new ArrayList<>();
+        ProductBought productBought1 = new ProductBought();
+        productBought1.setProductsOrder(createProductsOrder());
+        productBoughts.add(productBought1);
+
+        ProductBought productBought2 = new ProductBought();
+        productBought2.setProductsOrder(createProductsOrder());
+        productBoughts.add(productBought2);
+
+        ProductBought productBought3 = new ProductBought();
+        productBought3.setProductsOrder(createProductsOrder());
+        productBoughts.add(productBought3);
+        when(productBoughtDao.findByProductId(idOne)).thenReturn(productBoughts);
+
+        OrderSearch orderSearch = new OrderSearch("title", "", "", "", "");
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        assertEquals(3, retrieved.size());
+    }
+
+    @Test
+    public void searchOrdersWithDate() throws ParseException {
+        // Given
+        List<ProductsOrder> orderList = new ArrayList<>();
+        orderList.add(createProductsOrder());
+        orderList.add(createProductsOrder());
+        orderList.add(createProductsOrder());
+
+        String inputA = "1.06.2018 00:00:00";
+        String inputB = "15.06.2018 23:59:59";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Date dateA = dateFormat.parse(inputA);
+        Date dateB = dateFormat.parse(inputB);
+        when(productsOrderDao.findByBoughtDateBetween(dateA, dateB)).thenReturn(orderList);
+        OrderSearch orderSearch = new OrderSearch("","1.06.2018", "15.06.2018", "", "");
+        // When
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        // Then
+        assertEquals(3, retrieved.size());
+    }
+
+    @Test
+    public void searchOrdersWithState() {
+        // Given
+        Status status = new Status();
+        status.setId(idOne);
+        when(statusDao.findByCode("state")).thenReturn(status);
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        productsOrders.add(createProductsOrder());
+        when(productsOrderDao.findByStatusId(idOne)).thenReturn(productsOrders);
+        OrderSearch orderSearch = new OrderSearch("","", "", "state", "");
+        // When
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        // Then
+        assertEquals(1, retrieved.size());
+    }
+
+    @Test
+    public void searchOrdersWithLogin() {
+        // Given
+        Users user = new Users();
+        user.setId(idOne);
+        user.setLogin("login12");
+        when(userDao.findByLogin("login12")).thenReturn(user);
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        ProductsOrder productsOrder = createProductsOrder();
+        productsOrders.add(productsOrder);
+        when(productsOrderDao.findByUser_Id(user.getId())).thenReturn(productsOrders);
+
+        OrderSearch orderSearch = new OrderSearch("","", "", "", "login12");
+        // When
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        // Then
+        assertEquals(1, retrieved.size());
+    }
+
+
+    @Test
+    public void searchOrderWtithTitleDateStateAndLoginZeroCommonOrder() throws ParseException {
+        // Given
+        // Title
+        List<Product> productList = new ArrayList<>();
+        productList.add(createProduct());
+        when(productDao.findProductContainstTitleWithLetters("title")).thenReturn(productList);
+
+        List<ProductBought> productBoughts = new ArrayList<>();
+        ProductBought productBought1 = new ProductBought();
+        ProductsOrder productsOrder = createProductsOrder();
+        productsOrder.setId((long)1);
+        productBought1.setProductsOrder(productsOrder);
+        productBoughts.add(productBought1);
+        when(productBoughtDao.findByProductId(idOne)).thenReturn(productBoughts);
+        // Date
+        List<ProductsOrder> orderList = new ArrayList<>();
+        ProductsOrder productsOrder2 = createProductsOrder();
+        productsOrder2.setId((long)2);
+        orderList.add(productsOrder2);
+
+        String inputA = "1.06.2018 00:00:00";
+        String inputB = "15.06.2018 23:59:59";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Date dateA = dateFormat.parse(inputA);
+        Date dateB = dateFormat.parse(inputB);
+        when(productsOrderDao.findByBoughtDateBetween(dateA, dateB)).thenReturn(orderList);
+
+        // State
+        Status status = new Status();
+        status.setId(idOne);
+        when(statusDao.findByCode("state")).thenReturn(status);
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        ProductsOrder productsOrder3 = createProductsOrder();
+        productsOrder3.setId((long)3);
+        productsOrders.add(productsOrder3);
+        when(productsOrderDao.findByStatusId(idOne)).thenReturn(productsOrders);
+        // Login
+        Users user = new Users();
+        user.setId(idOne);
+        user.setLogin("login12");
+        when(userDao.findByLogin("login12")).thenReturn(user);
+        List<ProductsOrder> productsOrders2 = new ArrayList<>();
+        ProductsOrder productsOrder4 = createProductsOrder();
+        productsOrder4.setId((long)4);
+        productsOrders.add(productsOrder4);
+        when(productsOrderDao.findByUser_Id(user.getId())).thenReturn(productsOrders2);
+        OrderSearch orderSearch = new OrderSearch("title","1.06.2018", "15.06.2018", "state", "login12");
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        assertEquals(0, retrieved.size());
+    }
+
+    @Test
+    public void searchOrderWtithTitleDateStateAndLogin() throws ParseException {
+        // Given
+        // Title
+        List<Product> productList = new ArrayList<>();
+        productList.add(createProduct());
+        when(productDao.findProductContainstTitleWithLetters("title")).thenReturn(productList);
+
+        List<ProductBought> productBoughts = new ArrayList<>();
+        ProductBought productBought1 = new ProductBought();
+        ProductsOrder productsOrder = createProductsOrder();
+        productsOrder.setId((long)1);
+        productBought1.setProductsOrder(productsOrder);
+        productBoughts.add(productBought1);
+        when(productBoughtDao.findByProductId(idOne)).thenReturn(productBoughts);
+        // Date
+        List<ProductsOrder> orderList = new ArrayList<>();
+        orderList.add(productsOrder);
+
+        String inputA = "1.06.2018 00:00:00";
+        String inputB = "15.06.2018 23:59:59";
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+        Date dateA = dateFormat.parse(inputA);
+        Date dateB = dateFormat.parse(inputB);
+        when(productsOrderDao.findByBoughtDateBetween(dateA, dateB)).thenReturn(orderList);
+        // State
+        Status status = new Status();
+        status.setId(idOne);
+        when(statusDao.findByCode("state")).thenReturn(status);
+        List<ProductsOrder> productsOrders = new ArrayList<>();
+        productsOrders.add(productsOrder);
+        when(productsOrderDao.findByStatusId(idOne)).thenReturn(productsOrders);
+        // Login
+        Users user = new Users();
+        user.setId(idOne);
+        user.setLogin("login12");
+        when(userDao.findByLogin("login12")).thenReturn(user);
+        List<ProductsOrder> productsOrders2 = new ArrayList<>();
+        productsOrders2.add(productsOrder);
+        when(productsOrderDao.findByUser_Id(user.getId())).thenReturn(productsOrders2);
+        OrderSearch orderSearch = new OrderSearch("title","1.06.2018", "15.06.2018", "state", "login12");
+        List<ProductsOrderDto> retrieved = buyService.searchOrders(orderSearch);
+        assertEquals(1, retrieved.size());
     }
 
     public ProductsOrder createProductsOrder() {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.yaml.snakeyaml.tokens.CommentToken;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,7 +29,8 @@ public class CommentService {
         Product product = productDao.findById(commentDto.getProductId());
         Comment comment = commentMapper.mapToComment(commentDto);
         commentDao.save(comment);
-        return commentMapper.mapToCommentDtos(commentDao.findAllByProduct(product));
+        List<Comment> commentList = commentDao.findAllByProduct(product);
+        return commentMapper.mapToCommentDtos(commentList);
     }
 
     @Transactional
@@ -38,18 +40,16 @@ public class CommentService {
         List<Comment> commentListProduct = product.getComments();
         commentListProduct.remove(comment);
         product.setComments(commentListProduct);
-//        productDao.save(product);
         commentDao.delete(comment);
         return true;
     }
 
-// objekt musi pochodzić z bazy
     @Transactional
     public CommentDto updateComment(CommentDto commentDto) {
         Comment comment = commentDao.findById(commentDto.getId());
         comment.setMessage(commentDto.getMessage());
-//        commentDao.save(comment);
-        CommentDto commentDtoUpdated= commentMapper.mapToCommentDto(commentDao.findById(commentDto.getId()));
+        Comment comment2 = commentDao.findById(commentDto.getId());
+        CommentDto commentDtoUpdated= commentMapper.mapToCommentDto(comment2);
         return commentDtoUpdated;
     }
 }

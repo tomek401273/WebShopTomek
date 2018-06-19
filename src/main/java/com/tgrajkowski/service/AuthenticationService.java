@@ -67,15 +67,16 @@ public class AuthenticationService {
         return null;
     }
 
-    public void accountUpdate(UserDto userDto) {
+    public Users accountUpdate(UserDto userDto) {
         String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users users = userDao.findByLogin(login);
         Users usersUpdated = userMapper.mapToUserWithoutPassword(userDto, users);
         userDao.save(usersUpdated);
+        return usersUpdated;
     }
 
     @Transactional
-    public void passwordUpdate(ChangePassword changePassword) {
+    public boolean passwordUpdate(ChangePassword changePassword) {
         String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         Users users = userDao.findByLogin(login);
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -83,15 +84,13 @@ public class AuthenticationService {
         if (bCryptPasswordEncoder.matches(changePassword.getOldPassword(), users.getPassword())) {
             String newPassword = bCryptPasswordEncoder.encode(changePassword.getNewPassword());
             users.setPassword(newPassword);
-        }
-    }
-
-    public boolean checkLoginAvailable(String login) {
-        System.out.println(login);
-        if (userDao.findByLogin(login) == null) {
             return true;
         }
         return false;
+    }
+
+    public boolean checkLoginAvailable(String login) {
+        return userDao.findByLogin(login) == null;
     }
 
     public void sendEmailConfirmAccount(String username, String email, Long userId, String codeConfirm) {
@@ -111,7 +110,7 @@ public class AuthenticationService {
         simpleEmailService.sendMail(mail);
     }
 
-    private String generateCode() {
+    public String generateCode() {
         String easy = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
         RandomString tickets = new RandomString(23, new SecureRandom(), easy);
         return tickets.nextString();

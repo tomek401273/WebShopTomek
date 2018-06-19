@@ -4,6 +4,7 @@ import com.tgrajkowski.model.product.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @Getter
 @AllArgsConstructor
+@ToString
 public class Mail {
     private String mailTo;
     private String subject;

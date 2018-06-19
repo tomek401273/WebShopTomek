@@ -22,7 +22,6 @@ public class MailCreatorService {
     @Autowired
     @Qualifier("templateEngine")
     private TemplateEngine templateEngine;
-
     private String welcome;
     private String godbye = "Have a nice day";
 
@@ -60,7 +59,6 @@ public class MailCreatorService {
         context.setVariable("message", message);
         context.setVariable("confirmationLink", confirmationLink);
         context.setVariable("explain", explain);
-
         return templateEngine.process("/mail/confim-newsletter", context);
     }
 
@@ -75,9 +73,6 @@ public class MailCreatorService {
         context.setVariable("newOffer", mail.getNewProductOffer());
         context.setVariable("template", mail.getTemplate());
         context.setVariable("fragment", mail.getFragment());
-
-
         return templateEngine.process("/web-shop-mail", context);
     }
-    
 }

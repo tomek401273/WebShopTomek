@@ -1,17 +1,15 @@
 package com.tgrajkowski.service;
 
-import com.google.gson.Gson;
 import com.tgrajkowski.model.location.HeaderRequestInterceptor;
 import com.tgrajkowski.model.location.LocationAddress;
-import com.tgrajkowski.model.location.country.*;
-import com.tgrajkowski.model.location.response.view.result.location.Location;
+import com.tgrajkowski.model.location.country.Country;
+import com.tgrajkowski.model.location.country.CountryDto;
+import com.tgrajkowski.model.location.country.CountryMapper;
 import com.tgrajkowski.model.location.response.view.result.location.address.Address;
 import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
 import com.tgrajkowski.model.location.response.view.result.location.address.AddressMapper;
 import com.tgrajkowski.model.model.dao.CountryDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -37,7 +34,7 @@ public class LocationService {
     @Autowired
     private AddressMapper addressMapper;
 
-    public void getAllCountryFromServer() {
+    public List<Country> getAllCountryFromServer() {
         deleteAllCountry();
         URI uri = UriComponentsBuilder.fromHttpUrl("https://restcountries-v1.p.mashape.com/all")
                 .build().encode().toUri();
@@ -47,11 +44,15 @@ public class LocationService {
         restTemplate.setInterceptors(interceptors);
 
         CountryDto[] countries = restTemplate.getForObject(uri, CountryDto[].class);
+        List<Country> countryList = new ArrayList<>();
         for (CountryDto countryDto : countries) {
-            System.out.println(countryDto.toString());
+            System.out.println("countryDto: "+countryDto);
             Country country = countryMapper.mapToCountry(countryDto);
+            System.out.println("countryMapped: "+country);
+            countryList.add(country);
             countryDao.save(country);
         }
+        return countryList;
     }
 
     public AddressDto searchLocation(String search) {
@@ -70,8 +71,9 @@ public class LocationService {
         return null;
     }
 
-    public void deleteAllCountry() {
+    public boolean deleteAllCountry() {
         countryDao.deleteAll();
+        return countryDao.count() == 0;
     }
 
     public List<CountryDto> getCountriesListFromDatabase() {

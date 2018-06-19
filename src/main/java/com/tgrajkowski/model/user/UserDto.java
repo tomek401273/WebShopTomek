@@ -51,13 +51,6 @@ public class UserDto {
     private String postCode;
     private String street;
 
-    public UserDto(String name, String surname, String password, String login) {
-        this.name = name;
-        this.surname = surname;
-        this.password = password;
-        this.login = login;
-    }
-
     public UserDto(String name, String surname, String country, String city, String postCode, String street) {
         this.name = name;
         this.surname = surname;

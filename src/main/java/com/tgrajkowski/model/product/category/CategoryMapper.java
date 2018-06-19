@@ -19,12 +19,4 @@ public class CategoryMapper {
         categoryDto.setProductDtoList(productDtoList);
         return categoryDto;
     }
-
-    public List<CategoryDto> mapToCategoryDtoList(List<Category> categoryList) {
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        for (Category category: categoryList) {
-            categoryDtoList.add(mapToCategoryDto(category));
-        }
-        return categoryDtoList;
-    }
 }

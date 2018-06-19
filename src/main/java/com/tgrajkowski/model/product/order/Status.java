@@ -32,9 +32,4 @@ public class Status {
             fetch = FetchType.LAZY
     )
     private List<ProductsOrder> productsOrders = new ArrayList<>();
-
-    public Status(String code, String name) {
-        this.code = code;
-        this.name = name;
-    }
 }

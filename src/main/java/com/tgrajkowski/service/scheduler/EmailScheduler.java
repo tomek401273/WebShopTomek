@@ -10,8 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailScheduler {
-    @Autowired
-    private SimpleEmailService simpleEmailService;
 
     @Autowired
     private NewsletterService newsletterService;

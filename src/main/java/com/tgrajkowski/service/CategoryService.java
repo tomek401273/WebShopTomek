@@ -32,9 +32,10 @@ public class CategoryService {
     public CategoryDto getProductWithCategory(String categoryName) {
         CategoryDto categoryDto = new CategoryDto();
         Optional<Category> category = Optional.ofNullable(categoryDao.findByName(categoryName));
+        System.out.println("Category is present: "+category.isPresent());
         if(category.isPresent()){
-            System.out.println(category.get().getProductList().size());
             categoryDto = categoryMapper.mapToCategoryDto(category.get());
+            System.out.println("categoryDto: "+categoryDto);
         }
         return categoryDto;
     }

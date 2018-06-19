@@ -19,14 +19,7 @@ import java.util.List;
 
 @Component
 public class ProductMapper {
-
-    @Autowired
-    private ProductStatusDao productStatusDao;
-
     private CommentMapper commentMapper = new CommentMapper();
-
-
-
 
     public Product mapToProduct(ProductDto productDto, ProductStatus productStatus, Category category) {
         Product product = new Product(
@@ -99,14 +92,5 @@ public class ProductMapper {
         productDto.setMarksAverage(product.getAverageMarks());
         productDto.setDirectLink("http://localhost:4200/product/"+product.getId());
         return productDto;
-    }
-
-    public List<ProductDto> mapToProductDtoList2(List<Product> products) {
-        List<ProductDto> dtoList = new ArrayList<>();
-        for (Product product : products) {
-            ProductDto productDto = mapToProductDto2(product);
-            dtoList.add(productDto);
-        }
-        return dtoList;
     }
 }

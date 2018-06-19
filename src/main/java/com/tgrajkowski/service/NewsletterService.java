@@ -49,7 +49,6 @@ public class NewsletterService {
             sendEmailConfirmSubscription(subscriberDto.getEmail(), subscriberDto.getName(), generatedTicket, dateSubscription);
             return true;
         }
-        System.out.println("This email is already in our database");
         return false;
     }
 
@@ -127,11 +126,8 @@ public class NewsletterService {
                         sendNewsletterToSubscriber(subscriber.getEmail(), subscriber.getName(), newProductOffer);
                     }
                 }
-
             }
         }
         return true;
     }
-
-
 }

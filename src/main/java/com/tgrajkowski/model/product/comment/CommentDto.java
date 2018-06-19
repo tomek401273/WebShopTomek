@@ -16,9 +16,4 @@ public class CommentDto {
     private String message;
     private Long productId;
 
-    public CommentDto(String login, String message, Long productId) {
-        this.login = login;
-        this.message = message;
-        this.productId = productId;
-    }
 }

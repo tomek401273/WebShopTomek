@@ -19,8 +19,6 @@ public class UserDetailService implements UserDetailsService {
     @Autowired
     UserDao userDao;
 
-    @Autowired
-    private RoleDao roleDao;
 
     UserMapper userMapper = new UserMapper();
 
