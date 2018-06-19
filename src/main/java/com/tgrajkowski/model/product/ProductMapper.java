@@ -28,7 +28,8 @@ public class ProductMapper {
                 productDto.getDescription(),
                 productDto.getImageLink(),
                 productDto.getTotalAmount(),
-                productDto.getTotalAmount(), new Date());
+                productDto.getTotalAmount(),
+                new Date());
         product.setStatus(productStatus);
         product.setCategory(category);
         return product;

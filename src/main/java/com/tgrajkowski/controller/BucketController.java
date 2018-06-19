@@ -1,8 +1,6 @@
 package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.bucket.UserBucketDto;
-import com.tgrajkowski.model.bucket.Bucket;
-import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.model.user.UserDto;
 import com.tgrajkowski.service.BucketService;
@@ -29,7 +27,7 @@ public class BucketController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/getAllProductFromBucket")
-    public List<ProductBucketDto> getAllProductFromBucket(@RequestParam String login) {
+    public List<ProductBucketDto> getAllProductFromBucket() {
         return bucketService.showProductInBucket();
     }
 
@@ -38,16 +36,16 @@ public class BucketController {
         bucketService.addProductToBucketList(userBucketDto);
     }
     @RequestMapping(method = RequestMethod.DELETE, value = "/removeSingleProduct")
-    public void removeSingleProductFromBucket(@RequestParam String login, @RequestParam Long productId) {
+    public void removeSingleProductFromBucket(@RequestParam Long productId) {
         bucketService.removeSingleProductFromBucket(productId);
     }
     @RequestMapping(method = RequestMethod.DELETE, value = "/removeSingeItemFromBucket")
-    public boolean removeSingleItemFromBucket(@RequestParam String login, @RequestParam Long productId) {
+    public boolean removeSingleItemFromBucket(@RequestParam Long productId) {
       return bucketService.removeSinggleItemFromBucket(productId);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/addressShipping")
-    public UserDto getAddressShippig(String login) {
+    public UserDto getAddressShippig() {
       return bucketService.getAddressShipping();
     }
 

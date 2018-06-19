@@ -51,8 +51,7 @@ public class BuyController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/paymentVerification")
     public boolean paymentVerification(@RequestBody OrderStatus orderStatus) {
-        return buyService.paymentVerification(orderStatus);
-    }
+        return buyService.paymentVerification(orderStatus); }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/orderPrepared")
     public boolean orderPrepared(@RequestBody OrderStatus orderStatus) {

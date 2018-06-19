@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 public class ShippingAddressMapper {
 
     public ShippingAddressDto mapToShippingAddressDto (ShippingAddress shippingAddress) {
-        System.out.println("ShippingAddress: "+shippingAddress.toString());
         ShippingAddressDto shippingAddressDto = new ShippingAddressDto(
                 shippingAddress.getCountry(),
                 shippingAddress.getCity(),
@@ -27,7 +26,6 @@ public class ShippingAddressMapper {
     }
 
     public ShippingAddress mapToShippingAddresFromAddressDto(AddressDto addressDto, ShippingAddressDto shippingAddressDto) {
-        System.out.println("ShippingAddresMapper: "+shippingAddressDto.toString());
         ShippingAddress shippingAddress = new ShippingAddress(
                 addressDto.getCountry(),
                 addressDto.getCity(),

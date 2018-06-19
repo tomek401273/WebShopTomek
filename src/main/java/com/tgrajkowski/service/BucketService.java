@@ -42,10 +42,9 @@ public class BucketService {
 
 
     public void addProductToBucketList(UserBucketDto userBucketDto) {
-        String login = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         List<Long> longProductIdList = userBucketDto.getProductIdArray();
         for (Long productId : longProductIdList) {
-            UserBucketDto userBucketDtoTemp = new UserBucketDto(productId, login);
+            UserBucketDto userBucketDtoTemp = new UserBucketDto(productId);
             addProductToBucket(userBucketDtoTemp);
         }
     }

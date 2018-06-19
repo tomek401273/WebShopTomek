@@ -5,6 +5,7 @@ import com.tgrajkowski.model.model.dao.UserDao;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
@@ -23,7 +24,8 @@ public class CommentMapper {
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     public Comment mapToComment(CommentDto commentDto) {
-        Users user = userDao.findByLogin(commentDto.getLogin());
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
         Product product = productDao.findById(commentDto.getProductId());
         Comment comment = new Comment(user, commentDto.getMessage());
         comment.setProduct(product);
@@ -33,7 +35,8 @@ public class CommentMapper {
     public CommentDto mapToCommentDto(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
-        commentDto.setLogin(comment.getUser().getLogin());
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        commentDto.setLogin(userLogin);
         commentDto.setCreatedDate(dateFormat.format(comment.getCreated()));
         commentDto.setMessage(comment.getMessage());
         commentDto.setProductId(comment.getProduct().getId());

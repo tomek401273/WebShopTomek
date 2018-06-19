@@ -16,6 +16,7 @@ import com.tgrajkowski.model.user.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -80,7 +81,8 @@ public class BuyService {
             return null;
         }
         ShippingAddress shippingAddress = shippingAddressMapper.mapToShippingAddresFromAddressDto(addressDto, shippingAddressDto);
-        Users user = userDao.findByLogin(shippingAddressDto.getLogin());
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
         Bucket bucket = bucketDao.findByUser_Id(user.getId());
         List<ProductBucket> products = bucket.getProductBuckets();
 
