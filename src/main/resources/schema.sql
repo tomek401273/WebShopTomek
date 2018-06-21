@@ -1,5 +1,3 @@
-
--- SELECT * FROM  users;
 DROP TABLE IF EXISTS subscriber;
 DROP TABLE IF EXISTS product_bought;
 DROP TABLE IF EXISTS products_order;

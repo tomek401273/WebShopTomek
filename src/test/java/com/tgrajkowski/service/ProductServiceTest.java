@@ -5,6 +5,7 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
 import com.tgrajkowski.model.product.ProductStatus;
+import com.tgrajkowski.model.product.ShortDescription;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.product.category.Category;
@@ -17,6 +18,7 @@ import com.tgrajkowski.model.user.Users;
 import org.junit.Assert;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,7 +26,11 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.mockito.Mockito.*;
@@ -61,27 +67,25 @@ public class ProductServiceTest {
     @Mock
     private CategoryDao categoryDao;
 
-//    @Mock
-//    private ProductMapper productMapper;
-
-
-    //        assertEquals("Computer", retrievedProduct.getTitle());
-//        assertEquals(new BigDecimal(100), retrievedProduct.getPrice());
-//        assertEquals("Super Computer", retrievedProduct.getDescription());
-//        assertEquals("https://image3.mouthshut.com/images/imagesp/925872676s.jpg", retrievedProduct.getImageLink());
-//        assertEquals(10, retrievedProduct.getTotalAmount());
-//        assertEquals(2, retrievedProduct.getAvailableAmount());
-//        assertEquals(false, retrievedProduct.isToDelete());
-//        assertEquals("sale", retrievedProduct.getStatus().getCode());
-//        assertEquals("Product is on Sale", retrievedProduct.getStatus().getName());
-//        assertEquals(lastModyficationDate, retrievedProduct.getLastModification());
     @Mock
     private UserDao userDao;
 
     @Mock
     private ProductMarkDao productMarkDao;
 
+    @Mock
+    private ShortDescriptionDao shortDescriptionDao;
+
     private Long productId = new Long(1);
+
+    @Before
+    public void init() {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn("login");
+    }
 
     @Test
     public void checkAvailableShouldReturnProduct() {
