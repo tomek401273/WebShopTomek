@@ -1,9 +1,9 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.OrderStatus;
+import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
 import com.tgrajkowski.model.model.dao.*;
-import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.newsletter.Subscriber;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.bought.ProductBought;
@@ -14,7 +14,6 @@ import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.model.shipping.ShippingAddressMapper;
 import com.tgrajkowski.model.user.Users;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -72,7 +71,6 @@ public class BuyService {
                 subscriber.setCode(null);
                 subscriberDao.save(subscriber);
                 isCodeCorrect = true;
-                System.out.println("CODE TRUE");
             }
         }
         Status status = statusDao.findByCode("booked");
@@ -99,7 +97,6 @@ public class BuyService {
         if (isCodeCorrect) {
             BigDecimal discountDecimal = new BigDecimal("0.1");
             orderValue = orderValue.subtract(orderValue.multiply(discountDecimal));
-            System.out.println("order value after discount: "+orderValue);
         }
         productsOrder.setTotalValue(orderValue);
         productsOrder.setTotalAmount(totalAmount);
@@ -131,7 +128,6 @@ public class BuyService {
         } catch (NullPointerException e) {
             log.error(e.getMessage());
         }
-        System.out.println("Product products size: " + productsOrders.size());
         return productsOrderMapper
                 .mapToProductsOrderDtoList
                         (productsOrders);
@@ -164,13 +160,11 @@ public class BuyService {
     public boolean orderPrepared(OrderStatus orderStatus) {
         Status status = statusDao.findByCode("prepared");
         if (orderStatus.getStatus().equals("prepared")) {
-            System.out.println("Order prepared work correctly");
             ProductsOrder productsOrder = productsOrderDao.findOne(orderStatus.getOrderId());
             productsOrder.setStatus(status);
             productsOrderDao.save(productsOrder);
         }
 
-        System.out.println("Return statement: " + productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared"));
         return productsOrderDao.findOne(orderStatus.getOrderId()).getStatus().getCode().equals("prepared");
     }
 
@@ -251,21 +245,16 @@ public class BuyService {
                 foundOrders.add(productsOrderDto);
             }
         }
-        System.out.println("Title size: "+foundOrders.size());
         if (orderSearch.getDateFrom().length() > 8 && orderSearch.getDateTo().length() > 8) {
             List<ProductsOrderDto> foundOrdersWithDate = filterOrderDate(orderSearch.getDateFrom(), orderSearch.getDateTo());
             foundOrders = filterProductOrders(foundOrders, foundOrdersWithDate);
         }
-        System.out.println("Date size: "+foundOrders.size());
-
         if (orderSearch.getStatus().length() > 3) {
             List<ProductsOrderDto> foundState = filterOrderState(orderSearch.getStatus());
             foundOrders = filterProductOrders(foundOrders, foundState);
         }
         if (orderSearch.getUserLogin().length() > 6 && !orderSearch.getUserLogin().equals("undefined")) {
-            System.out.println("LOGIN LOGIN LOGIN");
             List<ProductsOrderDto> foundOrdersWithLogin = getAllProductsOrdersUser(orderSearch.getUserLogin());
-            System.out.println("size: "+foundOrdersWithLogin.size());
             foundOrders = filterProductOrders(foundOrders, foundOrdersWithLogin);
         }
         return foundOrders;

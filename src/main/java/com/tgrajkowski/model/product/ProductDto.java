@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -36,6 +37,7 @@ public class ProductDto {
     private List<CommentDto> commentDtos;
     private String category;
     private String directLink;
+    private List<String> shortDescription = new ArrayList<>();
 
     public ProductDto(Long id, BigDecimal price, String title, String description, String imageLink, int totalAmount, int availableAmount) {
         this.id = id;

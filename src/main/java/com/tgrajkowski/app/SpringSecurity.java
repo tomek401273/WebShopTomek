@@ -35,18 +35,10 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/product/setReminder").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/subscribe").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/bucket/coupon").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/swagger-ui.html").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/category/**").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/tom/static").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/file/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/newsletter/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.POST, "/newsletter/confirm").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.GET, "/location/**").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/upload/**").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.POST, "/upload/post").permitAll()
-                .and().authorizeRequests().antMatchers(HttpMethod.GET, "/tomek/**").permitAll()
-
-
                 .antMatchers(HttpMethod.OPTIONS)
                 .permitAll()
                 .anyRequest().authenticated()
@@ -55,20 +47,16 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
-
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-
         authenticationManagerBuilder.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
-
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -80,7 +68,5 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-
-
     }
 }

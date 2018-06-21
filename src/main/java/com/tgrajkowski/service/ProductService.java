@@ -16,7 +16,9 @@ import com.tgrajkowski.model.user.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 @Service
@@ -50,6 +52,9 @@ public class ProductService {
     @Autowired
     private CategoryDao categoryDao;
 
+    @Autowired
+    private ShortDescriptionDao shortDescriptionDao;
+
     public int checkAvailable(Long id) {
         Optional<Product> product = Optional.ofNullable(productDao.findById(id));
         if (product.isPresent()) {
@@ -78,7 +83,6 @@ public class ProductService {
                     product.getTitle(),
                     productBucket.getBucket().getUser().getName());
         }
-
         for (ProductBucket productBucket : productBuckets) {
             productBucketPKS.add(new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId()));
             Bucket bucket = productBucket.getBucket();
@@ -114,13 +118,27 @@ public class ProductService {
         send(email, subject, message);
     }
 
+    @Transactional
     public void updateProduct(ProductDto productDto) {
         Product product = productDao.findById(productDto.getId());
-        if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")) {
+        if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")
+                || productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("initial")) {
             product = notifyUsers(product);
         }
         ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
         product = productMapper.mapToProduct(product, productDto, productStatus);
+        List<ShortDescription> oldDesc = product.getShortDescriptions();
+        shortDescriptionDao.delete(oldDesc);
+        product.setShortDescriptions(new ArrayList<>());
+        productDao.save(product);
+        List<ShortDescription> newDesc = new ArrayList<>();
+        for (String desc: productDto.getShortDescription()) {
+            if (desc != null) {
+                ShortDescription shDesc = new ShortDescription(desc, product);
+                shortDescriptionDao.save(shDesc);
+            }
+        }
+        product.setShortDescriptions(newDesc);
         productDao.save(product);
     }
 
@@ -147,7 +165,7 @@ public class ProductService {
     }
 
     public void sendEmailProductAvailable(String email, String productTitle) {
-        String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
+        String subject = "Product " + productTitle + " available in Computer WebShop";
         String message = "Dear user you set reminder for product " + productTitle + " now it is accessible";
         send(email, subject, message);
     }
@@ -165,6 +183,13 @@ public class ProductService {
         Category category = categoryDao.findByName(productDto.getCategory());
 
         Product product = productMapper.mapToProduct(productDto, productStatus, category);
+        for (String des: productDto.getShortDescription()) {
+            if (des.length()>5){
+                ShortDescription shortDescription = new ShortDescription(des, product);
+                shortDescriptionDao.save(shortDescription);
+                product.getShortDescriptions().add(shortDescription);
+            }
+        }
         productDao.save(product);
         return product;
     }
@@ -221,6 +246,7 @@ public class ProductService {
 
     public BigDecimal maxPriceProduct() {
         BigDecimal maxValue = productDao.getMaxProductPrice().getPrice();
+        maxValue = maxValue.setScale(0, RoundingMode.HALF_UP);
         return maxValue;
     }
 

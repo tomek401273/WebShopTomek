@@ -26,31 +26,23 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     AuthenticationManager authenticationManager;
     UserMapper userMapper = new UserMapper();
 
-
     public AuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
             UserDto userDto = userMapper.mapToUserDto(request.getInputStream());
-
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDto.getLogin(), userDto.getPassword());
-
-
             return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
-
-
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -63,5 +55,4 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         response.addHeader(HEADER_STRING, token);
 
     }
-
 }

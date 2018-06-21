@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tgrajkowski.model.location.response.view.result.Result;
 import lombok.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
 @ToString

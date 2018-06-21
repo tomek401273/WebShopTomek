@@ -1,4 +1,12 @@
 package com.tgrajkowski.model.model.dao;
 
-public interface ShortDescriptionDao {
+import com.tgrajkowski.model.product.ShortDescription;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
+
+@Transactional
+@Repository
+public interface ShortDescriptionDao extends CrudRepository<ShortDescription, Long> {
 }

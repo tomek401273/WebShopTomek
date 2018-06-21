@@ -2,14 +2,11 @@ package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.OrderStatus;
 import com.tgrajkowski.model.product.order.OrderSearch;
-import com.tgrajkowski.model.product.order.ProductsOrder;
 import com.tgrajkowski.model.product.order.ProductsOrderDto;
 import com.tgrajkowski.model.shipping.ShippingAddressDto;
 import com.tgrajkowski.service.BuyService;
-import com.tgrajkowski.service.LocationService;
 import com.tgrajkowski.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +19,6 @@ public class BuyController {
 
     @Autowired
     private BuyService buyService;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
 
     @Autowired
     private UserService userService;
@@ -51,7 +45,8 @@ public class BuyController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/paymentVerification")
     public boolean paymentVerification(@RequestBody OrderStatus orderStatus) {
-        return buyService.paymentVerification(orderStatus); }
+        return buyService.paymentVerification(orderStatus);
+    }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/orderPrepared")
     public boolean orderPrepared(@RequestBody OrderStatus orderStatus) {
@@ -93,5 +88,4 @@ public class BuyController {
         OrderSearch orderSearch = new OrderSearch(productTitle, dateFrom, dateTo, status, userLogin);
         return buyService.searchOrders(orderSearch);
     }
-
 }

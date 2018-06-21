@@ -13,6 +13,4 @@ import java.util.List;
 public interface ProductBucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
     @Override
     ProductBucket findOne(ProductBucketPK productBucketPK);
-
-//    void delete(List<ProductBucketPK> productBucketPKS);
 }

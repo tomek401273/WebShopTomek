@@ -1,6 +1,5 @@
 package com.tgrajkowski.model.location.country;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;

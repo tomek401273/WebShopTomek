@@ -11,7 +11,7 @@ public class OrderDeliveryScheduler {
     @Autowired
     private BuyService buyService;
 
-    @Scheduled(fixedDelay = 60 * 1000)
+    @Scheduled(cron = "0 0 00 * * *")
     public void orderDeliver() {
         buyService.orderDeliver();
     }

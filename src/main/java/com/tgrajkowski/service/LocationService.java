@@ -46,9 +46,7 @@ public class LocationService {
         CountryDto[] countries = restTemplate.getForObject(uri, CountryDto[].class);
         List<Country> countryList = new ArrayList<>();
         for (CountryDto countryDto : countries) {
-            System.out.println("countryDto: "+countryDto);
             Country country = countryMapper.mapToCountry(countryDto);
-            System.out.println("countryMapped: "+country);
             countryList.add(country);
             countryDao.save(country);
         }

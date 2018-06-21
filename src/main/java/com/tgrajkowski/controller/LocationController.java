@@ -1,24 +1,17 @@
 package com.tgrajkowski.controller;
 
 import com.tgrajkowski.model.location.country.CountryDto;
-import com.tgrajkowski.model.location.response.view.result.location.address.Address;
 import com.tgrajkowski.model.location.response.view.result.location.address.AddressDto;
 import com.tgrajkowski.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/location")
 @CrossOrigin("*")
 public class LocationController {
-    @Autowired
-    private RestTemplate restTemplate;
 
     @Autowired
     private LocationService locationService;

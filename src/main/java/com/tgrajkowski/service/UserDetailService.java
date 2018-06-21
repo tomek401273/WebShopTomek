@@ -18,18 +18,14 @@ import java.util.List;
 public class UserDetailService implements UserDetailsService {
     @Autowired
     UserDao userDao;
-
-
     UserMapper userMapper = new UserMapper();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println("username: "+username);
         Users users = userDao.findByLogin(username);
         if (!users.isConfirm()) {
             return null;
         }
         return userMapper.mapToUserDetails(users);
     }
-
 }

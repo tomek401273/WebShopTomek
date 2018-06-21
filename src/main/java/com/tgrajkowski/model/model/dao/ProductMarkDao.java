@@ -11,5 +11,4 @@ import java.util.List;
 @Transactional
 @Repository
 public interface ProductMarkDao extends CrudRepository<ProductMark, ProductMarkPK> {
-    List<ProductMark> findByProductId(Long id);
 }

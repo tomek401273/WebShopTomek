@@ -76,7 +76,7 @@ public class NewsletterService {
 
     public void sendNewsletterToSubscriber(String email, String name, List<ProductDto> newProductOffer) {
         LocalDate localDate = LocalDate.now();
-        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) + localDate;
+        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) +" "+ localDate;
         String message = "Dear " + name + " please browse our new product offer";
         Mail mail = new Mail(email, subject);
         mail.setWelcome("Welcome subscriber");
@@ -116,7 +116,6 @@ public class NewsletterService {
             List<String> productTitle = new ArrayList<>();
             List<ProductDto> newProductOffer = new ArrayList<>();
             if (productList.size() > 0) {
-
                 for (Product product : productList) {
                     if (product.getStatus().getCode().equals("sale")) {
                         productTitle.add(product.getTitle());

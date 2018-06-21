@@ -1,21 +1,15 @@
 package com.tgrajkowski.model.product;
 
 
-import com.tgrajkowski.model.model.dao.CategoryDao;
-import com.tgrajkowski.model.model.dao.ProductStatusDao;
-import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.ProductStatus;
-import com.tgrajkowski.model.product.bucket.ProductBucketDto;
 import com.tgrajkowski.model.product.category.Category;
 import com.tgrajkowski.model.product.comment.CommentMapper;
-import com.tgrajkowski.model.product.order.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
@@ -32,6 +26,9 @@ public class ProductMapper {
                 new Date());
         product.setStatus(productStatus);
         product.setCategory(category);
+        product.setSumMarks(BigDecimal.ZERO);
+        product.setAverageMarks(BigDecimal.ZERO);
+        product.setCountMarks(BigDecimal.ZERO);
         return product;
     }
 
@@ -64,6 +61,9 @@ public class ProductMapper {
         productDto.setMarksAverage(product.getAverageMarks());
         productDto.setCommentDtos(commentMapper.mapToCommentDtos(product.getComments()));
 
+        productDto.setShortDescription(product.getShortDescriptions().stream()
+                .map(x ->x.getAttribute())
+                .collect(Collectors.toList()));
         return productDto;
     }
 

@@ -27,8 +27,6 @@ public class MailCreatorService {
 
     public String create(Mail mail) {
         Context context = new Context();
-
-
         context.setVariable("companyConfig", webShopConfig);
         context.setVariable("godbyeMessage", godbye);
         if (mail.getMailType().equals(MailType.SCHEDULED_NEWSLETTER)) {
@@ -46,7 +44,6 @@ public class MailCreatorService {
         context.setVariable("message", mail.getMessage());
         context.setVariable("welcomeMessage", welcome);
         context.setVariable("newOffer", mail.getNewProductOffer());
-
         return templateEngine.process("mail/newsletter-mail", context);
     }
 

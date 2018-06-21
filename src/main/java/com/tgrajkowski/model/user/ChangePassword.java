@@ -12,8 +12,6 @@ import javax.validation.constraints.Size;
 @ToString
 public class ChangePassword {
 
-//    @Size(min = 6)
-//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])[A-Za-z\\d$@$!%*?&]{8,}")
     private String oldPassword;
 
     @Size(min = 6)

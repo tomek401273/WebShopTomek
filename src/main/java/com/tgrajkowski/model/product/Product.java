@@ -124,6 +124,14 @@ public class Product {
     @Column
     private Date lastModification;
 
+    @OneToMany(
+            targetEntity = ShortDescription.class,
+            mappedBy = "product",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<ShortDescription> shortDescriptions = new ArrayList<>();
+
 
     @OneToMany(
             targetEntity = Comment.class,
@@ -147,5 +155,4 @@ public class Product {
         this.availableAmount = availableAmount;
         this.lastModification = lastModification;
     }
-
 }

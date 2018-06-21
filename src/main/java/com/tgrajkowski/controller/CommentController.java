@@ -1,6 +1,5 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.model.dao.CommentDao;
 import com.tgrajkowski.model.product.comment.CommentDto;
 import com.tgrajkowski.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,6 @@ public class CommentController {
     @RequestMapping(method = RequestMethod.PUT, value = "/update")
     public @ResponseBody
     CommentDto updateComment(@RequestBody CommentDto commentDto) {
-       return commentService.updateComment(commentDto);
+        return commentService.updateComment(commentDto);
     }
 }

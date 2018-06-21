@@ -1,11 +1,6 @@
 package com.tgrajkowski.controller;
 
-import com.tgrajkowski.model.model.dao.BucketDao;
-import com.tgrajkowski.model.model.dao.ProductDao;
-import com.tgrajkowski.model.model.dao.ProductBucketDao;
-import com.tgrajkowski.model.product.*;
-import com.tgrajkowski.model.product.comment.CommentDto;
-import com.tgrajkowski.model.product.mark.ProductMark;
+import com.tgrajkowski.model.product.ProductDto;
 import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.service.ProductService;

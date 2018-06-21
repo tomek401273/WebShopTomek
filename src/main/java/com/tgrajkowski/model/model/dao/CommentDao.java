@@ -11,7 +11,6 @@ import java.util.List;
 @Transactional
 @Repository
 public interface CommentDao extends CrudRepository<Comment, Integer> {
-    int countAllByProduct(Product product);
     Comment findById(Long id);
     List<Comment> findAllByProduct(Product product);
 }
