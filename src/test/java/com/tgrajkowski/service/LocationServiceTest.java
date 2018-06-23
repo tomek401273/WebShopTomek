@@ -103,7 +103,7 @@ public class LocationServiceTest {
 
     @Test
     public void searchLocation() throws URISyntaxException {
-        URI uri = new URI("https://geocoder.cit.api.here.com/6.2/geocode.json?searchtext=search&app_id=ZurixIlHeTvNn84GbCkq&app_code=sw87CS8QKIoFiJ4vfa8r3A");
+        URI uri = new URI("https://geocoder.cit.api.here.com/6.2/geocode.json?searchtext=search&app_id=trjoJpm1PfoMxeItjPg0&app_code=gbHoucy8c5Vw3FUFn1C8RQ");
 
         Address address = new Address();
         address.setCity("city");
