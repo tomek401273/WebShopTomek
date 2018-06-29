@@ -19,4 +19,7 @@ public class WebShopConfig {
     @Value("${info.company.phone}")
     private String companyPhone;
 
+    @Value("${frontend.link}")
+    private String frontedLink;
+
 }

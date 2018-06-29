@@ -6,6 +6,7 @@ DROP TABLE IF EXISTS status;
 DROP TABLE IF EXISTS product_bucket;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS joining_product_reminder;
+DROP TABLE IF EXISTS product_email_reminder;
 DROP TABLE IF EXISTS product_mark;
 DROP TABLE IF EXISTS short_description;
 DROP TABLE IF EXISTS product;
@@ -144,6 +145,13 @@ CREATE TABLE product_mark
   CONSTRAINT fkflqs201nsx5bcgik9ti8bn7ny FOREIGN KEY (product_id)
       REFERENCES product (product_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+
+CREATE TABLE product_email_reminder
+(
+  reminder_id bigint NOT NULL,
+  email character varying(255),
+  CONSTRAINT product_email_reminder_pkey PRIMARY KEY (reminder_id)
 );
 
 CREATE TABLE joining_product_reminder

@@ -18,15 +18,15 @@ public class EmailScheduler {
     private ProductService productService;
 
 
-
-    @Scheduled(cron = "0 0 00 * * *")
+    //    @Scheduled(cron = "0 0 00 * * *")
+    @Scheduled(fixedDelay = 60 * 1000)
     public void sendInformationEmail() {
         newsletterService.sendNewsLetter();
     }
 
 
-    //    @Scheduled(fixedDelay = 60 * 1000)
-    @Scheduled(cron = "0 0 00 * * *")
+    //    @Scheduled(cron = "0 0 00 * * *")
+    @Scheduled(fixedDelay = 60 * 1000)
     public void deleteProduct() {
         productService.deleteProductFromSale();
     }

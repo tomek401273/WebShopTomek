@@ -1,5 +1,6 @@
 package com.tgrajkowski.service;
 
+import com.tgrajkowski.app.WebShopConfig;
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.mail.MailType;
@@ -105,7 +106,7 @@ public class AuthenticationService {
         mail.setWelcome(welcome);
         mail.setExplain(explain);
         mail.setGoodbye(goodbye);
-        mail.setLinkConfirm("http://localhost:4200/confirm-account?email=" + email + "&code-confirm=" + codeConfirm);
+        mail.setLinkConfirm("confirm-account?email=" + email + "&code-confirm=" + codeConfirm);
         mail.setConfirmAccount(true);
         simpleEmailService.sendMail(mail);
     }

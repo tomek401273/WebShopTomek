@@ -1,7 +1,6 @@
 package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.mail.Mail;
-import com.tgrajkowski.model.mail.MailType;
 import com.tgrajkowski.model.model.dao.ProductDao;
 import com.tgrajkowski.model.model.dao.SubscriberDao;
 import com.tgrajkowski.model.newsletter.ConfirmDto;
@@ -66,7 +65,7 @@ public class NewsletterService {
         mail.setConfirmCode(confirmCode);
         mail.setCreateDate(dateSubscription);
 
-        mail.setLinkConfirm("http://localhost:4200/newsletter/confirm?email=" + email + "&code-confirm=" + confirmCode);
+        mail.setLinkConfirm("newsletter/confirm?email=" + email + "&code-confirm=" + confirmCode);
         mail.setExplain("You or someone has subscribed to this list on " + mail.getCreateDate() + " using the address " + mail.getMailTo());
         mail.setMessage("If you want to receive 10% discount in Computer WebShop please confirm this email");
         mail.setTemplate("newsletter");
