@@ -1,4 +1,4 @@
-package com.tgrajkowski.app;
+package com.tgrajkowski.service.mapper;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

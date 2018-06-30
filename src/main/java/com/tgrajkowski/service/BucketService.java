@@ -6,7 +6,7 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
-import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
+import com.tgrajkowski.service.mapper.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.user.Users;
 import com.tgrajkowski.model.user.UserDto;
@@ -37,7 +37,9 @@ public class BucketService {
     @Autowired
     private SubscriberDao subscriberDao;
 
-    private ProductBucketMapper productBucketMapper = new ProductBucketMapper();
+    @Autowired
+    private ProductBucketMapper productBucketMapper;
+
     private UserMapper userMapper = new UserMapper();
 
 

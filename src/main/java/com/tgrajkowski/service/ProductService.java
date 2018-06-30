@@ -2,7 +2,6 @@ package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.mail.Mail;
-import com.tgrajkowski.model.mail.MailType;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
@@ -13,6 +12,7 @@ import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.model.user.Users;
+import com.tgrajkowski.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -41,7 +42,8 @@ public class ProductService {
     @Autowired
     private ProductEmailReminderDao productEmailReminderDao;
 
-    private ProductMapper productMapper = new ProductMapper();
+    @Autowired
+    private ProductMapper productMapper;
 
     @Autowired
     private UserDao userDao;
@@ -82,6 +84,10 @@ public class ProductService {
                     productBucket.getBucket().getUser().getLogin(),
                     product.getTitle(),
                     productBucket.getBucket().getUser().getName());
+            String email = productBucket.getBucket().getUser().getLogin();
+            String subject = "Product " + product.getTitle() + " soon unavailable in Computer WebShop";
+            String message = "Dear user " + productBucket.getBucket().getUser().getName() + " administrator redirect " + product.getTitle() + " to removing process. Product will be anavaiable until 23:59 this day";
+            productUpdate(email, subject, message, product);
         }
         for (ProductBucket productBucket : productBuckets) {
             productBucketPKS.add(new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId()));
@@ -113,9 +119,7 @@ public class ProductService {
     }
 
     public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
-        String subject = "Product " + productTitle + " soon unavailable in Computer WebShop";
-        String message = "Dear user " + userName + " administrator redirect " + productTitle + " to removing process. Product will be anavaiable until 23:59 this day";
-        send(email, subject, message);
+
     }
 
     @Transactional
@@ -132,7 +136,7 @@ public class ProductService {
         product.setShortDescriptions(new ArrayList<>());
         productDao.save(product);
         List<ShortDescription> newDesc = new ArrayList<>();
-        for (String desc: productDto.getShortDescription()) {
+        for (String desc : productDto.getShortDescription()) {
             if (desc != null) {
                 ShortDescription shDesc = new ShortDescription(desc, product);
                 shortDescriptionDao.save(shDesc);
@@ -147,7 +151,11 @@ public class ProductService {
         List<ProductEmailReminder> remindersEmpty = new ArrayList<>();
         List<ProductEmailReminder> reminders = product.getProductEmailReminders();
         for (ProductEmailReminder reminder : reminders) {
-            sendEmailProductAvailable(reminder.getEmail(), product.getTitle());
+            String message = "Dear user you set reminder for product " + product.getTitle() + " now it is accessible";
+            String subject = "Product " + product.getTitle() + " available in Computer WebShop";
+
+            productUpdate(reminder.getEmail(), subject, message, product);
+
             reminder.getProducts().remove(product);
             productEmailReminderDao.save(reminder);
             if (reminder.getProducts().size() == 0) {
@@ -164,27 +172,28 @@ public class ProductService {
         return product;
     }
 
-    public void sendEmailProductAvailable(String email, String productTitle) {
-        String subject = "Product " + productTitle + " available in Computer WebShop";
-        String message = "Dear user you set reminder for product " + productTitle + " now it is accessible";
-        send(email, subject, message);
-    }
-
-    public void send(String email, String subject, String message) {
+    public void productUpdate(String email, String subject, String message, Product product) {
         Mail mail = new Mail(email, subject);
         mail.setMessage(message);
         mail.setTemplate("product");
         mail.setFragment("information");
+        ProductDto productDto = productMapper.mapToProductDtoForMail(product);
+        productDto.setShortDescription(product.getShortDescriptions().stream()
+        .map(x -> x.getAttribute()).collect(Collectors.toList()));
+        mail.setProductDto(productDto);
         simpleEmailService.sendMail(mail);
     }
+
+
+
 
     public Product saveProduct(ProductDto productDto) {
         ProductStatus productStatus = productStatusDao.findProductStatusByCode(productDto.getStatusCode());
         Category category = categoryDao.findByName(productDto.getCategory());
 
         Product product = productMapper.mapToProduct(productDto, productStatus, category);
-        for (String des: productDto.getShortDescription()) {
-            if (des.length()>5){
+        for (String des : productDto.getShortDescription()) {
+            if (des.length() > 5) {
                 ShortDescription shortDescription = new ShortDescription(des, product);
                 shortDescriptionDao.save(shortDescription);
                 product.getShortDescriptions().add(shortDescription);

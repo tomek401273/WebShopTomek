@@ -1,6 +1,6 @@
 package com.tgrajkowski.model.product.bought;
 
-import com.tgrajkowski.model.product.ProductMapper;
+import com.tgrajkowski.service.mapper.ProductMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class ProductBoughtMapper {
 
     public ProductBoughtDto mapToProductBoughtDto(ProductBought productBought) {
        return new ProductBoughtDto(
-                productMapper.mapToProductDto2(productBought.getProduct()),
+                productMapper.mapToProductDtoForBought(productBought.getProduct()),
                 productBought.getAmount()
         );
     }

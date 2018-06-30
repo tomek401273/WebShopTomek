@@ -25,11 +25,11 @@ public class Mail {
     private Date createDate;
     private String explain;
     private String welcome;
-    private String goodbye;
     private String linkConfirm;
     private boolean confirmAccount = false;
     private String template;
     private String fragment;
+    private ProductDto productDto;
 
     public Mail(String mailTo, String subject, String message, MailType mailType) {
         this.mailTo = mailTo;

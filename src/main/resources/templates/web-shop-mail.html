@@ -1,6 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="index :: site-head"></head>
+<head th:replace="index :: site-head">
+</head>
 <body style="
       background-color: #f6f6f6;
       font-family: sans-serif;
@@ -20,6 +21,7 @@
             <div class="content"
                  style="box-sizing: border-box; display: block; Margin: 0 auto; max-width: 580px; padding: 10px;">
                 <div th:include="index :: preheader"></div>
+
                 <table class="main"
                        style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; background: #ffffff; border-radius: 3px;">
                     <tr>
@@ -29,11 +31,12 @@
                                    style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;">
                                 <tr>
                                     <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
-                                        <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">
-                                            <span th:text="${welcomeMessage}"></span></p>
+                                        <h4 style="font-family: sans-serif; font-size: 20px; text-align: center; font-weight: bold; margin: 0; Margin-bottom: 15px;"
+                                               th:text="${welcomeMessage}">
+                                        </h4>
                                         <div th:include="${template} :: ${fragment}"></div>
                                         <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">
-                                            <span th:text="${godbyeMessage}"></span></p>
+
                                     </td>
                                 </tr>
                             </table>
@@ -48,4 +51,3 @@
 </table>
 </body>
 </html>
-dd

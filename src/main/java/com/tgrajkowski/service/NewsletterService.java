@@ -1,7 +1,9 @@
 package com.tgrajkowski.service;
 
+import com.tgrajkowski.service.mapper.WebShopConfig;
 import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.model.dao.ProductDao;
+import com.tgrajkowski.model.model.dao.ShortDescriptionDao;
 import com.tgrajkowski.model.model.dao.SubscriberDao;
 import com.tgrajkowski.model.newsletter.ConfirmDto;
 import com.tgrajkowski.model.newsletter.RandomString;
@@ -9,7 +11,7 @@ import com.tgrajkowski.model.newsletter.Subscriber;
 import com.tgrajkowski.model.newsletter.SubscriberDto;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.ProductMapper;
+import com.tgrajkowski.service.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -31,10 +33,16 @@ public class NewsletterService {
     private SimpleEmailService simpleEmailService;
 
     @Autowired
-    private ProductMapper productMapper;
+    ProductMapper productMapper;
+
+    @Autowired
+    private ShortDescriptionDao shortDescriptionDao;
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private WebShopConfig webShopConfig;
 
     public boolean subscribe(SubscriberDto subscriberDto) {
         if (subscriberDao.findByEmail(subscriberDto.getEmail()) == null) {
@@ -75,7 +83,7 @@ public class NewsletterService {
 
     public void sendNewsletterToSubscriber(String email, String name, List<ProductDto> newProductOffer) {
         LocalDate localDate = LocalDate.now();
-        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) +" "+ localDate;
+        String subject = messageSource.getMessage("messager-subject-newsletter-mail", new Object[]{}, Locale.US) + " " + localDate;
         String message = "Dear " + name + " please browse our new product offer";
         Mail mail = new Mail(email, subject);
         mail.setWelcome("Welcome subscriber");
@@ -112,17 +120,24 @@ public class NewsletterService {
         for (Subscriber subscriber : subscribers) {
             Date dateSubscription = subscriber.getLastNewsletterSend();
             List<Product> productList = productDao.findByLastModificationAfter(dateSubscription);
-            List<String> productTitle = new ArrayList<>();
             List<ProductDto> newProductOffer = new ArrayList<>();
             if (productList.size() > 0) {
                 for (Product product : productList) {
                     if (product.getStatus().getCode().equals("sale")) {
-                        productTitle.add(product.getTitle());
-                        newProductOffer.add(productMapper.mapToProductDto2(product));
-                        subscriber.setLastNewsletterSend(new Date());
-                        subscriberDao.save(subscriber);
-                        sendNewsletterToSubscriber(subscriber.getEmail(), subscriber.getName(), newProductOffer);
+                        ProductDto productDto = productMapper.mapToProductDtoForMail(product);
+
+
+//                        List<ShortDescription> descriptions = shortDescriptionDao.findByProductId(product.getId());
+//                        productDto.setShortDescription(descriptions.stream()
+//                                .map(x -> x.getAttribute())
+//                                .collect(Collectors.toList()));
+                        newProductOffer.add(productDto);
                     }
+                }
+                if (newProductOffer.size() > 0) {
+                    subscriber.setLastNewsletterSend(new Date());
+                    subscriberDao.save(subscriber);
+                    sendNewsletterToSubscriber(subscriber.getEmail(), subscriber.getName(), newProductOffer);
                 }
             }
         }

@@ -6,8 +6,66 @@
 </head>
 <body>
 <div th:fragment="information">
-    <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"
-       th:text="${message}"></p>
+    <!--<p style="font-family: sans-serif; text-align: center; font-size: 14px; font-weight: bold; margin: 0; Margin-bottom: 15px;"-->
+       <!--th:text="${message}"></p>-->
+    <div style="text-align: center;"><h3 th:text="${message}"></h3></div>
+
+
+    <div>
+        <div style="text-align: center;"><h3 th:text="${productUpdated.getTitle()}"></h3></div>
+
+        <img width="200px" height="200px"
+             th:src="${productUpdated.getImageLink()}"
+             th:alt="${productUpdated.getImageLink()}">
+        <ul>
+            <li th:text="${productUpdated.getShortDescription().get(0)}"></li>
+            <li th:text="${productUpdated.getShortDescription().get(1)}"></li>
+        </ul>
+        <div class="center">
+            <table border="0"
+                   cellpadding="0"
+                   cellspacing="0"
+                   class="center btn btn-primary"
+                   style="border-collapse: separate;
+                                                   mso-table-lspace: 0pt;
+                                                   mso-table-rspace: 0pt;
+                                                   width: 10px;
+                                                   height: 10px;
+                                                   box-sizing: border-box;">
+                <tbody>
+                <tr><p>Price: <span th:text="${productUpdated.getPrice()}"></span></p></tr>
+                <tr>
+
+                    <td align="left"
+                        style="font-family: sans-serif; font-size: 14px; vertical-align: center; horiz-align: center; padding-bottom: 15px;">
+                        <table class="center" border="0" cellpadding="0"
+                               cellspacing="0"
+                               style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;">
+                            <tbody>
+
+                            <tr>
+                                <td style="font-family: sans-serif;
+                                                                font-size: 5px;
+                                                                vertical-align: top;
+                                                                background-color: #3498db;
+                                                                border-radius: 5px;
+                                                                width: 10px;
+                                                                height: 10px;
+                                                                text-align: center;">
+                                    <a th:href="${productUpdated.getDirectLink()}"
+                                       target="_blank"
+                                       style="display: inline-block; color: #ffffff; background-color: #3498db; border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; text-decoration: none; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #3498db;">Detail</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
 </html>

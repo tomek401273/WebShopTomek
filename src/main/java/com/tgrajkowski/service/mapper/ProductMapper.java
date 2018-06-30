@@ -1,8 +1,14 @@
-package com.tgrajkowski.model.product;
+package com.tgrajkowski.service.mapper;
 
 
+import com.tgrajkowski.model.model.dao.ShortDescriptionDao;
+import com.tgrajkowski.model.product.Product;
+import com.tgrajkowski.model.product.ProductDto;
+import com.tgrajkowski.model.product.ProductStatus;
+import com.tgrajkowski.model.product.ShortDescription;
 import com.tgrajkowski.model.product.category.Category;
 import com.tgrajkowski.model.product.comment.CommentMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -13,6 +19,13 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
+
+    @Autowired
+    private WebShopConfig webShopConfig;
+
+    @Autowired
+    private ShortDescriptionDao shortDescriptionDao;
+
     private CommentMapper commentMapper = new CommentMapper();
 
     public Product mapToProduct(ProductDto productDto, ProductStatus productStatus, Category category) {
@@ -44,6 +57,15 @@ public class ProductMapper {
         return product;
     }
 
+    public List<ProductDto> mapToProductDtoList(List<Product> products) {
+        List<ProductDto> dtoList = new ArrayList<>();
+        for (Product product : products) {
+            ProductDto productDto = mapToProductDto(product);
+            dtoList.add(productDto);
+        }
+        return dtoList;
+    }
+
     public ProductDto mapToProductDto(Product product) {
         ProductDto productDto = new ProductDto(
                 product.getId(),
@@ -54,29 +76,20 @@ public class ProductMapper {
                 product.getTotalAmount(),
                 product.getAvailableAmount()
         );
-        productDto.setStatusCode(product.getStatus().code);
-        productDto.setStatusMessage(product.getStatus().name);
+        productDto.setStatusCode(product.getStatus().getCode());
+        productDto.setStatusMessage(product.getStatus().getName());
         productDto.setSumMarks(product.getSumMarks());
         productDto.setCountMarks(product.getCountMarks());
         productDto.setMarksAverage(product.getAverageMarks());
         productDto.setCommentDtos(commentMapper.mapToCommentDtos(product.getComments()));
 
         productDto.setShortDescription(product.getShortDescriptions().stream()
-                .map(x ->x.getAttribute())
+                .map(x -> x.getAttribute())
                 .collect(Collectors.toList()));
         return productDto;
     }
 
-    public List<ProductDto> mapToProductDtoList(List<Product> products) {
-        List<ProductDto> dtoList = new ArrayList<>();
-        for (Product product : products) {
-            ProductDto productDto = mapToProductDto(product);
-            dtoList.add(productDto);
-        }
-        return dtoList;
-    }
-
-    public ProductDto mapToProductDto2(Product product) {
+    public ProductDto mapToProductDtoForBucket(Product product) {
         ProductDto productDto = new ProductDto(
                 product.getId(),
                 product.getPrice(),
@@ -86,12 +99,43 @@ public class ProductMapper {
                 product.getTotalAmount(),
                 product.getAvailableAmount()
         );
-        productDto.setStatusCode(product.getStatus().code);
-        productDto.setStatusMessage(product.getStatus().name);
+        return productDto;
+    }
+
+    public ProductDto mapToProductDtoForMail(Product product) {
+        ProductDto productDto = new ProductDto(
+                product.getId(),
+                product.getPrice(),
+                product.getTitle(),
+                product.getDescription(),
+                product.getImageLink(),
+                product.getTotalAmount(),
+                product.getAvailableAmount()
+        );
+        productDto.setDirectLink(webShopConfig.getFrontedLink()+"product/" + product.getId());
+
+        List<ShortDescription> descriptions = shortDescriptionDao.findByProductId(product.getId());
+        productDto.setShortDescription(descriptions.stream()
+                .map(x -> x.getAttribute())
+                .collect(Collectors.toList()));
+        return productDto;
+    }
+
+    public ProductDto mapToProductDtoForBought(Product product) {
+        ProductDto productDto = new ProductDto(
+                product.getId(),
+                product.getPrice(),
+                product.getTitle(),
+                product.getDescription(),
+                product.getImageLink(),
+                product.getTotalAmount(),
+                product.getAvailableAmount()
+        );
+        productDto.setStatusCode(product.getStatus().getCode());
+        productDto.setStatusMessage(product.getStatus().getName());
         productDto.setSumMarks(product.getSumMarks());
         productDto.setCountMarks(product.getCountMarks());
         productDto.setMarksAverage(product.getAverageMarks());
-        productDto.setDirectLink("http://localhost:4200/product/"+product.getId());
         return productDto;
     }
 }

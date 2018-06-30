@@ -1,6 +1,5 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.app.WebShopConfig;
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.mail.MailType;
@@ -62,7 +61,7 @@ public class AuthenticationService {
             Bucket bucket = new Bucket();
             bucket.setUser(user);
             bucketDao.save(bucket);
-            sendEmailConfirmAccount(userDto.getName(), userDto.getLogin(), user.getId(), codeConfirm);
+            sendEmailConfirmAccount(userDto.getName(), userDto.getLogin(), codeConfirm);
             return userDto;
         }
         return null;
@@ -94,18 +93,16 @@ public class AuthenticationService {
         return userDao.findByLogin(login) == null;
     }
 
-    public void sendEmailConfirmAccount(String username, String email, Long userId, String codeConfirm) {
+    public void sendEmailConfirmAccount(String username, String email, String codeConfirm) {
         String welcome = "Welcome user " + username + " in Computer WebShop";
         String subject = "WebShop Confirm Account";
         String message = "You or someone has attempt to create account in Computer WebShop on: " + new Date() + " using this address " + email;
         String explain = "If you believe that this is a mistake and you did not intend on subscribing to this list, you can ignore this message and nothing else will happen.";
-        String goodbye = "Best wishes from Computer WebShop Company";
         Mail mail = new Mail(email, subject, message, MailType.CONFIRM_ACCOUNT);
         mail.setTemplate("account");
         mail.setFragment("confirm");
         mail.setWelcome(welcome);
         mail.setExplain(explain);
-        mail.setGoodbye(goodbye);
         mail.setLinkConfirm("confirm-account?email=" + email + "&code-confirm=" + codeConfirm);
         mail.setConfirmAccount(true);
         simpleEmailService.sendMail(mail);
