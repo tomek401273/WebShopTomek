@@ -13,4 +13,6 @@ import java.util.List;
 public interface ProductBucketDao extends JpaRepository<ProductBucket, ProductBucketPK> {
     @Override
     ProductBucket findOne(ProductBucketPK productBucketPK);
+    List<ProductBucket> findByProductId(Long productId);
+    List<ProductBucket> findByBucket_Id(Long bucketId);
 }

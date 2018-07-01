@@ -6,7 +6,7 @@ import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
-import com.tgrajkowski.service.mapper.ProductBucketMapper;
+import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.user.Users;
 import com.tgrajkowski.model.user.UserDto;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -144,5 +145,17 @@ public class BucketService {
             return true;
         }
         return false;
+    }
+
+    public int countProductInBucket() {
+        String userLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Users user = userDao.findByLogin(userLogin);
+        Bucket userBucket = bucketDao.findByUser_Id(user.getId());
+        List<ProductBucket> productBuckets = productBucketDao.findByBucket_Id(userBucket.getId());
+
+        return   IntStream.range(0, productBuckets.size())
+                .mapToObj(x->productBuckets.get(x).getAmount())
+                .mapToInt(x ->x)
+                .sum();
     }
 }

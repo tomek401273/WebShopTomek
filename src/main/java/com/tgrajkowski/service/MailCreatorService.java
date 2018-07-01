@@ -1,6 +1,6 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.service.mapper.WebShopConfig;
+import com.tgrajkowski.app.WebShopConfig;
 import com.tgrajkowski.model.mail.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

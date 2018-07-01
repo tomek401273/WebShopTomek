@@ -1,8 +1,6 @@
-package com.tgrajkowski.service.mapper;
+package com.tgrajkowski.model.product.bucket;
 
-import com.tgrajkowski.model.product.bucket.ProductBucket;
-import com.tgrajkowski.model.product.bucket.ProductBucketDto;
-import com.tgrajkowski.service.mapper.ProductMapper;
+import com.tgrajkowski.model.product.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

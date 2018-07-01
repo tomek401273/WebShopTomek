@@ -57,7 +57,6 @@
 <div th:fragment="scheduled">
     <p style="font-family: sans-serif; text-align: center; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;"
     ><b><span th:text="${message}"></span></b></p>
-<br>
     <div th:each="product : ${newOffer}">
         <div style="text-align: center;"><h3 th:text="${product.getTitle()}"></h3></div>
 

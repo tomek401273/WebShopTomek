@@ -1,11 +1,8 @@
-package com.tgrajkowski.service.mapper;
+package com.tgrajkowski.model.product;
 
 
+import com.tgrajkowski.app.WebShopConfig;
 import com.tgrajkowski.model.model.dao.ShortDescriptionDao;
-import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.ProductStatus;
-import com.tgrajkowski.model.product.ShortDescription;
 import com.tgrajkowski.model.product.category.Category;
 import com.tgrajkowski.model.product.comment.CommentMapper;
 import org.springframework.beans.factory.annotation.Autowired;

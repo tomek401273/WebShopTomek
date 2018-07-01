@@ -1,9 +1,7 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.service.mapper.WebShopConfig;
 import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.model.dao.ProductDao;
-import com.tgrajkowski.model.model.dao.ShortDescriptionDao;
 import com.tgrajkowski.model.model.dao.SubscriberDao;
 import com.tgrajkowski.model.newsletter.ConfirmDto;
 import com.tgrajkowski.model.newsletter.RandomString;
@@ -11,7 +9,7 @@ import com.tgrajkowski.model.newsletter.Subscriber;
 import com.tgrajkowski.model.newsletter.SubscriberDto;
 import com.tgrajkowski.model.product.Product;
 import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.service.mapper.ProductMapper;
+import com.tgrajkowski.model.product.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -36,13 +34,7 @@ public class NewsletterService {
     ProductMapper productMapper;
 
     @Autowired
-    private ShortDescriptionDao shortDescriptionDao;
-
-    @Autowired
     private MessageSource messageSource;
-
-    @Autowired
-    private WebShopConfig webShopConfig;
 
     public boolean subscribe(SubscriberDto subscriberDto) {
         if (subscriberDao.findByEmail(subscriberDto.getEmail()) == null) {
@@ -126,11 +118,7 @@ public class NewsletterService {
                     if (product.getStatus().getCode().equals("sale")) {
                         ProductDto productDto = productMapper.mapToProductDtoForMail(product);
 
-
-//                        List<ShortDescription> descriptions = shortDescriptionDao.findByProductId(product.getId());
-//                        productDto.setShortDescription(descriptions.stream()
-//                                .map(x -> x.getAttribute())
-//                                .collect(Collectors.toList()));
+                        System.out.println(product.getStatus().getCode());
                         newProductOffer.add(productDto);
                     }
                 }

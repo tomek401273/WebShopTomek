@@ -1,9 +1,11 @@
 package com.tgrajkowski.service;
 
-import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.mail.Mail;
 import com.tgrajkowski.model.model.dao.*;
-import com.tgrajkowski.model.product.*;
+import com.tgrajkowski.model.product.Product;
+import com.tgrajkowski.model.product.ProductDto;
+import com.tgrajkowski.model.product.ProductStatus;
+import com.tgrajkowski.model.product.ShortDescription;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.product.category.Category;
@@ -12,14 +14,17 @@ import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminderDto;
 import com.tgrajkowski.model.user.Users;
-import com.tgrajkowski.service.mapper.ProductMapper;
+import com.tgrajkowski.model.product.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,9 +34,6 @@ public class ProductService {
 
     @Autowired
     private ProductBucketDao productBucketDao;
-
-    @Autowired
-    private BucketDao bucketDao;
 
     @Autowired
     private SimpleEmailService simpleEmailService;
@@ -78,31 +80,13 @@ public class ProductService {
     public void removeProductFromDatabase(Long id) {
         Product product = productDao.findById(id);
         List<ProductBucket> productBuckets = product.getProductBuckets();
-        List<ProductBucketPK> productBucketPKS = new ArrayList<>();
         for (ProductBucket productBucket : productBuckets) {
-            sendEmailProductWithdrawn(
-                    productBucket.getBucket().getUser().getLogin(),
-                    product.getTitle(),
-                    productBucket.getBucket().getUser().getName());
             String email = productBucket.getBucket().getUser().getLogin();
             String subject = "Product " + product.getTitle() + " soon unavailable in Computer WebShop";
             String message = "Dear user " + productBucket.getBucket().getUser().getName() + " administrator redirect " + product.getTitle() + " to removing process. Product will be anavaiable until 23:59 this day";
             productUpdate(email, subject, message, product);
         }
-        for (ProductBucket productBucket : productBuckets) {
-            productBucketPKS.add(new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId()));
-            Bucket bucket = productBucket.getBucket();
-            bucket.getProductBuckets().remove(productBucket);
-            bucketDao.save(bucket);
-        }
-        product.setProductBuckets(new ArrayList<>());
-        product.setAvailableAmount(product.getTotalAmount());
-        product.setLastModification(new Date());
-        productDao.save(product);
 
-        for (ProductBucketPK productBucketPK : productBucketPKS) {
-            productBucketDao.delete(productBucketPK);
-        }
         product.setToDelete(true);
         productDao.save(product);
     }
@@ -112,14 +96,20 @@ public class ProductService {
         ProductStatus productStatus = productStatusDao.findProductStatusByCode("withdrawn");
 
         for (Product product : productsToDelete) {
+            List<ProductBucket> productBuckets = productBucketDao.findByProductId(product.getId());
+            List<ProductBucketPK> productBucketPKS = new ArrayList<>();
+
+            for (ProductBucket productBucket : productBuckets) {
+                ProductBucketPK productBucketPK = new ProductBucketPK(productBucket.getProduct().getId(), productBucket.getBucket().getId());
+                productBucketPKS.add(productBucketPK);
+                productBucketDao.delete(productBucketPK);
+            }
+            product.setProductBuckets(new ArrayList<>());
+            product.setAvailableAmount(product.getTotalAmount());
             product.setStatus(productStatus);
             product.setToDelete(false);
             productDao.save(product);
         }
-    }
-
-    public void sendEmailProductWithdrawn(String email, String productTitle, String userName) {
-
     }
 
     @Transactional
@@ -142,6 +132,7 @@ public class ProductService {
                 shortDescriptionDao.save(shDesc);
             }
         }
+        product.setLastModification(new Date());
         product.setShortDescriptions(newDesc);
         productDao.save(product);
     }
@@ -179,12 +170,10 @@ public class ProductService {
         mail.setFragment("information");
         ProductDto productDto = productMapper.mapToProductDtoForMail(product);
         productDto.setShortDescription(product.getShortDescriptions().stream()
-        .map(x -> x.getAttribute()).collect(Collectors.toList()));
+                .map(x -> x.getAttribute()).collect(Collectors.toList()));
         mail.setProductDto(productDto);
         simpleEmailService.sendMail(mail);
     }
-
-
 
 
     public Product saveProduct(ProductDto productDto) {

@@ -54,4 +54,9 @@ public class BucketController {
        return bucketService.checkCodeAvailable(code);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "count")
+    public @ResponseBody int getCountProductInBucket() {
+        return bucketService.countProductInBucket();
+    }
+
 }

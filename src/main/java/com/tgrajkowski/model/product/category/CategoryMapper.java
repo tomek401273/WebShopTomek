@@ -1,7 +1,7 @@
 package com.tgrajkowski.model.product.category;
 
 import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.service.mapper.ProductMapper;
+import com.tgrajkowski.model.product.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
