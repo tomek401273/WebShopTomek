@@ -45,7 +45,7 @@ public class NewsletterService {
             subscriber.setConfirm(false);
             subscriber.setConfirmCode(generatedTicket);
             subscriberDao.save(subscriber);
-            sendEmailConfirmSubscription(subscriberDto.getEmail(), subscriberDto.getName(), generatedTicket, dateSubscription);
+            sendEmailConfirmSubscription(subscriberDto.getEmail(), subscriberDto.getName(), generatedTicket);
             return true;
         }
         return false;
@@ -57,16 +57,14 @@ public class NewsletterService {
         return tickets.nextString();
     }
 
-    public void sendEmailConfirmSubscription(String email, String username, String confirmCode, Date dateSubscription) {
+    public void sendEmailConfirmSubscription(String email, String username, String confirmCode) {
         String subject = "Computer WebShop Newsletter";
         Mail mail = new Mail(email, subject);
         mail.setWelcome("Welcome in Computer WebShop newsletter");
         mail.setUserName(username);
         mail.setConfirmCode(confirmCode);
-        mail.setCreateDate(dateSubscription);
-
         mail.setLinkConfirm("newsletter/confirm?email=" + email + "&code-confirm=" + confirmCode);
-        mail.setExplain("You or someone has subscribed to this list on " + mail.getCreateDate() + " using the address " + mail.getMailTo());
+        mail.setExplain("You or someone has subscribed to this list using the address " + mail.getMailTo());
         mail.setMessage("If you want to receive 10% discount in Computer WebShop please confirm this email");
         mail.setTemplate("newsletter");
         mail.setFragment("confirm");

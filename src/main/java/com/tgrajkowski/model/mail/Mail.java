@@ -22,7 +22,6 @@ public class Mail {
     private String userName;
     private String confirmCode;
     private MailType mailType;
-    private Date createDate;
     private String explain;
     private String welcome;
     private String linkConfirm;
