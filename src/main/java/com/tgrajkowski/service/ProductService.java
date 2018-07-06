@@ -113,7 +113,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(ProductDto productDto) {
+    public Product updateProduct(ProductDto productDto) {
         Product product = productDao.findById(productDto.getId());
         if (productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("inaccessible")
                 || productDto.getStatusCode().equals("sale") && product.getStatus().getCode().equals("initial")) {
@@ -135,6 +135,7 @@ public class ProductService {
         product.setLastModification(new Date());
         product.setShortDescriptions(newDesc);
         productDao.save(product);
+        return  product;
     }
 
 

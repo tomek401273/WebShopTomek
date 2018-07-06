@@ -18,7 +18,7 @@ import java.util.List;
 @NamedNativeQueries({
         @NamedNativeQuery(
                 name = "Product.findProductContainstTitleWithLetters",
-                query = "SELECT * FROM product P, product_status S WHERE P.title LIKE concat('%',:LETTERS,'%') AND P.status_id = S.id AND (S.code = 'sale' OR S.code = 'inaccessible') ORDER BY P.title ASC",
+                query = "SELECT * FROM product P, product_status S WHERE LOWER(P.title) LIKE concat('%', LOWER(:LETTERS), '%') AND P.status_id = S.id AND (S.code = 'sale' OR S.code = 'inaccessible') ORDER BY P.title ASC",
                 resultClass = Product.class
         ),
         @NamedNativeQuery(

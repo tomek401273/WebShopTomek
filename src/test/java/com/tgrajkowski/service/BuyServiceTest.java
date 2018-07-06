@@ -66,8 +66,6 @@ public class BuyServiceTest {
     @Mock
     private StatusDao statusDao;
 
-    private ProductsOrderMapper productsOrderMapper = new ProductsOrderMapper();
-
     @Mock
     private SubscriberDao subscriberDao;
 

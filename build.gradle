@@ -36,8 +36,6 @@ dependencies {
     compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.8.0'
     compile('org.springframework.boot:spring-boot-starter-mail:1.5.7.RELEASE')
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
-    compile('io.springfox:springfox-swagger2:2.7.0')
-    compile('io.springfox:springfox-swagger-ui:2.7.0')
     compile('com.google.code.gson:gson:2.8.2')
     compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.1.RELEASE'

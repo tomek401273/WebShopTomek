@@ -15,14 +15,12 @@ public class Scheduler {
     @Autowired
     private ProductService productService;
 
-    //    @Scheduled(cron = "0 0 10 * * *")
-    @Scheduled(fixedDelay = 60 * 1000)
+    @Scheduled(cron = "0 0 10 * * *")
     public void sendInformationEmail() {
         newsletterService.sendNewsLetter();
     }
 
-    //    @Scheduled(cron = "0 0 00 * * *")
-    @Scheduled(fixedDelay = 60 * 1000)
+    @Scheduled(cron = "0 0 00 * * *")
     public void deleteProduct() {
         productService.deleteProductFromSale();
     }

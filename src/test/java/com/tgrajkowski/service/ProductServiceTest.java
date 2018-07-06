@@ -2,14 +2,12 @@ package com.tgrajkowski.service;
 
 import com.tgrajkowski.model.bucket.Bucket;
 import com.tgrajkowski.model.model.dao.*;
-import com.tgrajkowski.model.product.Product;
-import com.tgrajkowski.model.product.ProductDto;
-import com.tgrajkowski.model.product.ProductStatus;
-import com.tgrajkowski.model.product.ShortDescription;
+import com.tgrajkowski.model.product.*;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.product.category.Category;
 import com.tgrajkowski.model.product.comment.Comment;
+import com.tgrajkowski.model.product.comment.CommentDto;
 import com.tgrajkowski.model.product.mark.ProductMark;
 import com.tgrajkowski.model.product.mark.ProductMarkDto;
 import com.tgrajkowski.model.product.reminder.ProductEmailReminder;
@@ -23,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -78,6 +77,9 @@ public class ProductServiceTest {
 
     private Long productId = new Long(1);
 
+    @Mock
+    private ProductMapper productMapper;
+
     @Before
     public void init() {
         Authentication authentication = Mockito.mock(Authentication.class);
@@ -126,8 +128,13 @@ public class ProductServiceTest {
     @Test
     public void shouldGetProducts() {
         // Given
-        List<Product> productList = createProductList();
+        List<Product> productList = new ArrayList<>();
         when(productDao.getProductOnSaleAndInaccesiableAsc()).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
         // When
         List<ProductDto> retrieved = productService.getProducts();
         // Then
@@ -148,8 +155,13 @@ public class ProductServiceTest {
     @Test
     public void shouldGetProductToEdit() {
         // Given
-        List<Product> productList = createProductList();
+        List<Product> productList = new ArrayList<>();
         when(productDao.findAll()).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
         // When
         List<ProductDto> retrieved = productService.getProductsToEdit();
         // Then
@@ -160,7 +172,6 @@ public class ProductServiceTest {
     public void shouldRemoveProductDatabase() {
         // Given
         Product product = createProductToRemowe();
-        Date lastModification = product.getLastModification();
         when(productDao.findById((long) 1)).thenReturn(product);
         when(bucketDao.save(product.getProductBuckets().get(0).getBucket())).thenReturn(null);
         ProductBucketPK productBucketPK = new ProductBucketPK();
@@ -169,14 +180,14 @@ public class ProductServiceTest {
         when(productDao.findById((long) 1)).thenReturn(product);
         doNothing().when(productBucketDao).delete(productBucketPK);
         when(productDao.save(product)).thenReturn(null);
+        ProductDto productDto = new ProductDto();
+        when(productMapper.mapToProductDtoForMail(product)).thenReturn(productDto);
         // When
         productService.removeProductFromDatabase((long) 1);
         // Then
-        assertEquals(10, product.getAvailableAmount());
-        assertEquals(0, product.getProductBuckets().size());
-        Assert.assertNotEquals(lastModification, product.getLastModification());
+        assertEquals(2, product.getAvailableAmount());
+        assertEquals(1, product.getProductBuckets().size());
         Assert.assertTrue(product.isToDelete());
-
     }
 
     @Test
@@ -199,32 +210,48 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void updateTaskProductInit() {
+    public void updateProductInit() {
         // Given
         Product product = new Product();
-        product.setId((long) 1);
-        ProductStatus productStatus = new ProductStatus("inaccessible", "Product is inaccessible");
+        product.setId(productId);
+        ProductStatus productStatus = new ProductStatus("sale", "Product is on sale");
         product.setStatus(productStatus);
+        when(productDao.findById(productId)).thenReturn(product);
 
-        when(productDao.findById((long) 1)).thenReturn(product);
-        ProductDto productDto = createProductDto();
-        productDto.setStatusCode("init");
-        ProductStatus productStatusInit = new ProductStatus();
-        productStatusInit.setId((long) 2);
-        productStatusInit.setCode("init");
-        productStatusInit.setName("Product initialization");
-        when(productStatusDao.findProductStatusByCode("init")).thenReturn(productStatusInit);
+        ProductDto productDto = new ProductDto();
+        productDto.setId(productId);
+        productDto.setStatusCode("withdrawn");
+
+        ProductStatus productStatusWithdrawn = new ProductStatus();
+        productStatusWithdrawn.setId((long) 2);
+        productStatusWithdrawn.setCode("withdrawn");
+        when(productStatusDao.findProductStatusByCode("withdrawn")).thenReturn(productStatusWithdrawn);
+
+        Product updatedProduct = new Product();
+        updatedProduct.setId(productId);
+        updatedProduct.setTitle("title");
+        updatedProduct.setPrice(new BigDecimal(100));
+        updatedProduct.setImageLink("image");
+        updatedProduct.setAvailableAmount(10);
+        updatedProduct.setTotalAmount(10);
+        updatedProduct.setDescription("description");
+        List<ShortDescription> shortDescriptions = new ArrayList<>();
+        ShortDescription shortDescription = new ShortDescription();
+        shortDescription.setId((long) 1);
+        shortDescription.setAttribute("shortDescription");
+        shortDescriptions.add(shortDescription);
+        updatedProduct.setShortDescriptions(shortDescriptions);
+
+        when(productMapper.mapToProduct(product, productDto, productStatusWithdrawn)).thenReturn(updatedProduct);
         // When
-        productService.updateProduct(productDto);
-        assertEquals("title", product.getTitle());
-        assertEquals(new Long(1), product.getId());
-        assertEquals("init", product.getStatus().getCode());
-        assertEquals("Product initialization", product.getStatus().getName());
-        assertEquals(new BigDecimal(100), product.getPrice());
-        assertEquals("image", product.getImageLink());
-        assertEquals("description", product.getDescription());
-        assertEquals(10, product.getAvailableAmount());
-        assertEquals(10, product.getTotalAmount());
+        Product retrieved = productService.updateProduct(productDto);
+        assertEquals("title", retrieved.getTitle());
+        assertEquals(new Long(1), retrieved.getId());
+        assertEquals(new BigDecimal(100), retrieved.getPrice());
+        assertEquals("image", retrieved.getImageLink());
+        assertEquals("description", retrieved.getDescription());
+        assertEquals(10, retrieved.getAvailableAmount());
+        assertEquals(10, retrieved.getTotalAmount());
     }
 
     @Test
@@ -234,7 +261,6 @@ public class ProductServiceTest {
         product.setId((long) 1);
         ProductStatus productStatus = new ProductStatus("inaccessible", "Product is inaccessible");
         product.setStatus(productStatus);
-        when(productDao.findById((long) 1)).thenReturn(product);
 
         ProductEmailReminder productEmailReminder = new ProductEmailReminder();
         productEmailReminder.setId((long) 1);
@@ -242,28 +268,52 @@ public class ProductServiceTest {
         List<Product> productList = new ArrayList<>();
         productList.add(product);
         productEmailReminder.setProducts(productList);
+        when(productDao.findById((long) 1)).thenReturn(product);
 
         List<ProductEmailReminder> productEmailReminders = new ArrayList<>();
         productEmailReminders.add(productEmailReminder);
         product.setProductEmailReminders(productEmailReminders);
 
-        ProductDto productDto = createProductDto();
-        ProductStatus productStatusSale = productStatusSale();
+        ProductDto productDto = new ProductDto();
+        productDto.setId(productId);
+        productDto.setStatusCode("sale");
+
+        ProductStatus productStatusSale = new ProductStatus();
+        productStatusSale.setId((long) 2);
+        productStatusSale.setCode("sale");
+        productStatusSale.setName("Product is for sale");
         when(productStatusDao.findProductStatusByCode("sale")).thenReturn(productStatusSale);
 
+        Product updatedProduct = new Product();
+        updatedProduct.setId(productId);
+        updatedProduct.setTitle("title");
+        updatedProduct.setPrice(new BigDecimal(100));
+        updatedProduct.setImageLink("image");
+        updatedProduct.setAvailableAmount(10);
+        updatedProduct.setTotalAmount(10);
+        updatedProduct.setDescription("description");
+        List<ShortDescription> shortDescriptions = new ArrayList<>();
+        ShortDescription shortDescription = new ShortDescription();
+        shortDescription.setId((long) 1);
+        shortDescription.setAttribute("shortDescription");
+        shortDescriptions.add(shortDescription);
+        updatedProduct.setShortDescriptions(shortDescriptions);
+        updatedProduct.setStatus(productStatusSale);
+        when(productMapper.mapToProduct(product, productDto, productStatusSale)).thenReturn(updatedProduct);
+        when(productMapper.mapToProductDtoForMail(product)).thenReturn(new ProductDto());
+
         // When
-        productService.updateProduct(productDto);
-        assertEquals("title", product.getTitle());
-        assertEquals(new Long(1), product.getId());
-        assertEquals("sale", product.getStatus().getCode());
-        assertEquals("Product is for sale", product.getStatus().getName());
-        assertEquals(new BigDecimal(100), product.getPrice());
-        assertEquals("image", product.getImageLink());
-        assertEquals("description", product.getDescription());
-        assertEquals(10, product.getAvailableAmount());
-        assertEquals(10, product.getTotalAmount());
-        assertEquals(0, productEmailReminder.getProducts().size());
-        assertEquals(0, product.getProductEmailReminders().size());
+        Product retrieved = productService.updateProduct(productDto);
+        assertEquals("title", retrieved.getTitle());
+        assertEquals(new Long(1), retrieved.getId());
+        assertEquals("sale", retrieved.getStatus().getCode());
+        assertEquals("Product is for sale", retrieved.getStatus().getName());
+        assertEquals(new BigDecimal(100), retrieved.getPrice());
+        assertEquals("image", retrieved.getImageLink());
+        assertEquals("description", retrieved.getDescription());
+        assertEquals(10, retrieved.getAvailableAmount());
+        assertEquals(10, retrieved.getTotalAmount());
+        assertEquals(0, retrieved.getProductEmailReminders().size());
     }
 
     @Test
@@ -271,11 +321,25 @@ public class ProductServiceTest {
         // Given
         ProductDto productDto = createProductDto();
         ProductStatus productStatusSale = productStatusSale();
+        productStatusSale.setCode("sale");
+        productStatusSale.setName("Product is for sale");
         when(productStatusDao.findProductStatusByCode("sale")).thenReturn(productStatusSale);
         Category category = new Category();
         category.setId((long) 1);
         category.setName("category");
         when(categoryDao.findByName("category")).thenReturn(category);
+
+        Product productSaved  = new Product();
+        productSaved.setTitle("title");
+        productSaved.setStatus(productStatusSale);
+        productSaved.setPrice(new BigDecimal(100));
+        productSaved.setImageLink("image");
+        productSaved.setDescription("description");
+        productSaved.setTotalAmount(10);
+        productSaved.setAvailableAmount(10);
+        productSaved.setCategory(category);
+        when(productMapper.mapToProduct(productDto, productStatusSale, category)).thenReturn(productSaved);
+
         // When
         Product product = productService.saveProduct(productDto);
         // Then
@@ -295,6 +359,21 @@ public class ProductServiceTest {
         // Given
         Product product = createProduct();
         when(productDao.findById(productId)).thenReturn(product);
+        ProductDto productDto = new ProductDto();
+        productDto.setId(productId);
+        productDto.setPrice(new BigDecimal(100));
+        productDto.setTitle("Computer");
+        productDto.setDescription("Super Computer");
+        productDto.setTotalAmount(10);
+        productDto.setAvailableAmount(2);
+        productDto.setStatusCode("sale");
+        productDto.setStatusMessage("Product is on Sale");
+        productDto.setCountMarks(new BigDecimal(10));
+        productDto.setMarksAverage(new BigDecimal(10));
+        List<CommentDto> commentDtoList = new ArrayList<>();
+        commentDtoList.add(new CommentDto());
+        productDto.setCommentDtos(commentDtoList);
+        when(productMapper.mapToProductDto(product)).thenReturn(productDto);
         // When
         ProductDto retrieved = productService.getOneProduct(productId);
         // Then
@@ -324,12 +403,22 @@ public class ProductServiceTest {
     @Test
     public void searchProductExist() {
         // Given
-        List<Product> productList = createProductList();
+        List<Product> productList = new ArrayList<>();
+        productList.add(new Product());
+        productList.add(new Product());
+        productList.add(new Product());
+
         when(productDao.findProductContainstTitleWithLetters("product")).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
+
         // When
-        List<ProductDto> productDtoList = productService.searchProduct("product");
+        List<ProductDto> retrieved = productService.searchProduct("product");
         // Then
-        assertEquals(3, productDtoList.size());
+        assertEquals(3, retrieved.size());
     }
 
     @Test
@@ -337,21 +426,31 @@ public class ProductServiceTest {
         // Given
         List<Product> productList = new ArrayList<>();
         when(productDao.findProductContainstTitleWithLetters("product")).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
         // When
-        List<ProductDto> productDtoList = productService.searchProduct("product");
+        List<ProductDto> retrieved = productService.searchProduct("product");
         // Then
-        assertEquals(0, productDtoList.size());
+        assertEquals(0, retrieved.size());
     }
 
     @Test
     public void filterProductWithPriceExist() {
         // Given
-        List<Product> productList = createProductList();
+        List<Product> productList = new ArrayList<>();
+        productList.add(new Product());
+        productList.add(new Product());
+        productList.add(new Product());
         when(productDao.findProductWithPriceBetween(0, 1000)).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        productDtoList.add(new ProductDto());
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
         // When
-        List<ProductDto> productDtoList = productService.filterProductWithPriceBetween(0, 1000);
+        List<ProductDto> retrieved = productService.filterProductWithPriceBetween(0, 1000);
         // Then
-        assertEquals(3, productDtoList.size());
+        assertEquals(3, retrieved.size());
     }
 
     @Test
@@ -359,10 +458,12 @@ public class ProductServiceTest {
         // Given
         List<Product> productList = new ArrayList<>();
         when(productDao.findProductWithPriceBetween(1000, 1001)).thenReturn(productList);
+        List<ProductDto> productDtoList = new ArrayList<>();
+        when(productMapper.mapToProductDtoList(productList)).thenReturn(productDtoList);
         // When
-        List<ProductDto> productDtoList = productService.filterProductWithPriceBetween(1000, 1001);
+        List<ProductDto> retrieved = productService.filterProductWithPriceBetween(1000, 1001);
         // Then
-        assertEquals(0, productDtoList.size());
+        assertEquals(0, retrieved.size());
     }
 
 

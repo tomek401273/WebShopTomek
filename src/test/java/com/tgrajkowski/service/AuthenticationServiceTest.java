@@ -1,6 +1,5 @@
 package com.tgrajkowski.service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tgrajkowski.model.model.dao.BucketDao;
 import com.tgrajkowski.model.model.dao.RoleDao;
 import com.tgrajkowski.model.model.dao.UserDao;

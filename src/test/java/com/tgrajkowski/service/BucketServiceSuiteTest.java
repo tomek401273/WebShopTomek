@@ -5,9 +5,11 @@ import com.tgrajkowski.model.bucket.UserBucketDto;
 import com.tgrajkowski.model.model.dao.*;
 import com.tgrajkowski.model.newsletter.Subscriber;
 import com.tgrajkowski.model.product.Product;
+import com.tgrajkowski.model.product.ProductDto;
 import com.tgrajkowski.model.product.ProductStatus;
 import com.tgrajkowski.model.product.bucket.ProductBucket;
 import com.tgrajkowski.model.product.bucket.ProductBucketDto;
+import com.tgrajkowski.model.product.bucket.ProductBucketMapper;
 import com.tgrajkowski.model.product.bucket.ProductBucketPK;
 import com.tgrajkowski.model.product.comment.Comment;
 import com.tgrajkowski.model.user.UserAddress;
@@ -54,6 +56,10 @@ public class BucketServiceSuiteTest {
 
     @Mock
     private SubscriberDao subscriberDao;
+
+    @Mock
+    private ProductBucketMapper productBucketMapper;
+
 
     private Long idOne = new Long(1);
 
@@ -159,12 +165,22 @@ public class BucketServiceSuiteTest {
         productBucket.setAmount(7);
         productBucket.setBucket(bucket);
         productBucket.setDateAdded(new Date());
-        bucket.getProductBuckets().add(productBucket);
+        List<ProductBucket> productBuckets = new ArrayList<>();
+        productBuckets.add(productBucket);
+        bucket.setProductBuckets(productBuckets);
         when(bucketDao.findByUser_Id(idOne)).thenReturn(bucket);
+
+        List<ProductBucketDto> productBucketDtos = new ArrayList<>();
+        ProductBucketDto productBucketDto = new ProductBucketDto();
+        productBucketDto.setAmount(7);
+        productBucketDto.setProductDto(new ProductDto());
+        productBucketDtos.add(productBucketDto);
+        when(productBucketMapper.mapToProductBucketDtoList(productBuckets)).thenReturn(productBucketDtos);
+
         // When
-        List<ProductBucketDto> productBucketDtos = bucketService.showProductInBucket();
-        assertEquals(1, productBucketDtos.size());
-        assertEquals(7, productBucketDtos.get(0).getAmount());
+        List<ProductBucketDto> retrieved = bucketService.showProductInBucket();
+        assertEquals(1, retrieved.size());
+        assertEquals(7, retrieved.get(0).getAmount());
     }
 
     @Test
@@ -352,8 +368,6 @@ public class BucketServiceSuiteTest {
         boolean retrieved = bucketService.checkCodeAvailable("code");
         assertFalse(retrieved);
     }
-
-
 
     public Product createProduct() {
         Product product = new Product();

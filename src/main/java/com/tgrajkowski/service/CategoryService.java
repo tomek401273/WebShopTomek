@@ -20,10 +20,13 @@ public class CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Autowired
+    private ProductService productService;
+
     public List<String> getAllCategoryName() {
         List<String> categoryAllNames = new ArrayList<>();
         List<Category> categoryList = categoryDao.findAll();
-        for(Category category: categoryList) {
+        for (Category category : categoryList) {
             categoryAllNames.add(category.getName());
         }
         return categoryAllNames;
@@ -31,9 +34,13 @@ public class CategoryService {
 
     public CategoryDto getProductWithCategory(String categoryName) {
         CategoryDto categoryDto = new CategoryDto();
-        Optional<Category> category = Optional.ofNullable(categoryDao.findByName(categoryName));
-        if(category.isPresent()){
-            categoryDto = categoryMapper.mapToCategoryDto(category.get());
+        if (categoryName.equals("All")) {
+            categoryDto.setProductDtoList(productService.getProducts());
+        } else {
+            Optional<Category> category = Optional.ofNullable(categoryDao.findByName(categoryName));
+            if (category.isPresent()) {
+                categoryDto = categoryMapper.mapToCategoryDto(category.get());
+            }
         }
         return categoryDto;
     }

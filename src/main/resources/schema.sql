@@ -291,6 +291,8 @@ CREATE TABLE product_bought
       INSERT INTO category (id, name) VALUES (5, 'Computer Components');
       INSERT INTO category (id, name) VALUES (6, 'Storage & Hard Drivers');
       INSERT INTO category (id, name) VALUES (7, 'Networking');
+      INSERT INTO category (id, name) VALUES (8, 'All');
+
 
 
 

@@ -3,6 +3,7 @@ package com.tgrajkowski.model.product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class ProductStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
