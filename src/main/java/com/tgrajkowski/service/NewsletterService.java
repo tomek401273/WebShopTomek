@@ -64,7 +64,7 @@ public class NewsletterService {
         mail.setUserName(username);
         mail.setConfirmCode(confirmCode);
         mail.setLinkConfirm("newsletter/confirm?email=" + email + "&code-confirm=" + confirmCode);
-        mail.setExplain("You or someone has subscribed to this list using the address " + mail.getMailTo());
+        mail.setExplain("You or someone has subscribed to Computer WebShop newsletter using  email: " + mail.getMailTo());
         mail.setMessage("If you want to receive 10% discount in Computer WebShop please confirm this email");
         mail.setTemplate("newsletter");
         mail.setFragment("confirm");
